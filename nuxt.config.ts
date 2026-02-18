@@ -16,7 +16,8 @@ export default defineNuxtConfig({
 
   nitro: {
     experimental: {
-      wasm: true
+      wasm: true,
+      asyncContext: true
     },
     esbuild: {
       options: {
@@ -28,7 +29,7 @@ export default defineNuxtConfig({
       '#prisma': './app/generated/prisma/client.ts'
     },
     externals: {
-      external: ['@prisma/client/runtime/client', '@prisma/adapter-pg', 'pg']
+      external: ['@prisma/client/runtime/client', '@prisma/adapter-pg', 'pg', 'pdf-parse', 'mammoth']
     }
   },
 

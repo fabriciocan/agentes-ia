@@ -43,6 +43,7 @@ model agent_configs {
   company_id               String?          @db.Uuid
   clients                  clients          @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   companies                companies?       @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  chats                    chats[]
   conversations            conversations[]
   knowledge_base           knowledge_base[]
 
@@ -104,6 +105,7 @@ model clients {
   updated_at    DateTime        @default(now()) @db.Timestamptz(6)
   admin_users   admin_users[]
   agent_configs agent_configs[]
+  chats         chats[]
   companies     companies[]
   conversations conversations[]
   end_users     end_users[]
@@ -419,4 +421,19 @@ model users {
   @@index([invitation_token], map: "idx_users_invitation_token", where: raw("(invitation_token IS NOT NULL)"))
   @@index([last_login_at(sort: Desc)], map: "idx_users_last_login_at")
   @@index([status], map: "idx_users_status", where: raw("(deleted_at IS NULL)"))
+}
+
+model chats {
+  id              BigInt        @id @default(autoincrement())
+  created_at      DateTime?     @default(now()) @db.Timestamptz(6)
+  updated_at      String?
+  phone           String?
+  client_id       String        @db.Uuid
+  agent_config_id String        @db.Uuid
+  clients         clients       @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  agent_configs   agent_configs @relation(fields: [agent_config_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([client_id], map: "idx_chats_client_id")
+  @@index([agent_config_id], map: "idx_chats_agent_config_id")
+  @@index([phone], map: "idx_chats_phone")
 }

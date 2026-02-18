@@ -13,6 +13,24 @@ import type { KnowledgeBase } from '../types'
 
 const logger = createLogger('knowledge')
 
+// Payload completo armazenado no Qdrant por ponto
+interface QdrantPayload {
+  agent_config_id: string
+  title: string
+  content: string
+  content_type: string
+  chunk_index: number
+  total_chunks: number
+  language: string
+  keywords: string[]
+  has_numbers: boolean
+  has_table: boolean
+  file_type: string | null
+  file_size: number | null
+  created_at: string
+  [key: string]: unknown
+}
+
 export async function getKnowledgeEntries(agentConfigId: string): Promise<KnowledgeBase[]> {
   const result = await prisma.knowledge_base.findMany({
     where: { agent_config_id: agentConfigId },
@@ -39,10 +57,10 @@ export async function addKnowledgeEntry(
   data: { title: string; content: string; content_type: string; file_size?: number; file_type?: string }
 ): Promise<KnowledgeBase> {
   try {
-    // Generate embedding for the content
-    const embedding = await generateEmbedding(data.content)
+    const language = detectLanguage(data.content)
+    const keywords = extractKeywords(data.content)
 
-    // Create record in PostgreSQL
+    // Salva no PostgreSQL
     const entry = await prisma.knowledge_base.create({
       data: {
         agent_config_id: agentConfigId,
@@ -51,22 +69,37 @@ export async function addKnowledgeEntry(
         content_type: data.content_type || 'text',
         file_size: data.file_size || null,
         file_type: data.file_type || null,
-        metadata: {}
+        chunk_index: 0,
+        metadata: { language, keywords, totalChunks: 1, processedAt: new Date().toISOString() }
       }
     })
 
-    // Ensure Qdrant collection exists and upsert the vector
+    // Gera embedding e salva no Qdrant com payload completo
+    const embedding = await generateEmbedding(data.content)
     await ensureKnowledgeCollection(agentConfigId)
+
+    const payload: QdrantPayload = {
+      agent_config_id: agentConfigId,
+      title: data.title,
+      content: data.content,
+      content_type: data.content_type || 'text',
+      chunk_index: 0,
+      total_chunks: 1,
+      language,
+      keywords,
+      has_numbers: hasNumericalData(data.content),
+      has_table: hasTableStructure(data.content),
+      file_type: data.file_type || null,
+      file_size: data.file_size || null,
+      created_at: entry.created_at.toISOString(),
+    }
+
     await qdrant.upsert(knowledgeCollectionName(agentConfigId), {
       wait: true,
-      points: [{
-        id: entry.id,
-        vector: embedding,
-        payload: { agent_config_id: agentConfigId, title: data.title }
-      }]
+      points: [{ id: entry.id, vector: embedding, payload }]
     })
 
-    logger.info({ agentConfigId, title: data.title, hasEmbedding: true }, 'Knowledge entry added with embedding')
+    logger.info({ agentConfigId, title: data.title }, 'Knowledge entry added to Postgres + Qdrant')
     return entry as unknown as KnowledgeBase
   } catch (error) {
     logger.error({ error, agentConfigId }, 'Failed to add knowledge entry')
@@ -84,62 +117,52 @@ export async function addKnowledgeChunks(
   additionalMetadata?: Record<string, any>
 ): Promise<KnowledgeBase[]> {
   try {
-    // Detect language and extract global keywords from full content
     const language = detectLanguage(content)
     const globalKeywords = extractKeywords(content)
+    const estimatedPages = estimatePages(content)
+    const contentHasNumbers = hasNumericalData(content)
+    const contentHasTable = hasTableStructure(content)
 
     logger.info(
-      {
-        agentConfigId,
-        title,
-        language,
-        contentLength: content.length,
-        keywordCount: globalKeywords.length
-      },
+      { agentConfigId, title, language, contentLength: content.length, keywordCount: globalKeywords.length },
       'Starting document processing'
     )
 
-    // Chunk large documents with optimized settings
     const chunks = await chunkText(content, 800, 200)
     const entries: KnowledgeBase[] = []
 
-    logger.info({ agentConfigId, title, chunkCount: chunks.length }, 'Text chunked, generating embeddings')
-
-    // Ensure Qdrant collection exists before processing chunks
     await ensureKnowledgeCollection(agentConfigId)
+
+    logger.info({ agentConfigId, title, chunkCount: chunks.length }, 'Text chunked, generating embeddings')
 
     for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i]!
+      const chunkTitle = `${title} - Parte ${i + 1}`
 
-      // Add context to chunk for better embedding
+      // Conteúdo contextualizado para melhor embedding
       const contextualContent = `Document: ${title}\n\nPart ${i + 1}/${chunks.length}\n\n${chunk}`
 
-      // Extract keywords from this specific chunk
       const chunkKeywords = extractKeywords(chunk)
-
-      // Combine global and chunk-specific keywords (deduplicated)
       const allKeywords = [...new Set([...globalKeywords.slice(0, 10), ...chunkKeywords.slice(0, 5)])]
 
-      // Build rich metadata
       const metadata = {
         ...additionalMetadata,
         chunkIndex: i,
         totalChunks: chunks.length,
         chunkSize: chunk.length,
-        contextualChunkSize: contextualContent.length,
-        keywords: allKeywords,
         language,
-        hasNumbers: hasNumericalData(chunk),
-        hasTable: hasTableStructure(chunk),
-        estimatedPages: estimatePages(content),
+        keywords: allKeywords,
+        hasNumbers: contentHasNumbers,
+        hasTable: contentHasTable,
+        estimatedPages,
         processedAt: new Date().toISOString()
       }
 
-      // Create record in PostgreSQL
+      // Salva no PostgreSQL
       const entry = await prisma.knowledge_base.create({
         data: {
           agent_config_id: agentConfigId,
-          title: `${title} - Parte ${i + 1}`,
+          title: chunkTitle,
           content: chunk,
           content_type: contentType,
           file_size: fileSize || null,
@@ -149,45 +172,46 @@ export async function addKnowledgeChunks(
         }
       })
 
-      // Generate embedding for contextual content
+      // Gera embedding do conteúdo contextualizado
       const embedding = await generateEmbedding(contextualContent)
 
-      // Upsert to Qdrant with the same UUID as the PG record
+      // Payload completo no Qdrant — tudo que o RAG precisa está aqui
+      const payload: QdrantPayload = {
+        agent_config_id: agentConfigId,
+        title: chunkTitle,
+        content: chunk,
+        content_type: contentType,
+        chunk_index: i,
+        total_chunks: chunks.length,
+        language,
+        keywords: allKeywords,
+        has_numbers: contentHasNumbers,
+        has_table: contentHasTable,
+        file_type: fileType || null,
+        file_size: fileSize || null,
+        created_at: entry.created_at.toISOString(),
+      }
+
       await qdrant.upsert(knowledgeCollectionName(agentConfigId), {
         wait: true,
-        points: [{
-          id: entry.id,
-          vector: embedding,
-          payload: { agent_config_id: agentConfigId, title: `${title} - Parte ${i + 1}` }
-        }]
+        points: [{ id: entry.id, vector: embedding, payload }]
       })
 
       entries.push(entry as unknown as KnowledgeBase)
 
-      // Rate limiting for OpenAI API (500 req/min = ~120ms between requests)
+      // Rate limiting OpenAI (500 req/min)
       if (i < chunks.length - 1) {
         await new Promise(resolve => setTimeout(resolve, 150))
       }
 
-      // Log progress every 5 chunks
       if ((i + 1) % 5 === 0 || i === chunks.length - 1) {
-        logger.debug(
-          { agentConfigId, title, progress: `${i + 1}/${chunks.length}` },
-          'Embedding progress'
-        )
+        logger.debug({ agentConfigId, title, progress: `${i + 1}/${chunks.length}` }, 'Embedding progress')
       }
     }
 
     logger.info(
-      {
-        agentConfigId,
-        title,
-        chunkCount: chunks.length,
-        avgChunkSize: Math.round(content.length / chunks.length),
-        language,
-        totalKeywords: globalKeywords.length
-      },
-      'Knowledge entry added with enhanced chunking and embeddings'
+      { agentConfigId, title, chunkCount: chunks.length, language },
+      'Knowledge chunks added to Postgres + Qdrant'
     )
 
     return entries
@@ -202,13 +226,11 @@ export async function updateKnowledgeEntry(
   agentConfigId: string,
   data: { title?: string; content?: string; content_type?: string }
 ): Promise<KnowledgeBase | null> {
-  // First verify ownership
   const existing = await prisma.knowledge_base.findFirst({
     where: { id: entryId, agent_config_id: agentConfigId }
   })
   if (!existing) return null
 
-  // Update PG
   const updated = await prisma.knowledge_base.update({
     where: { id: entryId },
     data: {
@@ -218,21 +240,39 @@ export async function updateKnowledgeEntry(
     }
   })
 
-  // If content changed, update Qdrant vector
-  if (data.content !== undefined) {
+  // Se conteúdo ou título mudou, atualiza embedding e payload no Qdrant
+  if (data.content !== undefined || data.title !== undefined) {
     try {
-      const newEmbedding = await generateEmbedding(data.content)
+      const newContent = data.content ?? existing.content
+      const newTitle = data.title ?? existing.title
+      const language = detectLanguage(newContent)
+      const keywords = extractKeywords(newContent)
+
+      const newEmbedding = await generateEmbedding(newContent)
       await ensureKnowledgeCollection(agentConfigId)
+
+      const payload: QdrantPayload = {
+        agent_config_id: agentConfigId,
+        title: newTitle,
+        content: newContent,
+        content_type: (data.content_type ?? existing.content_type) as string,
+        chunk_index: existing.chunk_index ?? 0,
+        total_chunks: (existing.metadata as any)?.totalChunks ?? 1,
+        language,
+        keywords,
+        has_numbers: hasNumericalData(newContent),
+        has_table: hasTableStructure(newContent),
+        file_type: existing.file_type,
+        file_size: existing.file_size,
+        created_at: existing.created_at.toISOString(),
+      }
+
       await qdrant.upsert(knowledgeCollectionName(agentConfigId), {
         wait: true,
-        points: [{
-          id: entryId,
-          vector: newEmbedding,
-          payload: { agent_config_id: agentConfigId, title: updated.title }
-        }]
+        points: [{ id: entryId, vector: newEmbedding, payload }]
       })
     } catch (error) {
-      logger.warn({ error, entryId }, 'Failed to regenerate embedding on update')
+      logger.warn({ error, entryId }, 'Failed to update Qdrant on knowledge update')
     }
   }
 
@@ -244,13 +284,11 @@ export async function deleteKnowledgeEntry(
   entryId: string,
   agentConfigId: string
 ): Promise<boolean> {
-  // Delete from PG
   const deleted = await prisma.knowledge_base.deleteMany({
     where: { id: entryId, agent_config_id: agentConfigId }
   })
   if (deleted.count === 0) return false
 
-  // Delete from Qdrant (ignore errors if collection doesn't exist)
   try {
     await qdrant.delete(knowledgeCollectionName(agentConfigId), {
       wait: true,
@@ -258,7 +296,7 @@ export async function deleteKnowledgeEntry(
     })
   } catch (_) {}
 
-  logger.info({ entryId, agentConfigId }, 'Knowledge entry deleted')
+  logger.info({ entryId, agentConfigId }, 'Knowledge entry deleted from Postgres + Qdrant')
   return true
 }
 
@@ -270,51 +308,48 @@ export async function searchKnowledgeByEmbedding(
   try {
     const collectionName = knowledgeCollectionName(agentConfigId)
 
-    // Check collection exists
     const { collections } = await qdrant.getCollections()
     if (!collections.some(c => c.name === collectionName)) return []
 
-    // Search in Qdrant
+    // Busca com payload completo — sem necessidade de segundo lookup no Postgres
     const searchResults = await qdrant.search(collectionName, {
       vector: queryEmbedding,
       limit,
-      with_payload: false,
+      with_payload: true,
+      filter: {
+        must: [{ key: 'agent_config_id', match: { value: agentConfigId } }]
+      }
     })
 
     if (searchResults.length === 0) return []
 
-    // Fetch metadata from PG
-    const ids = searchResults.map(r => r.id as string)
-    const entries = await prisma.knowledge_base.findMany({
-      where: { id: { in: ids } },
-      select: {
-        id: true,
-        agent_config_id: true,
-        title: true,
-        content: true,
-        content_type: true,
-        metadata: true,
-        file_size: true,
-        file_type: true,
-        chunk_index: true,
-        created_at: true,
-        updated_at: true
+    const results = searchResults.map(r => {
+      const p = r.payload as unknown as QdrantPayload
+      return {
+        id: r.id as string,
+        agent_config_id: p.agent_config_id,
+        title: p.title,
+        content: p.content,
+        content_type: p.content_type,
+        chunk_index: p.chunk_index,
+        file_type: p.file_type,
+        file_size: p.file_size,
+        metadata: {
+          language: p.language,
+          keywords: p.keywords,
+          hasNumbers: p.has_numbers,
+          hasTable: p.has_table,
+          totalChunks: p.total_chunks,
+        },
+        created_at: new Date(p.created_at),
+        updated_at: new Date(p.created_at),
+        similarity: r.score,
       }
     })
 
-    // Reorder by Qdrant score and add similarity
-    const scoreMap = new Map(searchResults.map(r => [r.id as string, r.score]))
-    const results = entries
-      .sort((a, b) => (scoreMap.get(b.id) || 0) - (scoreMap.get(a.id) || 0))
-      .map(entry => ({ ...entry, similarity: scoreMap.get(entry.id) || 0 }))
-
     logger.debug(
-      {
-        agentConfigId,
-        resultCount: results.length,
-        topSimilarity: results[0]?.similarity
-      },
-      'Vector similarity search completed'
+      { agentConfigId, resultCount: results.length, topSimilarity: results[0]?.similarity },
+      'Vector similarity search completed via Qdrant payload'
     )
 
     return results as unknown as Array<KnowledgeBase & { similarity: number }>
@@ -324,19 +359,3 @@ export async function searchKnowledgeByEmbedding(
   }
 }
 
-function cosineSimilarity(vecA: number[], vecB: number[]): number {
-  if (vecA.length !== vecB.length) return 0
-
-  let dotProduct = 0
-  let normA = 0
-  let normB = 0
-
-  for (let i = 0; i < vecA.length; i++) {
-    dotProduct += vecA[i]! * vecB[i]!
-    normA += vecA[i]! * vecA[i]!
-    normB += vecB[i]! * vecB[i]!
-  }
-
-  const denominator = Math.sqrt(normA) * Math.sqrt(normB)
-  return denominator === 0 ? 0 : dotProduct / denominator
-}
