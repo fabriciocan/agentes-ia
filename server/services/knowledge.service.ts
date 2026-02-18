@@ -211,7 +211,7 @@ export async function addKnowledgeChunks(
 
     logger.info({ agentConfigId, title, language, contentLength: content.length }, 'Starting document processing')
 
-    const chunks = await chunkText(content, 800, 200)
+    const chunks = await chunkText(content, 500, 100)
     const entries: KnowledgeBase[] = []
 
     await ensureKnowledgeCollection(agentConfigId)
