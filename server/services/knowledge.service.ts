@@ -1,7 +1,7 @@
 import { prisma } from '../lib/prisma'
 import { qdrant, knowledgeCollectionName, ensureKnowledgeCollection } from '../lib/qdrant'
 import { createLogger } from '../utils/logger'
-import { generateEmbedding, chunkText } from './embedding.service'
+import { generateEmbedding, generateEmbeddings, chunkText } from './embedding.service'
 import {
   extractKeywords,
   detectLanguage,
@@ -175,80 +175,75 @@ export async function addKnowledgeChunks(
 
     await ensureKnowledgeCollection(agentConfigId)
 
-    logger.info({ agentConfigId, title, chunkCount: chunks.length }, 'Chunked — generating embeddings')
+    logger.info({ agentConfigId, title, chunkCount: chunks.length }, 'Chunked — generating embeddings (batch)')
 
-    for (let i = 0; i < chunks.length; i++) {
-      const chunk = chunks[i]!
+    // 1. Pre-compute per-chunk data
+    const chunkData = chunks.map((chunk, i) => {
       const chunkTitle = chunks.length === 1 ? title : `${title} - Parte ${i + 1}`
-
-      // Conteúdo contextualizado melhora a qualidade do embedding
       const contextualContent = `Document: ${title}\n\nPart ${i + 1}/${chunks.length}\n\n${chunk}`
-
       const chunkKeywords = extractKeywords(chunk)
       const allKeywords = [...new Set([...globalKeywords.slice(0, 10), ...chunkKeywords.slice(0, 5)])]
+      return { chunk, chunkTitle, contextualContent, allKeywords }
+    })
 
-      const entry = await prisma.knowledge_base.create({
-        data: {
-          agent_config_id: agentConfigId,
-          title: chunkTitle,
-          content: chunk,
-          content_type: contentType,
-          file_size: fileSize || null,
-          file_type: fileType || null,
-          chunk_index: i,
-          metadata: {
-            ...additionalMetadata,
-            chunkIndex: i,
-            totalChunks: chunks.length,
-            chunkSize: chunk.length,
-            language,
-            keywords: allKeywords,
-            hasNumbers: contentHasNumbers,
-            hasTable: contentHasTable,
-            estimatedPages: pages,
-            processedAt: new Date().toISOString()
-          } as any
-        }
-      })
+    // 2. Save all chunks to Postgres
+    const dbEntries = await Promise.all(
+      chunkData.map((d, i) =>
+        prisma.knowledge_base.create({
+          data: {
+            agent_config_id: agentConfigId,
+            title: d.chunkTitle,
+            content: d.chunk,
+            content_type: contentType,
+            file_size: fileSize || null,
+            file_type: fileType || null,
+            chunk_index: i,
+            metadata: {
+              ...additionalMetadata,
+              chunkIndex: i,
+              totalChunks: chunks.length,
+              chunkSize: d.chunk.length,
+              language,
+              keywords: d.allKeywords,
+              hasNumbers: contentHasNumbers,
+              hasTable: contentHasTable,
+              estimatedPages: pages,
+              processedAt: new Date().toISOString()
+            } as any
+          }
+        })
+      )
+    )
 
-      const embedding = await generateEmbedding(contextualContent)
+    // 3. Batch generate all embeddings in a single OpenAI API call
+    const embeddings = await generateEmbeddings(chunkData.map(d => d.contextualContent))
 
-      const payload = buildPayload({
-        agentConfigId,
-        title: chunkTitle,
-        content: chunk,
-        contentType,
-        chunkIndex: i,
-        totalChunks: chunks.length,
-        language,
-        keywords: allKeywords,
-        hasNumbers: contentHasNumbers,
-        hasTable: contentHasTable,
-        estimatedPages: pages,
-        fileType: fileType,
-        fileSize: fileSize,
-        createdAt: entry.created_at.toISOString(),
-      })
+    // 4. Batch upsert all points to Qdrant in a single request
+    await qdrant.upsert(knowledgeCollectionName(agentConfigId), {
+      wait: true,
+      points: dbEntries.map((entry: { id: string; created_at: Date }, i: number) => ({
+        id: entry.id,
+        vector: { dense: embeddings[i]! },
+        payload: buildPayload({
+          agentConfigId,
+          title: chunkData[i]!.chunkTitle,
+          content: chunkData[i]!.chunk,
+          contentType,
+          chunkIndex: i,
+          totalChunks: chunks.length,
+          language,
+          keywords: chunkData[i]!.allKeywords,
+          hasNumbers: contentHasNumbers,
+          hasTable: contentHasTable,
+          estimatedPages: pages,
+          fileType: fileType,
+          fileSize: fileSize,
+          createdAt: entry.created_at.toISOString(),
+        }),
+      }))
+    })
 
-      await qdrant.upsert(knowledgeCollectionName(agentConfigId), {
-        wait: true,
-        points: [{
-          id: entry.id,
-          vector: { dense: embedding },   // vetor nomeado "dense"
-          payload,
-        }]
-      })
-
-      entries.push(entry as unknown as KnowledgeBase)
-
-      if (i < chunks.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 150))
-      }
-
-      if ((i + 1) % 5 === 0 || i === chunks.length - 1) {
-        logger.debug({ agentConfigId, title, progress: `${i + 1}/${chunks.length}` }, 'Embedding progress')
-      }
-    }
+    dbEntries.forEach((e: unknown) => entries.push(e as unknown as KnowledgeBase))
 
     logger.info({ agentConfigId, title, chunkCount: chunks.length, language }, 'Chunks saved to Postgres + Qdrant')
     return entries
