@@ -13,22 +13,63 @@ import type { KnowledgeBase } from '../types'
 
 const logger = createLogger('knowledge')
 
-// Payload completo armazenado no Qdrant por ponto
+// Payload salvo no Qdrant — estrutura compatível com o N8N RAG workflow
 interface QdrantPayload {
+  // Campos top-level (usados pelo N8N diretamente)
   agent_config_id: string
   title: string
   content: string
   content_type: string
-  chunk_index: number
-  total_chunks: number
+  // Metadata aninhada (o N8N lê: point.payload.metadata.chunkIndex, etc.)
+  metadata: {
+    chunkIndex: number
+    totalChunks: number
+    keywords: string[]
+    language: string
+    hasNumbers: boolean
+    hasTable: boolean
+    estimatedPages: number
+    fileType: string | null
+    fileSize: number | null
+    createdAt: string
+  }
+  [key: string]: unknown
+}
+
+function buildPayload(params: {
+  agentConfigId: string
+  title: string
+  content: string
+  contentType: string
+  chunkIndex: number
+  totalChunks: number
   language: string
   keywords: string[]
-  has_numbers: boolean
-  has_table: boolean
-  file_type: string | null
-  file_size: number | null
-  created_at: string
-  [key: string]: unknown
+  hasNumbers: boolean
+  hasTable: boolean
+  estimatedPages: number
+  fileType?: string | null
+  fileSize?: number | null
+  createdAt: string
+}): QdrantPayload {
+  return {
+    agent_config_id: params.agentConfigId,
+    title: params.title,
+    content: params.content,
+    content_type: params.contentType,
+    metadata: {
+      chunkIndex: params.chunkIndex,
+      totalChunks: params.totalChunks,
+      keywords: params.keywords,
+      language: params.language,
+      hasNumbers: params.hasNumbers,
+      hasTable: params.hasTable,
+      estimatedPages: params.estimatedPages,
+      fileType: params.fileType || null,
+      fileSize: params.fileSize || null,
+      createdAt: params.createdAt,
+    },
+  }
 }
 
 export async function getKnowledgeEntries(agentConfigId: string): Promise<KnowledgeBase[]> {
@@ -59,8 +100,8 @@ export async function addKnowledgeEntry(
   try {
     const language = detectLanguage(data.content)
     const keywords = extractKeywords(data.content)
+    const pages = estimatePages(data.content)
 
-    // Salva no PostgreSQL
     const entry = await prisma.knowledge_base.create({
       data: {
         agent_config_id: agentConfigId,
@@ -74,32 +115,36 @@ export async function addKnowledgeEntry(
       }
     })
 
-    // Gera embedding e salva no Qdrant com payload completo
-    const embedding = await generateEmbedding(data.content)
     await ensureKnowledgeCollection(agentConfigId)
+    const embedding = await generateEmbedding(data.content)
 
-    const payload: QdrantPayload = {
-      agent_config_id: agentConfigId,
+    const payload = buildPayload({
+      agentConfigId,
       title: data.title,
       content: data.content,
-      content_type: data.content_type || 'text',
-      chunk_index: 0,
-      total_chunks: 1,
+      contentType: data.content_type || 'text',
+      chunkIndex: 0,
+      totalChunks: 1,
       language,
       keywords,
-      has_numbers: hasNumericalData(data.content),
-      has_table: hasTableStructure(data.content),
-      file_type: data.file_type || null,
-      file_size: data.file_size || null,
-      created_at: entry.created_at.toISOString(),
-    }
+      hasNumbers: hasNumericalData(data.content),
+      hasTable: hasTableStructure(data.content),
+      estimatedPages: pages,
+      fileType: data.file_type,
+      fileSize: data.file_size,
+      createdAt: entry.created_at.toISOString(),
+    })
 
     await qdrant.upsert(knowledgeCollectionName(agentConfigId), {
       wait: true,
-      points: [{ id: entry.id, vector: embedding, payload }]
+      points: [{
+        id: entry.id,
+        vector: { dense: embedding },   // vetor nomeado "dense" para o N8N
+        payload,
+      }]
     })
 
-    logger.info({ agentConfigId, title: data.title }, 'Knowledge entry added to Postgres + Qdrant')
+    logger.info({ agentConfigId, title: data.title }, 'Knowledge entry added')
     return entry as unknown as KnowledgeBase
   } catch (error) {
     logger.error({ error, agentConfigId }, 'Failed to add knowledge entry')
@@ -119,46 +164,29 @@ export async function addKnowledgeChunks(
   try {
     const language = detectLanguage(content)
     const globalKeywords = extractKeywords(content)
-    const estimatedPages = estimatePages(content)
+    const pages = estimatePages(content)
     const contentHasNumbers = hasNumericalData(content)
     const contentHasTable = hasTableStructure(content)
 
-    logger.info(
-      { agentConfigId, title, language, contentLength: content.length, keywordCount: globalKeywords.length },
-      'Starting document processing'
-    )
+    logger.info({ agentConfigId, title, language, contentLength: content.length }, 'Starting document processing')
 
     const chunks = await chunkText(content, 800, 200)
     const entries: KnowledgeBase[] = []
 
     await ensureKnowledgeCollection(agentConfigId)
 
-    logger.info({ agentConfigId, title, chunkCount: chunks.length }, 'Text chunked, generating embeddings')
+    logger.info({ agentConfigId, title, chunkCount: chunks.length }, 'Chunked — generating embeddings')
 
     for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i]!
-      const chunkTitle = `${title} - Parte ${i + 1}`
+      const chunkTitle = chunks.length === 1 ? title : `${title} - Parte ${i + 1}`
 
-      // Conteúdo contextualizado para melhor embedding
+      // Conteúdo contextualizado melhora a qualidade do embedding
       const contextualContent = `Document: ${title}\n\nPart ${i + 1}/${chunks.length}\n\n${chunk}`
 
       const chunkKeywords = extractKeywords(chunk)
       const allKeywords = [...new Set([...globalKeywords.slice(0, 10), ...chunkKeywords.slice(0, 5)])]
 
-      const metadata = {
-        ...additionalMetadata,
-        chunkIndex: i,
-        totalChunks: chunks.length,
-        chunkSize: chunk.length,
-        language,
-        keywords: allKeywords,
-        hasNumbers: contentHasNumbers,
-        hasTable: contentHasTable,
-        estimatedPages,
-        processedAt: new Date().toISOString()
-      }
-
-      // Salva no PostgreSQL
       const entry = await prisma.knowledge_base.create({
         data: {
           agent_config_id: agentConfigId,
@@ -168,38 +196,51 @@ export async function addKnowledgeChunks(
           file_size: fileSize || null,
           file_type: fileType || null,
           chunk_index: i,
-          metadata: metadata as any
+          metadata: {
+            ...additionalMetadata,
+            chunkIndex: i,
+            totalChunks: chunks.length,
+            chunkSize: chunk.length,
+            language,
+            keywords: allKeywords,
+            hasNumbers: contentHasNumbers,
+            hasTable: contentHasTable,
+            estimatedPages: pages,
+            processedAt: new Date().toISOString()
+          } as any
         }
       })
 
-      // Gera embedding do conteúdo contextualizado
       const embedding = await generateEmbedding(contextualContent)
 
-      // Payload completo no Qdrant — tudo que o RAG precisa está aqui
-      const payload: QdrantPayload = {
-        agent_config_id: agentConfigId,
+      const payload = buildPayload({
+        agentConfigId,
         title: chunkTitle,
         content: chunk,
-        content_type: contentType,
-        chunk_index: i,
-        total_chunks: chunks.length,
+        contentType,
+        chunkIndex: i,
+        totalChunks: chunks.length,
         language,
         keywords: allKeywords,
-        has_numbers: contentHasNumbers,
-        has_table: contentHasTable,
-        file_type: fileType || null,
-        file_size: fileSize || null,
-        created_at: entry.created_at.toISOString(),
-      }
+        hasNumbers: contentHasNumbers,
+        hasTable: contentHasTable,
+        estimatedPages: pages,
+        fileType: fileType,
+        fileSize: fileSize,
+        createdAt: entry.created_at.toISOString(),
+      })
 
       await qdrant.upsert(knowledgeCollectionName(agentConfigId), {
         wait: true,
-        points: [{ id: entry.id, vector: embedding, payload }]
+        points: [{
+          id: entry.id,
+          vector: { dense: embedding },   // vetor nomeado "dense"
+          payload,
+        }]
       })
 
       entries.push(entry as unknown as KnowledgeBase)
 
-      // Rate limiting OpenAI (500 req/min)
       if (i < chunks.length - 1) {
         await new Promise(resolve => setTimeout(resolve, 150))
       }
@@ -209,11 +250,7 @@ export async function addKnowledgeChunks(
       }
     }
 
-    logger.info(
-      { agentConfigId, title, chunkCount: chunks.length, language },
-      'Knowledge chunks added to Postgres + Qdrant'
-    )
-
+    logger.info({ agentConfigId, title, chunkCount: chunks.length, language }, 'Chunks saved to Postgres + Qdrant')
     return entries
   } catch (error) {
     logger.error({ error, agentConfigId, title }, 'Failed to add knowledge chunks')
@@ -240,36 +277,37 @@ export async function updateKnowledgeEntry(
     }
   })
 
-  // Se conteúdo ou título mudou, atualiza embedding e payload no Qdrant
   if (data.content !== undefined || data.title !== undefined) {
     try {
       const newContent = data.content ?? existing.content
       const newTitle = data.title ?? existing.title
       const language = detectLanguage(newContent)
       const keywords = extractKeywords(newContent)
+      const existingMeta = (existing.metadata as any) || {}
 
-      const newEmbedding = await generateEmbedding(newContent)
+      const embedding = await generateEmbedding(newContent)
       await ensureKnowledgeCollection(agentConfigId)
 
-      const payload: QdrantPayload = {
-        agent_config_id: agentConfigId,
+      const payload = buildPayload({
+        agentConfigId,
         title: newTitle,
         content: newContent,
-        content_type: (data.content_type ?? existing.content_type) as string,
-        chunk_index: existing.chunk_index ?? 0,
-        total_chunks: (existing.metadata as any)?.totalChunks ?? 1,
+        contentType: (data.content_type ?? existing.content_type) as string,
+        chunkIndex: existing.chunk_index ?? 0,
+        totalChunks: existingMeta.totalChunks ?? 1,
         language,
         keywords,
-        has_numbers: hasNumericalData(newContent),
-        has_table: hasTableStructure(newContent),
-        file_type: existing.file_type,
-        file_size: existing.file_size,
-        created_at: existing.created_at.toISOString(),
-      }
+        hasNumbers: hasNumericalData(newContent),
+        hasTable: hasTableStructure(newContent),
+        estimatedPages: estimatePages(newContent),
+        fileType: existing.file_type,
+        fileSize: existing.file_size,
+        createdAt: existing.created_at.toISOString(),
+      })
 
       await qdrant.upsert(knowledgeCollectionName(agentConfigId), {
         wait: true,
-        points: [{ id: entryId, vector: newEmbedding, payload }]
+        points: [{ id: entryId, vector: { dense: embedding }, payload }]
       })
     } catch (error) {
       logger.warn({ error, entryId }, 'Failed to update Qdrant on knowledge update')
@@ -296,7 +334,7 @@ export async function deleteKnowledgeEntry(
     })
   } catch (_) {}
 
-  logger.info({ entryId, agentConfigId }, 'Knowledge entry deleted from Postgres + Qdrant')
+  logger.info({ entryId, agentConfigId }, 'Knowledge entry deleted')
   return true
 }
 
@@ -307,13 +345,12 @@ export async function searchKnowledgeByEmbedding(
 ): Promise<Array<KnowledgeBase & { similarity: number }>> {
   try {
     const collectionName = knowledgeCollectionName(agentConfigId)
-
     const { collections } = await qdrant.getCollections()
     if (!collections.some(c => c.name === collectionName)) return []
 
-    // Busca com payload completo — sem necessidade de segundo lookup no Postgres
-    const searchResults = await qdrant.search(collectionName, {
-      vector: queryEmbedding,
+    const searchResults = await qdrant.query(collectionName, {
+      query: queryEmbedding,
+      using: 'dense',
       limit,
       with_payload: true,
       filter: {
@@ -321,9 +358,9 @@ export async function searchKnowledgeByEmbedding(
       }
     })
 
-    if (searchResults.length === 0) return []
+    if (!searchResults.points || searchResults.points.length === 0) return []
 
-    const results = searchResults.map(r => {
+    const results = searchResults.points.map(r => {
       const p = r.payload as unknown as QdrantPayload
       return {
         id: r.id as string,
@@ -331,31 +368,20 @@ export async function searchKnowledgeByEmbedding(
         title: p.title,
         content: p.content,
         content_type: p.content_type,
-        chunk_index: p.chunk_index,
-        file_type: p.file_type,
-        file_size: p.file_size,
-        metadata: {
-          language: p.language,
-          keywords: p.keywords,
-          hasNumbers: p.has_numbers,
-          hasTable: p.has_table,
-          totalChunks: p.total_chunks,
-        },
-        created_at: new Date(p.created_at),
-        updated_at: new Date(p.created_at),
+        chunk_index: p.metadata.chunkIndex,
+        file_type: p.metadata.fileType,
+        file_size: p.metadata.fileSize,
+        metadata: p.metadata,
+        created_at: new Date(p.metadata.createdAt),
+        updated_at: new Date(p.metadata.createdAt),
         similarity: r.score,
       }
     })
 
-    logger.debug(
-      { agentConfigId, resultCount: results.length, topSimilarity: results[0]?.similarity },
-      'Vector similarity search completed via Qdrant payload'
-    )
-
+    logger.debug({ agentConfigId, resultCount: results.length, topSimilarity: results[0]?.similarity }, 'RAG search done')
     return results as unknown as Array<KnowledgeBase & { similarity: number }>
   } catch (error) {
     logger.error({ error, agentConfigId }, 'Vector similarity search failed')
     throw error
   }
 }
-
