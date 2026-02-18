@@ -13,6 +13,46 @@ import type { KnowledgeBase } from '../types'
 
 const logger = createLogger('knowledge')
 
+// Gera vetor esparso compatível com o N8N "Build Dense + Sparse Vectors"
+// Usa o mesmo hash djb2 e vocabulário de 30k tokens
+function buildSparseVector(text: string): { indices: number[]; values: number[] } {
+  const stopwords = new Set([
+    'the','and','for','are','but','not','you','all','can','her','was','one','our',
+    'out','day','get','has','him','his','how','its','may','new','now','old','see',
+    'two','who','boy','did','man','men','put','say','she','too','use','way',
+    'com','que','uma','para','por','mas','seu','sua','não','como','mais','isso',
+    'esse','esta','pelo','pela','dos','das','nos','nas','este','qual','quando',
+    'entre','sobre','após','antes','onde'
+  ])
+
+  const words = text.toLowerCase()
+    .replace(/[^a-záéíóúãõàâêîôûçüñ\s]/g, ' ')
+    .split(/\s+/)
+    .filter(w => w.length > 2)
+    .filter(w => !stopwords.has(w))
+
+  const freq: Record<string, number> = {}
+  for (const w of words) {
+    freq[w] = (freq[w] || 0) + 1
+  }
+
+  // Agrupa colisões de hash somando valores
+  const combined: Record<number, number> = {}
+  for (const [word, count] of Object.entries(freq)) {
+    let hash = 0
+    for (let i = 0; i < word.length; i++) {
+      hash = ((hash << 5) - hash) + word.charCodeAt(i)
+      hash = hash & 0x7FFFFFFF
+    }
+    const idx = hash % 30000
+    combined[idx] = (combined[idx] || 0) + count / Math.max(words.length, 1)
+  }
+
+  const indices = Object.keys(combined).map(Number)
+  const values = indices.map(idx => combined[idx]!)
+  return { indices, values }
+}
+
 // Payload salvo no Qdrant — estrutura compatível com o N8N RAG workflow
 interface QdrantPayload {
   // Campos top-level (usados pelo N8N diretamente)
@@ -117,6 +157,7 @@ export async function addKnowledgeEntry(
 
     await ensureKnowledgeCollection(agentConfigId)
     const embedding = await generateEmbedding(data.content)
+    const sparse = buildSparseVector(data.content)
 
     const payload = buildPayload({
       agentConfigId,
@@ -139,7 +180,7 @@ export async function addKnowledgeEntry(
       wait: true,
       points: [{
         id: entry.id,
-        vector: { dense: embedding },   // vetor nomeado "dense" para o N8N
+        vector: { dense: embedding, sparse },
         payload,
       }]
     })
@@ -218,12 +259,12 @@ export async function addKnowledgeChunks(
     // 3. Batch generate all embeddings in a single OpenAI API call
     const embeddings = await generateEmbeddings(chunkData.map(d => d.contextualContent))
 
-    // 4. Batch upsert all points to Qdrant in a single request
+    // 4. Batch upsert all points to Qdrant in a single request (dense + sparse)
     await qdrant.upsert(knowledgeCollectionName(agentConfigId), {
       wait: true,
       points: dbEntries.map((entry: { id: string; created_at: Date }, i: number) => ({
         id: entry.id,
-        vector: { dense: embeddings[i]! },
+        vector: { dense: embeddings[i]!, sparse: buildSparseVector(chunkData[i]!.chunk) },
         payload: buildPayload({
           agentConfigId,
           title: chunkData[i]!.chunkTitle,
@@ -302,7 +343,7 @@ export async function updateKnowledgeEntry(
 
       await qdrant.upsert(knowledgeCollectionName(agentConfigId), {
         wait: true,
-        points: [{ id: entryId, vector: { dense: embedding }, payload }]
+        points: [{ id: entryId, vector: { dense: embedding, sparse: buildSparseVector(newContent) }, payload }]
       })
     } catch (error) {
       logger.warn({ error, entryId }, 'Failed to update Qdrant on knowledge update')

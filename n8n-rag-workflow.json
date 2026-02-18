@@ -1,0 +1,116 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "bea5b7ba-8c3e-4544-94e2-b3eb3ffbfd4d",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [-352, 336]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "model", "value": "text-embedding-3-small" },
+            { "name": "input", "value": "={{ $json.expandedMessage }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3e761044-5888-45d6-ac53-1db589b2b484",
+      "name": "Get Dense Embedding",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [288, 352],
+      "credentials": {
+        "openAiApi": { "id": "5t9QpVtTwdE9N6Qg", "name": "API GPT" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const embeddingData = $input.first().json;\nconst queryData = $('Extract & Expand Query1').first().json;\n\nconst denseVector = embeddingData.data[0].embedding;\n\n// Gera vetor esparso TF-IDF com hash djb2 — MESMO algoritmo do backend\n// vocabulário de 30k tokens, mesmas stopwords, mesmo hash\nconst words = queryData.expandedMessage.toLowerCase()\n  .replace(/[^a-záéíóúãõàâêîôûçüñ\\s]/g, ' ')\n  .split(/\\s+/)\n  .filter(w => w.length > 2);\n\nconst stopwords = new Set(['the','and','for','are','but','not','you','all','can','her','was','one','our','out','day','get','has','him','his','how','its','may','new','now','old','see','two','who','boy','did','man','men','put','say','she','too','use','way','com','que','uma','para','por','mas','seu','sua','não','como','mais','isso','esse','esta','pelo','pela','dos','das','nos','nas','este','qual','quando','entre','sobre','após','antes','onde']);\n\nconst filtered = words.filter(w => !stopwords.has(w));\n\nconst freq = {};\nfor (const w of filtered) {\n  freq[w] = (freq[w] || 0) + 1;\n}\n\n// Hash djb2 idêntico ao backend TypeScript\nconst combined = {};\nfor (const [word, count] of Object.entries(freq)) {\n  let hash = 0;\n  for (let i = 0; i < word.length; i++) {\n    hash = ((hash << 5) - hash) + word.charCodeAt(i);\n    hash = hash & 0x7FFFFFFF;\n  }\n  const idx = hash % 30000;\n  combined[idx] = (combined[idx] || 0) + count / Math.max(filtered.length, 1);\n}\n\nconst indices = Object.keys(combined).map(Number);\nconst values = indices.map(idx => combined[idx]);\n\nreturn [{\n  json: {\n    denseVector,\n    sparseVector: { indices, values },\n    originalMessage: queryData.originalMessage,\n    expandedMessage: queryData.expandedMessage,\n    agentId: queryData.agentId,\n    hasNumbers: queryData.hasNumbers,\n    detectedNumbers: queryData.detectedNumbers\n  }\n}];"
+      },
+      "id": "854cc83b-f175-40bb-b337-80953c1c42be",
+      "name": "Build Dense + Sparse Vectors",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [544, 352]
+    },
+    {
+      "parameters": {
+        "jsCode": "const qdrantBaseUrl = \"https://qdrant.numoraculo.com\";\nconst qdrantApiKey = \"o5qn4uN8GtdJjN1vuT69MEF6DPf8nZ\";\nconst collection = $('Select rows from a table').first().json.qdrant_collection;\n\nconst data = $input.first().json;\nconst { denseVector, sparseVector, agentId, originalMessage, expandedMessage, hasNumbers, detectedNumbers } = data;\n\n// Filtro por agentId\nconst filter = agentId ? {\n  must: [{ key: \"agent_config_id\", match: { value: agentId } }]\n} : undefined;\n\nlet response;\nlet searchMode = 'hybrid_rrf';\n\ntry {\n  // Busca híbrida real: dense + sparse com fusão RRF\n  const hybridBody = {\n    prefetch: [\n      {\n        query: denseVector,\n        using: \"dense\",\n        limit: 20,\n        ...(filter && { filter })\n      },\n      {\n        query: { indices: sparseVector.indices, values: sparseVector.values },\n        using: \"sparse\",\n        limit: 20,\n        ...(filter && { filter })\n      }\n    ],\n    query: { fusion: \"rrf\" },\n    limit: 8,\n    with_payload: true,\n    with_vector: false\n  };\n\n  response = await this.helpers.httpRequest({\n    method: 'POST',\n    url: `${qdrantBaseUrl}/collections/${collection}/points/query`,\n    headers: {\n      'Content-Type': 'application/json',\n      'api-key': qdrantApiKey\n    },\n    body: hybridBody,\n    json: true\n  });\n} catch (e) {\n  // Fallback: busca vetorial densa simples\n  console.log('⚠️ Hybrid falhou, usando dense simples:', e.message);\n  searchMode = 'dense_only';\n\n  const simpleBody = {\n    query: denseVector,\n    using: \"dense\",\n    limit: 8,\n    with_payload: true,\n    with_vector: false,\n    score_threshold: 0.35,\n    ...(filter && { filter })\n  };\n\n  response = await this.helpers.httpRequest({\n    method: 'POST',\n    url: `${qdrantBaseUrl}/collections/${collection}/points/query`,\n    headers: {\n      'Content-Type': 'application/json',\n      'api-key': qdrantApiKey\n    },\n    body: simpleBody,\n    json: true\n  });\n}\n\nconst points = response.result?.points || [];\n\nconsole.log(`\\n${'='.repeat(60)}`);\nconsole.log('🔍 BUSCA RAG QDRANT | Modo:', searchMode);\nconsole.log(`${'='.repeat(60)}`);\nconsole.log('📝 Query:', originalMessage);\nconsole.log('📊 Documentos encontrados:', points.length);\n\nif (points.length === 0) {\n  return [{\n    json: {\n      response: 'Não encontrei documentos relevantes na base de conhecimento para sua pergunta.',\n      similarity: 0,\n      docs_found: 0,\n      query: originalMessage\n    }\n  }];\n}\n\npoints.forEach((point, i) => {\n  const score = typeof point.score === 'number' ? (point.score * 100).toFixed(1) : 'N/A';\n  const title = point.payload?.title || point.payload?.metadata?.title || 'Sem título';\n  console.log(`\\n📄 Doc ${i + 1}: ${title} | Score: ${score}%`);\n  console.log(`   Preview: ${(point.payload?.content || '').substring(0, 120)}...`);\n});\n\nconst formattedDocs = points.map((point, i) => {\n  const score = typeof point.score === 'number' ? (point.score * 100).toFixed(1) : 'N/A';\n  const payload = point.payload || {};\n  const meta = payload.metadata || {};\n\n  let docText = `[Documento ${i+1} - Relevância: ${score}%]\\n`;\n  docText += `Título: ${payload.title || meta.title || 'Sem título'}\\n`;\n\n  if (typeof meta.chunkIndex !== 'undefined' && typeof meta.totalChunks !== 'undefined') {\n    docText += `Parte: ${meta.chunkIndex + 1} de ${meta.totalChunks}\\n`;\n  }\n  if (meta.keywords?.length > 0) {\n    docText += `Keywords: ${meta.keywords.join(', ')}\\n`;\n  }\n\n  docText += `\\nConteúdo:\\n${payload.content || 'Sem conteúdo'}`;\n  return docText;\n}).join('\\n\\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\\n\\n');\n\nconst bestScore = typeof points[0].score === 'number' ? points[0].score * 100 : 0;\n\nreturn [{\n  json: {\n    response: formattedDocs,\n    similarity: bestScore,\n    docs_found: points.length,\n    query: originalMessage,\n    expanded_query: expandedMessage,\n    debug: {\n      searchMode,\n      hasNumbers,\n      detectedNumbers,\n      docs: points.map(p => ({\n        title: p.payload?.title || 'Sem título',\n        score: typeof p.score === 'number' ? (p.score * 100).toFixed(1) : 'N/A'\n      }))\n    }\n  }\n}];"
+      },
+      "id": "fbfdd5f5-d112-4299-9107-97a61fdd6f80",
+      "name": "Qdrant Hybrid Search + RRF",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [816, 352]
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst query = input.query || input.message || input.input || String(input);\nconst agentId = input.agentId || null;\n\n// EXPANSÃO DE QUERY COM SINÔNIMOS PT->EN\nconst expansions = {\n  'espaço': 'space distance area required',\n  'dimensão': 'dimension size measurement',\n  'dimensões': 'dimensions size measurements',\n  'tamanho': 'size dimension',\n  'distância': 'distance spacing required',\n  'instalação': 'installation setup required space',\n  'espaço necessário': 'required space distance needed',\n  'medidas': 'measurements dimensions size',\n  'treinar': 'training workout exercise',\n  'equipamento': 'equipment device station',\n  'aparelho': 'device equipment station',\n  'funciona': 'works functions operates',\n  'como usar': 'how to use operation',\n  'preço': 'price cost pricing',\n  'características': 'features characteristics specifications'\n};\n\nlet expandedQuery = query;\nconst lowerQuery = query.toLowerCase();\nfor (const [pt, en] of Object.entries(expansions)) {\n  if (lowerQuery.includes(pt)) expandedQuery += ' ' + en;\n}\n\nconst numbers = query.match(/\\d+[.,]\\d+/g);\nif (numbers) expandedQuery += ' ' + numbers.join(' ');\n\nconsole.log('📝 Query original:', query);\nconsole.log('📝 Query expandida:', expandedQuery);\n\nreturn [{\n  json: {\n    originalMessage: query,\n    expandedMessage: expandedQuery,\n    agentId,\n    hasNumbers: !!numbers,\n    detectedNumbers: numbers || []\n  }\n}];"
+      },
+      "id": "d53af068-28ba-47d1-a0cd-e679743eb1f8",
+      "name": "Extract & Expand Query1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [32, 352]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": { "__rl": true, "mode": "list", "value": "public" },
+        "table": {
+          "__rl": true,
+          "value": "agent_configs",
+          "mode": "list",
+          "cachedResultName": "agent_configs"
+        },
+        "where": {
+          "values": [{ "column": "id", "value": "={{ $json.agentId }}" }]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [-192, 336],
+      "id": "dd32872f-6838-45a2-a15c-4b2433807150",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": { "id": "UScfa8J9erjcb5Ei", "name": "Agentes IA - Sistema" }
+      }
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [[{ "node": "Select rows from a table", "type": "main", "index": 0 }]]
+    },
+    "Get Dense Embedding": {
+      "main": [[{ "node": "Build Dense + Sparse Vectors", "type": "main", "index": 0 }]]
+    },
+    "Build Dense + Sparse Vectors": {
+      "main": [[{ "node": "Qdrant Hybrid Search + RRF", "type": "main", "index": 0 }]]
+    },
+    "Extract & Expand Query1": {
+      "main": [[{ "node": "Get Dense Embedding", "type": "main", "index": 0 }]]
+    },
+    "Select rows from a table": {
+      "main": [[{ "node": "Extract & Expand Query1", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {
+    "Execute Workflow Trigger": [
+      { "query": "peso da maquina da pixformance", "agentId": "769f8f49-a42d-4213-ab58-0facf60b0e60" }
+    ]
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "da60d6f5bca630f373dacb5466f2723711001a9a30279b634390c64b7b3dcb41"
+  }
+}
