@@ -1,0 +1,300 @@
+<script setup lang="ts">
+const props = defineProps<{
+  agentId: string
+}>()
+
+const { getKnowledge, addKnowledge, updateKnowledge, deleteKnowledge, uploadDocument } = useAgent()
+const toast = useToast()
+const { can } = usePermissions()
+
+interface KnowledgeEntry {
+  id: string
+  title: string
+  content: string
+  content_type: string
+  created_at: string
+}
+
+const entries = ref<KnowledgeEntry[]>([])
+const loading = ref(false)
+const uploading = ref(false)
+const showForm = ref(false)
+const editingEntry = ref<KnowledgeEntry | null>(null)
+const selectedFile = ref<File | null>(null)
+
+const form = reactive({
+  title: '',
+  content: '',
+  content_type: 'text'
+})
+
+const contentTypeOptions = [
+  { label: 'Text', value: 'text' },
+  { label: 'FAQ', value: 'faq' },
+  { label: 'Document', value: 'document' }
+]
+
+const contentTypeBadgeColor: Record<string, 'primary' | 'success' | 'warning'> = {
+  text: 'primary',
+  faq: 'success',
+  document: 'warning'
+}
+
+const isDocumentType = computed(() => form.content_type === 'document')
+
+async function fetchEntries() {
+  loading.value = true
+  try {
+    const res = await getKnowledge(props.agentId) as { data: KnowledgeEntry[] }
+    entries.value = res.data
+  } catch {
+    toast.add({ title: 'Failed to load knowledge base', color: 'error' })
+  } finally {
+    loading.value = false
+  }
+}
+
+function openAddForm() {
+  editingEntry.value = null
+  form.title = ''
+  form.content = ''
+  form.content_type = 'text'
+  selectedFile.value = null
+  showForm.value = true
+}
+
+function openEditForm(entry: KnowledgeEntry) {
+  if (entry.content_type === 'document') {
+    toast.add({ title: 'Document entries cannot be edited. Delete and re-upload instead.', color: 'warning' })
+    return
+  }
+  editingEntry.value = entry
+  form.title = entry.title
+  form.content = entry.content
+  form.content_type = entry.content_type
+  showForm.value = true
+}
+
+function cancelForm() {
+  showForm.value = false
+  editingEntry.value = null
+  selectedFile.value = null
+}
+
+function handleFileChange(event: Event) {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) {
+    selectedFile.value = file
+    if (!form.title) {
+      form.title = file.name
+    }
+  }
+}
+
+async function submitForm() {
+  // Document upload
+  if (form.content_type === 'document' && !editingEntry.value) {
+    if (!selectedFile.value) {
+      toast.add({ title: 'Please select a file', color: 'error' })
+      return
+    }
+
+    uploading.value = true
+    try {
+      await uploadDocument(props.agentId, selectedFile.value)
+      toast.add({ title: 'Document uploaded', color: 'success' })
+      showForm.value = false
+      selectedFile.value = null
+      await fetchEntries()
+    } catch (error) {
+      const err = error as { data?: { statusMessage?: string } }
+      toast.add({ title: err.data?.statusMessage || 'Failed to upload document', color: 'error' })
+    } finally {
+      uploading.value = false
+    }
+    return
+  }
+
+  // Text/FAQ entry
+  if (!form.title || !form.content) return
+
+  try {
+    if (editingEntry.value) {
+      await updateKnowledge(props.agentId, editingEntry.value.id, { ...form })
+      toast.add({ title: 'Entry updated', color: 'success' })
+    } else {
+      await addKnowledge(props.agentId, { ...form })
+      toast.add({ title: 'Entry added', color: 'success' })
+    }
+    showForm.value = false
+    editingEntry.value = null
+    await fetchEntries()
+  } catch {
+    toast.add({ title: 'Failed to save entry', color: 'error' })
+  }
+}
+
+async function removeEntry(entry: KnowledgeEntry) {
+  try {
+    await deleteKnowledge(props.agentId, entry.id)
+    toast.add({ title: 'Entry removed', color: 'success' })
+    await fetchEntries()
+  } catch {
+    toast.add({ title: 'Failed to remove entry', color: 'error' })
+  }
+}
+
+watch(() => props.agentId, () => fetchEntries(), { immediate: true })
+</script>
+
+<template>
+  <div class="space-y-4">
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-medium">
+        Knowledge Base
+      </h3>
+      <UButton
+        v-if="can('knowledge.create')"
+        icon="i-heroicons-plus"
+        size="sm"
+        @click="openAddForm"
+      >
+        Add Entry
+      </UButton>
+    </div>
+
+    <!-- Add/Edit Form -->
+    <UCard v-if="showForm">
+      <div class="space-y-4">
+        <UFormField label="Type">
+          <USelect
+            v-model="form.content_type"
+            :items="contentTypeOptions"
+            :disabled="!!editingEntry"
+          />
+        </UFormField>
+
+        <UFormField
+          v-if="isDocumentType && !editingEntry"
+          label="Document File"
+          description="Upload .txt, .csv, .pdf, .docx, or .xlsx (max 10MB). Large documents will be chunked automatically."
+        >
+          <input
+            type="file"
+            accept=".txt,.csv,.pdf,.docx,.xlsx,text/plain,text/csv,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            class="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
+            @change="handleFileChange"
+          >
+        </UFormField>
+
+        <UFormField
+          v-if="isDocumentType && selectedFile"
+          label="Document Title"
+        >
+          <UInput
+            v-model="form.title"
+            placeholder="Enter a title for this document"
+          />
+        </UFormField>
+
+        <template v-if="!isDocumentType">
+          <UFormField label="Title">
+            <UInput
+              v-model="form.title"
+              placeholder="Entry title"
+            />
+          </UFormField>
+
+          <UFormField label="Content">
+            <UTextarea
+              v-model="form.content"
+              :rows="8"
+              placeholder="Enter the knowledge content..."
+            />
+          </UFormField>
+        </template>
+
+        <div class="flex gap-2 justify-end">
+          <UButton
+            variant="ghost"
+            color="neutral"
+            @click="cancelForm"
+          >
+            Cancel
+          </UButton>
+          <UButton
+            :disabled="isDocumentType ? !selectedFile : (!form.title || !form.content)"
+            :loading="uploading"
+            @click="submitForm"
+          >
+            {{ editingEntry ? 'Update' : (isDocumentType ? 'Upload' : 'Add') }}
+          </UButton>
+        </div>
+      </div>
+    </UCard>
+
+    <!-- Loading -->
+    <div
+      v-if="loading"
+      class="text-center py-8 text-muted"
+    >
+      Loading...
+    </div>
+
+    <!-- Empty state -->
+    <div
+      v-else-if="entries.length === 0 && !showForm"
+      class="text-center py-8 text-muted"
+    >
+      No knowledge entries yet. Add training content for this agent.
+    </div>
+
+    <!-- Entries list -->
+    <div
+      v-else
+      class="space-y-3"
+    >
+      <UCard
+        v-for="entry in entries"
+        :key="entry.id"
+      >
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="font-medium">{{ entry.title }}</span>
+              <UBadge
+                :color="contentTypeBadgeColor[entry.content_type] || 'primary'"
+                variant="subtle"
+                size="xs"
+              >
+                {{ entry.content_type }}
+              </UBadge>
+            </div>
+            <p class="text-sm text-muted truncate">
+              {{ entry.content.slice(0, 200) }}{{ entry.content.length > 200 ? '...' : '' }}
+            </p>
+          </div>
+          <div class="flex gap-1 shrink-0">
+            <UButton
+              v-if="can('knowledge.update') && entry.content_type !== 'document'"
+              icon="i-heroicons-pencil-square"
+              variant="ghost"
+              size="xs"
+              color="neutral"
+              @click="openEditForm(entry)"
+            />
+            <UButton
+              v-if="can('knowledge.delete')"
+              icon="i-heroicons-trash"
+              variant="ghost"
+              size="xs"
+              color="error"
+              @click="removeEntry(entry)"
+            />
+          </div>
+        </div>
+      </UCard>
+    </div>
+  </div>
+</template>

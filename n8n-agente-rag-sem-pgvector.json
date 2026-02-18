@@ -1,0 +1,180 @@
+{
+  "name": "Agente RAG - Sem PGVector",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "0c9f146b-acb4-4a57-8430-5e61e8456eb7",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        500,
+        400
+      ],
+      "webhookId": "ee3befd7-0fe1-4a61-a3ce-27bbf8ee81e7"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://agentes.agenciacomo.com.br/api/knowledge/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "agent_config_id",
+              "value": "ed903496-29c2-4c2d-8abb-d291de57fb13"
+            },
+            {
+              "name": "query",
+              "value": "={{ $json.chatInput }}"
+            },
+            {
+              "name": "limit",
+              "value": 3
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-buscar-conhecimento",
+      "name": "Buscar Conhecimento API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Processar resultados da busca e preparar contexto\nconst chatInput = $('When chat message received').first().json.chatInput;\nconst searchResults = $input.first().json.data || [];\n\n// Criar contexto com os documentos encontrados\nlet context = '';\nif (searchResults.length > 0) {\n  context = searchResults\n    .map((doc, index) => `[Documento ${index + 1}]\\nTítulo: ${doc.title}\\nConteúdo: ${doc.content}\\nRelevância: ${doc.similarity}`)\n    .join('\\n\\n---\\n\\n');\n} else {\n  context = 'Nenhum documento encontrado na base de conhecimento.';\n}\n\nreturn [{\n  json: {\n    chatInput: chatInput,\n    context: context,\n    documentsFound: searchResults.length\n  }\n}];"
+      },
+      "id": "preparar-contexto",
+      "name": "Preparar Contexto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        940,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "openai-model",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        280
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "5t9QpVtTwdE9N6Qg",
+          "name": "API GPT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=Você é um assistente virtual especializado. Sua função é responder perguntas APENAS com base no contexto fornecido abaixo.\n\nREGRAS IMPORTANTES:\n1. Use SOMENTE informações do contexto para responder\n2. Se não houver informação relevante no contexto, diga: \"Não encontrei informações sobre isso na base de conhecimento\"\n3. Não invente informações\n4. Seja claro e direto nas respostas\n5. Cite o documento de origem quando relevante\n\n---\nCONTEXTO DA BASE DE CONHECIMENTO:\n{{ $json.context }}\n---\n\nAgora responda à pergunta do usuário."
+        }
+      },
+      "id": "agente-rag",
+      "name": "Agente RAG",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        1160,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Agente RAG sem PGVector\n\nEste workflow usa a API de busca ao invés de PGVector.\n\n**Como funciona:**\n1. Recebe mensagem do chat\n2. Busca documentos relevantes via API\n3. Prepara contexto com os resultados\n4. Envia para o ChatGPT responder\n\n**Configuração:**\n- Altere o agent_config_id no node \"Buscar Conhecimento API\" para o ID do seu agente",
+        "height": 340,
+        "width": 380,
+        "color": 4
+      },
+      "id": "sticky-note",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        380,
+        180
+      ]
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Buscar Conhecimento API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Conhecimento API": {
+      "main": [
+        [
+          {
+            "node": "Preparar Contexto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Contexto": {
+      "main": [
+        [
+          {
+            "node": "Agente RAG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente RAG",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-02-11T01:30:00.000Z",
+  "versionId": "1"
+}

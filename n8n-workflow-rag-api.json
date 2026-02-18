@@ -1,0 +1,103 @@
+{
+  "name": "Agente RAG - API (sem PGVector)",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "when-chat-received",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [100, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://agentes.agenciacomo.com.br/api/knowledge/search",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"agent_config_id\": \"{{ $json.agentConfigId }}\",\n  \"query\": \"{{ $json.chatInput }}\",\n  \"limit\": 3\n}",
+        "options": {}
+      },
+      "id": "buscar-conhecimento",
+      "name": "Buscar Conhecimento",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [300, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Formatar resultados da busca de conhecimento\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  if (item.json.data && Array.isArray(item.json.data)) {\n    const documents = item.json.data.map(doc => ({\n      content: doc.content,\n      title: doc.title,\n      similarity: doc.similarity\n    }));\n    \n    results.push({\n      json: {\n        documents,\n        context: documents.map(d => d.content).join('\\n\\n'),\n        chatInput: item.json.chatInput || $('When chat message received').first().json.chatInput\n      }\n    });\n  }\n}\n\nreturn results;"
+      },
+      "id": "formatar-contexto",
+      "name": "Formatar Contexto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "openai-chat",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [700, 200],
+      "credentials": {
+        "openAiApi": {
+          "id": "5t9QpVtTwdE9N6Qg",
+          "name": "API GPT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=Você é um assistente útil. Use APENAS as informações do contexto abaixo para responder. Se não houver informação relevante no contexto, diga que não tem informação suficiente.\\n\\nContexto:\\n{{ $json.context }}"
+        }
+      },
+      "id": "agent-responder",
+      "name": "Agent Responder",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [700, 300]
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [[{
+        "node": "Buscar Conhecimento",
+        "type": "main",
+        "index": 0
+      }]]
+    },
+    "Buscar Conhecimento": {
+      "main": [[{
+        "node": "Formatar Contexto",
+        "type": "main",
+        "index": 0
+      }]]
+    },
+    "Formatar Contexto": {
+      "main": [[{
+        "node": "Agent Responder",
+        "type": "main",
+        "index": 0
+      }]]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [[{
+        "node": "Agent Responder",
+        "type": "ai_languageModel",
+        "index": 0
+      }]]
+    }
+  },
+  "pinData": {}
+}

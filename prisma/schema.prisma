@@ -1,0 +1,422 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../app/generated/prisma"
+  previewFeatures = ["partialIndexes"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model admin_users {
+  id                String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email             String   @unique @db.VarChar(255)
+  password_hash     String   @db.VarChar(255)
+  client_id         String   @db.Uuid
+  name              String   @default("") @db.VarChar(255)
+  created_at        DateTime @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime @default(now()) @db.Timestamptz(6)
+  migrated_to_users Boolean? @default(false)
+  clients           clients  @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([client_id], map: "idx_admin_users_client_id")
+}
+
+model agent_configs {
+  id                       String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  client_id                String           @db.Uuid
+  name                     String           @default("Default Agent") @db.VarChar(255)
+  system_prompt            String           @default("")
+  personality              String           @default("professional") @db.VarChar(100)
+  tone                     String           @default("friendly") @db.VarChar(100)
+  language                 String           @default("pt-BR") @db.VarChar(10)
+  model                    String           @default("claude-sonnet-4-5-20250929") @db.VarChar(100)
+  temperature              Decimal          @default(0.7) @db.Decimal(3, 2)
+  max_tokens               Int              @default(1024)
+  is_active                Boolean          @default(true)
+  created_at               DateTime         @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime         @default(now()) @db.Timestamptz(6)
+  whatsapp_instance_name   String?          @db.VarChar(255)
+  whatsapp_instance_status String           @default("disconnected") @db.VarChar(50)
+  whatsapp_number          String?          @db.VarChar(50)
+  widget_config            Json             @default("{}")
+  company_id               String?          @db.Uuid
+  clients                  clients          @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  companies                companies?       @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  conversations            conversations[]
+  knowledge_base           knowledge_base[]
+
+  @@index([client_id, is_active], map: "idx_agent_configs_client_active", where: raw("(is_active = true)"))
+  @@index([client_id], map: "idx_agent_configs_client_id")
+  @@index([company_id], map: "idx_agent_configs_company_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model audit_logs {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company_id    String    @db.Uuid
+  user_id       String?   @db.Uuid
+  action        String    @db.VarChar(100)
+  resource_type String    @db.VarChar(50)
+  resource_id   String?   @db.Uuid
+  changes       Json?
+  ip_address    String?   @db.Inet
+  user_agent    String?
+  request_id    String?   @db.VarChar(100)
+  status        String?   @default("success") @db.VarChar(20)
+  error_message String?
+  metadata      Json?     @default("{}")
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  companies     companies @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users         users?    @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+
+  @@index([action, created_at(sort: Desc)], map: "idx_audit_logs_action_created_at")
+  @@index([company_id, created_at(sort: Desc)], map: "idx_audit_logs_company_id_created_at")
+  @@index([created_at(sort: Desc)], map: "idx_audit_logs_created_at")
+  @@index([resource_type, resource_id], map: "idx_audit_logs_resource_type_id")
+  @@index([status], map: "idx_audit_logs_status", where: raw("((status)::text <> 'success'::text)"))
+  @@index([user_id, created_at(sort: Desc)], map: "idx_audit_logs_user_id_created_at", where: raw("(user_id IS NOT NULL)"))
+}
+
+model chat_messages {
+  id           BigInt    @id @default(autoincrement())
+  created_at   DateTime? @db.Timestamptz(6)
+  phone        String?
+  nomewpp      String?
+  bot_message  String?
+  user_message String?
+  message_type String?
+  active       Boolean?  @default(true)
+  clientid     String?   @db.Uuid
+  agentid      String?   @db.Uuid
+
+  @@index([agentid], map: "idx_chat_messages_agentid")
+  @@index([clientid], map: "idx_chat_messages_clientid")
+  @@index([phone], map: "idx_chat_messages_phone")
+}
+
+model clients {
+  id            String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name          String          @db.VarChar(255)
+  slug          String          @unique @db.VarChar(100)
+  api_key       String          @unique @db.VarChar(64)
+  created_at    DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime        @default(now()) @db.Timestamptz(6)
+  admin_users   admin_users[]
+  agent_configs agent_configs[]
+  companies     companies[]
+  conversations conversations[]
+  end_users     end_users[]
+
+  @@index([api_key], map: "idx_clients_api_key")
+  @@index([slug], map: "idx_clients_slug")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model companies {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  client_id     String          @db.Uuid
+  name          String          @db.VarChar(255)
+  slug          String          @db.VarChar(100)
+  logo_url      String?
+  settings      Json?           @default("{}")
+  status        String?         @default("active") @db.VarChar(20)
+  deleted_at    DateTime?       @db.Timestamptz(6)
+  created_at    DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime?       @default(now()) @db.Timestamptz(6)
+  agent_configs agent_configs[]
+  audit_logs    audit_logs[]
+  clients       clients         @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  conversations conversations[]
+  roles         roles[]
+  subscriptions subscriptions?
+  usage_logs    usage_logs[]
+  users         users[]
+
+  @@unique([client_id, slug], map: "unique_company_slug_per_client")
+  @@index([client_id], map: "idx_companies_client_id", where: raw("(deleted_at IS NULL)"))
+  @@index([created_at(sort: Desc)], map: "idx_companies_created_at")
+  @@index([slug], map: "idx_companies_slug", where: raw("(deleted_at IS NULL)"))
+  @@index([status], map: "idx_companies_status", where: raw("(deleted_at IS NULL)"))
+}
+
+model conversations {
+  id              String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  client_id       String        @db.Uuid
+  agent_config_id String        @db.Uuid
+  user_id         String        @db.Uuid
+  status          String        @default("active") @db.VarChar(20)
+  created_at      DateTime      @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime      @default(now()) @db.Timestamptz(6)
+  company_id      String?       @db.Uuid
+  agent_configs   agent_configs @relation(fields: [agent_config_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  clients         clients       @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  companies       companies?    @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  end_users       end_users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  messages        messages[]
+
+  @@index([agent_config_id], map: "idx_conversations_agent_config_id")
+  @@index([client_id], map: "idx_conversations_client_id")
+  @@index([client_id, status], map: "idx_conversations_client_status_active", where: raw("((status)::text = 'active'::text)"))
+  @@index([company_id], map: "idx_conversations_company_id")
+  @@index([client_id, status], map: "idx_conversations_status")
+  @@index([user_id], map: "idx_conversations_user_id")
+}
+
+model dados_cliente {
+  id             BigInt    @id @default(autoincrement())
+  created_at     DateTime? @db.Timestamptz(6)
+  telefone       String?
+  nomewpp        String?
+  atendimento_ia String?
+  setor          String?
+  clientid       String?   @db.Uuid
+  agentid        String?   @db.Uuid
+
+  @@index([agentid], map: "idx_dados_cliente_agentid")
+  @@index([clientid], map: "idx_dados_cliente_clientid")
+  @@index([telefone], map: "idx_dados_cliente_telefone")
+}
+
+model end_users {
+  id            String          @id(map: "users_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  client_id     String          @db.Uuid
+  external_id   String          @db.VarChar(255)
+  name          String?         @db.VarChar(255)
+  phone         String?         @db.VarChar(50)
+  email         String?         @db.VarChar(255)
+  channel       String          @default("web") @db.VarChar(50)
+  created_at    DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime        @default(now()) @db.Timestamptz(6)
+  conversations conversations[]
+  clients       clients         @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "users_client_id_fkey")
+
+  @@unique([client_id, external_id], map: "users_client_id_external_id_key")
+  @@index([client_id], map: "idx_users_client_id")
+  @@index([client_id, external_id], map: "idx_users_external_id")
+}
+
+/// Embeddings are stored in Qdrant. The UUID here is used as the Qdrant point ID.
+model knowledge_base {
+  id              String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  agent_config_id String        @db.Uuid
+  title           String        @db.VarChar(500)
+  content         String
+  content_type    String        @default("text") @db.VarChar(50)
+  metadata        Json          @default("{}")
+  created_at      DateTime      @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime      @default(now()) @db.Timestamptz(6)
+  file_size       Int?
+  file_type       String?       @db.VarChar(100)
+  chunk_index     Int?          @default(0)
+  agent_configs   agent_configs @relation(fields: [agent_config_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([agent_config_id, chunk_index], map: "idx_knowledge_base_agent_chunk")
+  @@index([agent_config_id], map: "idx_knowledge_base_agent_config_id")
+  @@index([metadata], map: "idx_knowledge_metadata_gin", type: Gin)
+}
+
+model messages {
+  id              String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  conversation_id String        @db.Uuid
+  role            String        @db.VarChar(20)
+  content         String
+  metadata        Json          @default("{}")
+  created_at      DateTime      @default(now()) @db.Timestamptz(6)
+  conversations   conversations @relation(fields: [conversation_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([conversation_id, created_at(sort: Desc)], map: "idx_messages_conversation_created_desc")
+  @@index([conversation_id], map: "idx_messages_conversation_id")
+  @@index([conversation_id, created_at], map: "idx_messages_created_at")
+}
+
+model migrations {
+  id          Int       @id @default(autoincrement())
+  filename    String    @unique @db.VarChar(255)
+  executed_at DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model n8n_chat_histories {
+  id         Int     @id @default(autoincrement())
+  session_id String? @db.VarChar
+  message    Json?
+  clientid   String? @db.Uuid
+  agentid    String? @db.Uuid
+
+  @@index([agentid], map: "idx_n8n_chat_histories_agentid")
+  @@index([clientid], map: "idx_n8n_chat_histories_clientid")
+  @@index([session_id], map: "idx_n8n_chat_histories_session_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model permissions {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug             String             @unique @db.VarChar(100)
+  name             String             @db.VarChar(255)
+  description      String?
+  resource         String             @db.VarChar(50)
+  action           String             @db.VarChar(50)
+  created_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  role_permissions role_permissions[]
+
+  @@index([resource], map: "idx_permissions_resource")
+  @@index([slug], map: "idx_permissions_slug")
+}
+
+model role_permissions {
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role_id       String      @db.Uuid
+  permission_id String      @db.Uuid
+  created_at    DateTime?   @default(now()) @db.Timestamptz(6)
+  permissions   permissions @relation(fields: [permission_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  roles         roles       @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([role_id, permission_id], map: "unique_role_permission")
+  @@index([permission_id], map: "idx_role_permissions_permission_id")
+  @@index([role_id], map: "idx_role_permissions_role_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model roles {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company_id       String?            @db.Uuid
+  name             String             @db.VarChar(100)
+  slug             String             @db.VarChar(100)
+  description      String?
+  is_system        Boolean?           @default(false)
+  deleted_at       DateTime?          @db.Timestamptz(6)
+  created_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  role_permissions role_permissions[]
+  companies        companies?         @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user_roles       user_roles[]
+
+  @@unique([company_id, slug], map: "unique_role_slug_per_company")
+  @@index([company_id], map: "idx_roles_company_id", where: raw("((deleted_at IS NULL) AND (is_system = false))"))
+  @@index([is_system], map: "idx_roles_is_system", where: raw("(is_system = true)"))
+  @@index([slug], map: "idx_roles_slug", where: raw("(deleted_at IS NULL)"))
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model subscription_plans {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug          String          @unique @db.VarChar(50)
+  name          String          @db.VarChar(100)
+  description   String?
+  price_monthly Decimal         @default(0) @db.Decimal(10, 2)
+  price_yearly  Decimal         @default(0) @db.Decimal(10, 2)
+  limits        Json?           @default("{}")
+  features      Json?           @default("[]")
+  is_active     Boolean?        @default(true)
+  is_visible    Boolean?        @default(true)
+  created_at    DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime?       @default(now()) @db.Timestamptz(6)
+  subscriptions subscriptions[]
+
+  @@index([is_active], map: "idx_subscription_plans_is_active")
+  @@index([slug], map: "idx_subscription_plans_slug")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model subscriptions {
+  id                   String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company_id           String             @unique @db.Uuid
+  plan_id              String             @db.Uuid
+  status               String?            @default("active") @db.VarChar(20)
+  billing_period       String?            @default("monthly") @db.VarChar(20)
+  trial_ends_at        DateTime?          @db.Timestamptz(6)
+  trial_used           Boolean?           @default(false)
+  current_period_start DateTime?          @default(now()) @db.Timestamptz(6)
+  current_period_end   DateTime?          @db.Timestamptz(6)
+  cancelled_at         DateTime?          @db.Timestamptz(6)
+  expires_at           DateTime?          @db.Timestamptz(6)
+  last_payment_at      DateTime?          @db.Timestamptz(6)
+  next_payment_at      DateTime?          @db.Timestamptz(6)
+  usage_current_period Json?              @default("{}")
+  metadata             Json?              @default("{}")
+  created_at           DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?          @default(now()) @db.Timestamptz(6)
+  companies            companies          @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  subscription_plans   subscription_plans @relation(fields: [plan_id], references: [id], onUpdate: NoAction)
+
+  @@index([company_id], map: "idx_subscriptions_company_id")
+  @@index([expires_at], map: "idx_subscriptions_expires_at", where: raw("(expires_at IS NOT NULL)"))
+  @@index([plan_id], map: "idx_subscriptions_plan_id")
+  @@index([status], map: "idx_subscriptions_status")
+  @@index([trial_ends_at], map: "idx_subscriptions_trial_ends_at", where: raw("(trial_ends_at IS NOT NULL)"))
+}
+
+model usage_logs {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company_id    String    @db.Uuid
+  user_id       String?   @db.Uuid
+  event_type    String    @db.VarChar(50)
+  resource_type String?   @db.VarChar(50)
+  resource_id   String?   @db.Uuid
+  quantity      Int?      @default(1)
+  duration_ms   Int?
+  tokens_used   Int?
+  metadata      Json?     @default("{}")
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  companies     companies @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users         users?    @relation(fields: [user_id], references: [id], onUpdate: NoAction)
+
+  @@index([company_id, created_at(sort: Desc)], map: "idx_usage_logs_company_id_created_at")
+  @@index([created_at(sort: Desc)], map: "idx_usage_logs_created_at")
+  @@index([event_type, created_at(sort: Desc)], map: "idx_usage_logs_event_type_created_at")
+  @@index([resource_type, resource_id], map: "idx_usage_logs_resource_type_id")
+  @@index([user_id, created_at(sort: Desc)], map: "idx_usage_logs_user_id_created_at", where: raw("(user_id IS NOT NULL)"))
+}
+
+model user_roles {
+  id                                          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id                                     String    @db.Uuid
+  role_id                                     String    @db.Uuid
+  assigned_by_user_id                         String?   @db.Uuid
+  assigned_at                                 DateTime? @default(now()) @db.Timestamptz(6)
+  created_at                                  DateTime? @default(now()) @db.Timestamptz(6)
+  users_user_roles_assigned_by_user_idTousers users?    @relation("user_roles_assigned_by_user_idTousers", fields: [assigned_by_user_id], references: [id], onUpdate: NoAction)
+  roles                                       roles     @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_user_roles_user_idTousers             users     @relation("user_roles_user_idTousers", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, role_id], map: "unique_user_role")
+  @@index([user_id], map: "idx_user_permissions_view_user_id")
+  @@index([role_id], map: "idx_user_roles_role_id")
+  @@index([user_id], map: "idx_user_roles_user_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model users {
+  id                                               String       @id(map: "users_pkey1") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company_id                                       String       @db.Uuid
+  email                                            String       @db.VarChar(255)
+  name                                             String?      @db.VarChar(255)
+  password_hash                                    String
+  avatar_url                                       String?
+  invitation_token                                 String?      @unique @db.VarChar(64)
+  invitation_sent_at                               DateTime?    @db.Timestamptz(6)
+  invitation_accepted_at                           DateTime?    @db.Timestamptz(6)
+  invited_by_user_id                               String?      @db.Uuid
+  status                                           String?      @default("active") @db.VarChar(20)
+  preferences                                      Json?        @default("{}")
+  last_login_at                                    DateTime?    @db.Timestamptz(6)
+  last_active_at                                   DateTime?    @db.Timestamptz(6)
+  deleted_at                                       DateTime?    @db.Timestamptz(6)
+  created_at                                       DateTime?    @default(now()) @db.Timestamptz(6)
+  updated_at                                       DateTime?    @default(now()) @db.Timestamptz(6)
+  audit_logs                                       audit_logs[]
+  usage_logs                                       usage_logs[]
+  user_roles_user_roles_assigned_by_user_idTousers user_roles[] @relation("user_roles_assigned_by_user_idTousers")
+  user_roles_user_roles_user_idTousers             user_roles[] @relation("user_roles_user_idTousers")
+  companies                                        companies    @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users                                            users?       @relation("usersTousers", fields: [invited_by_user_id], references: [id], onUpdate: NoAction)
+  other_users                                      users[]      @relation("usersTousers")
+
+  @@unique([company_id, email], map: "unique_user_email_per_company")
+  @@index([company_id], map: "idx_users_company_id", where: raw("(deleted_at IS NULL)"))
+  @@index([created_at(sort: Desc)], map: "idx_users_created_at")
+  @@index([email], map: "idx_users_email", where: raw("(deleted_at IS NULL)"))
+  @@index([invitation_token], map: "idx_users_invitation_token", where: raw("(invitation_token IS NOT NULL)"))
+  @@index([last_login_at(sort: Desc)], map: "idx_users_last_login_at")
+  @@index([status], map: "idx_users_status", where: raw("(deleted_at IS NULL)"))
+}

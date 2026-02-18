@@ -1,0 +1,4277 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        3168,
+        2096
+      ],
+      "webhookId": "f733c7ec-b620-40dc-924f-4ee2b9566c70",
+      "id": "813d9e1d-4b57-4986-b352-2d11239890c4"
+    },
+    {
+      "parameters": {
+        "content": "# Agente IA",
+        "height": 80,
+        "width": 196,
+        "color": 5
+      },
+      "id": "98831719-5c92-4d58-a00b-834641e82d4b",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        7056,
+        1360
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# Smart Messaging Division - Text",
+        "height": 80,
+        "width": 736,
+        "color": 5
+      },
+      "id": "d154eef0-17b1-401c-a348-a9fb21ae6b2a",
+      "name": "Sticky Note19",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        7744,
+        1520
+      ]
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Log Performance').item.json.sessionId }}",
+        "contextWindowLength": 30
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        6896,
+        1680
+      ],
+      "id": "a877e6cb-f686-4016-b199-407975d44484",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "kTGzKIdOeLv9M1WI",
+          "name": "Banco de dados"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "251213",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notContains"
+                    },
+                    "id": "2aa763f7-cf04-44e7-9bbb-8f8de823aef8"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Continuar na IA"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "820760d6-3546-4007-8917-55d366a74261",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "251213",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Avisar Lead grupo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        7440,
+        1664
+      ],
+      "id": "47ecaf9d-6549-45dc-aca4-d506ff3c5090",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "defac08a-6745-422b-bb05-90da9f47d91b",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        7808,
+        1280
+      ],
+      "id": "4214382f-34cd-4085-83de-b022404a2951",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "content": "# Chat Supabase",
+        "height": 80,
+        "width": 450,
+        "color": 5
+      },
+      "id": "47232f0c-2411-4c97-ac13-cf5b5e5e31f7",
+      "name": "Sticky Note55",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        7568,
+        1088
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4a6d9aac-8565-4c58-abe3-8741393a5535",
+              "leftValue": "={{ $json.telefone }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5280,
+        1328
+      ],
+      "id": "dcebb5de-d86e-42ce-a0e6-5b730762cfe2",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "content": "# Cut messages",
+        "height": 80,
+        "width": 396,
+        "color": 4
+      },
+      "id": "2c6e60de-cd6a-4f5c-bfd2-d5323a277beb",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5632,
+        1360
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d5a342e9-585b-42ea-be44-644adae10199",
+              "leftValue": "={{ $json.Redis2 }}",
+              "rightValue": "={{ $json.Redis1 }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "db7c7a13-4115-43e6-a1fa-36c860833790",
+      "name": "Compara Get Memory1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        6272,
+        1616
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $('Processar Entrada').item.json.sessionId }}",
+        "messageData": "={{ $('Processar Entrada').item.json.message }}",
+        "tail": true
+      },
+      "id": "267469f5-b290-4e5d-942c-744311e25252",
+      "name": "Text Memory1",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        5488,
+        1536
+      ],
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f336a1ff-e577-489d-a739-1eb8bd509245",
+              "name": "Redis2",
+              "value": "={{ $json.propertyName }}",
+              "type": "string"
+            },
+            {
+              "id": "946d1420-e379-46e3-8fcd-3816340fbabb",
+              "name": "Redis1",
+              "value": "={{ $('Get Memory 1').item.json.propertyName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "48ec9a01-22a4-4352-a941-da74926c77fd",
+      "name": "Edit Fields8",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6112,
+        1616
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "id": "03bd5402-74b6-49de-97ac-4fdc3cee5ef1",
+      "name": "Wait3",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        5808,
+        1616
+      ],
+      "webhookId": "204c564a-21d1-41c2-9df5-d70e8d8a85de"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "={{ $('Processar Entrada').item.json.sessionId }}",
+        "options": {}
+      },
+      "id": "794f042d-2e0e-4f72-bb0c-a8378d62b28a",
+      "name": "Get Memory 1",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        5680,
+        1616
+      ],
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "={{ $('Processar Entrada').item.json.sessionId }}",
+        "options": {}
+      },
+      "id": "86db7b44-6431-4a24-ab24-feb38264c76d",
+      "name": "Get Memory 2",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        5968,
+        1616
+      ],
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const redis1 = JSON.parse($json.Redis1);\nconst redis2 = JSON.parse($json.Redis2);\n\nconst combinadoSemDuplicatas = Array.from(new Set([...redis1, ...redis2]));\n\nconst mensagem = combinadoSemDuplicatas.join(\" \");\n\nreturn [{ json: { mensagem_completa: mensagem } }];"
+      },
+      "id": "6dd35ba6-c140-4a00-952b-ac9c453cd05c",
+      "name": "Mensagem Completa",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6464,
+        1600
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        6736,
+        1664
+      ],
+      "id": "5fbb8dc6-f6b0-4be8-b107-c798f76d60c7",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "5t9QpVtTwdE9N6Qg",
+          "name": "API GPT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Mensagem Completa').item.json.mensagem_completa }}",
+        "options": {
+          "systemMessage": "={{ $('Log Performance').item.json.agentConfig.system_prompt }}"
+        }
+      },
+      "id": "e877605b-8dc3-4e2e-a925-58fe35948257",
+      "name": "Atendente1",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        6928,
+        1520
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Pega o resultado do Parser Chain\nconst parserOutput = $json.output;\nconst sessionId = $json.ID;\n\n// Extrai as mensagens do output\nlet messages = [];\n\ntry {\n  // Se vier como objeto com messages\n  if (parserOutput.messages && Array.isArray(parserOutput.messages)) {\n    messages = parserOutput.messages;\n  }\n  // Se vier como string JSON\n  else if (typeof parserOutput === 'string') {\n    try {\n      const parsed = JSON.parse(parserOutput);\n      messages = parsed.messages || [parserOutput];\n    } catch {\n      // Se não for JSON, tenta split por vírgulas\n      messages = parserOutput.split(',').map(m => m.trim());\n    }\n  }\n  // Se vier como array direto\n  else if (Array.isArray(parserOutput)) {\n    messages = parserOutput;\n  }\n  // Fallback\n  else {\n    messages = [String(parserOutput)];\n  }\n} catch (error) {\n  console.error('Erro ao processar mensagens:', error);\n  messages = [String(parserOutput)];\n}\n\n// Limpa e valida mensagens\nmessages = messages\n  .filter(msg => msg && String(msg).trim().length > 0)\n  .map(msg => String(msg).trim());\n\n// Garante pelo menos uma mensagem\nif (messages.length === 0) {\n  messages = ['Desculpe, não consegui processar sua mensagem.'];\n}\n\nconsole.log(`✂️ ${messages.length} mensagens preparadas:`, messages);\n\n// IMPORTANTE: Retorna como ARRAY\nreturn {\n  json: {\n    messages: messages,  // ← Array de strings\n    sessionId: sessionId,\n    timestamp: new Date().toISOString(),\n    totalMessages: messages.length\n  }\n};"
+      },
+      "name": "Processar Mensagens Splitadas",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        8464,
+        1792
+      ],
+      "id": "dde16a32-ca8f-40e9-8145-e61863621e11"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"messages\": {{ JSON.stringify($json.messages) }},\n  \"sessionId\": \"{{ $json.sessionId }}\",\n  \"totalMessages\": {{ $json.totalMessages }},\n  \"timestamp\": \"{{ $json.timestamp }}\",\n  \"success\": true\n}",
+        "options": {}
+      },
+      "name": "Responder ao Webhook1",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        8704,
+        1776
+      ],
+      "id": "78fae471-08b5-4225-93fb-1fdf0ae276d0"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "28d133bc-9675-4703-96af-57b3b035531b",
+              "name": "ID",
+              "value": "={{ $('Processar Entrada').item.json.sessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "101cbf28-1ad3-4c4d-9b94-73038bb03e7f",
+              "name": "output",
+              "value": "={{ $json.messages }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8256,
+        1776
+      ],
+      "id": "52a4bf89-9cf1-4e19-94fd-2d2c57e8399d",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega a mensagem\nlet text = $input.item.json.texto || $input.item.json.output || '';\n\n// Limpa conteúdo do sistema\ntext = text\n  .split('You must format your output')[0]\n  .split('JSON Schema')[0]\n  .replace(/^\\d+:/gm, '')\n  .replace(/\\\\n\\\\n/g, '\\n')\n  .replace(/\\\\n/g, '\\n')\n  .replace(/\\s+/g, ' ')\n  .trim();\n\n// Função para dividir mensagens de forma natural\nfunction splitMessageNaturally(text, maxLength = 140) {\n  const messages = [];\n  \n  // Divide em sentenças (por ponto, exclamação ou interrogação)\n  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];\n  \n  let currentChunk = '';\n  \n  for (let i = 0; i < sentences.length; i++) {\n    const sentence = sentences[i].trim();\n    const isQuestion = sentence.endsWith('?');\n    const isLastSentence = i === sentences.length - 1;\n    \n    // Testa adicionar a sentença ao chunk atual\n    const testChunk = currentChunk \n      ? currentChunk + ' ' + sentence \n      : sentence;\n    \n    // CONDIÇÕES PARA QUEBRAR:\n    \n    // 1. Se for uma pergunta E já temos conteúdo anterior\n    if (isQuestion && currentChunk.length > 50) {\n      // Salva o chunk atual (sem a pergunta)\n      messages.push(currentChunk.trim());\n      // Pergunta vira novo chunk\n      currentChunk = sentence;\n      \n      // Se for a última sentença, salva já\n      if (isLastSentence) {\n        messages.push(currentChunk.trim());\n        currentChunk = '';\n      }\n    }\n    // 2. Se ultrapassar o limite\n    else if (testChunk.length > maxLength && currentChunk.length > 200) {\n      messages.push(currentChunk.trim());\n      currentChunk = sentence;\n    }\n    // 3. Adiciona ao chunk atual\n    else {\n      currentChunk = testChunk;\n    }\n  }\n  \n  // Adiciona o último chunk se sobrou algo\n  if (currentChunk.trim().length > 0) {\n    messages.push(currentChunk.trim());\n  }\n  \n  return messages;\n}\n\nconst messages = splitMessageNaturally(text);\n\n// Retorna no formato desejado\nreturn {\n  json: {\n    messages: messages\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8000,
+        1664
+      ],
+      "id": "eba07f33-10c8-4523-b460-4de572e834ff",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "=agent:{{ $json.agentID }}:config",
+        "options": {}
+      },
+      "name": "Tentar Cache Redis",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        3680,
+        1552
+      ],
+      "id": "4403230f-1aec-4aac-88c9-ada76de2d133",
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.propertyName }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Cache Hit?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3872,
+        1552
+      ],
+      "id": "2cf83b60-44aa-4c50-a1fc-d522c3a4a5cc"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Cache Hit - Parse config do Redis\nconst cachedConfig = JSON.parse($json.propertyName);\nconst inputData = $('Processar Entrada').item.json;\n\nreturn {\n  json: {\n    agentConfig: cachedConfig,\n    source: 'redis',\n    cacheHit: true,\n    // Dados originais\n    message: inputData.message,\n    sessionId: inputData.sessionId,\n    timestamp: inputData.timestamp,\n    url: inputData.url,\n    referrer: inputData.referrer,\n    userAgent: inputData.userAgent,\n    agentID: inputData.agentID\n  }\n};"
+      },
+      "name": "Usar Config do Redis",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        4288,
+        1408
+      ],
+      "id": "cbe81cfe-9186-4640-aacb-cb453fc24c81"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "agent_configs",
+          "mode": "list",
+          "cachedResultName": "agent_configs"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $('Processar Entrada').item.json.agentID }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4048,
+        1712
+      ],
+      "id": "1545dbfa-4ff9-4543-93d4-5ba92bc6cc01",
+      "name": "Buscar no PostgreSQL",
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Cache Miss - Preparar para salvar no Redis\nconst agentConfig = $json;\nconst inputData = $('Processar Entrada').item.json;\n\nreturn {\n  json: {\n    redisKey: `agent:${inputData.agentID}:config`,\n    redisValue: JSON.stringify(agentConfig),\n    redisTTL: 300, // 5 minutos\n    agentConfig: agentConfig,\n    source: 'database',\n    cacheHit: false,\n    // Dados originais\n    message: inputData.message,\n    sessionId: inputData.sessionId,\n    timestamp: inputData.timestamp,\n    url: inputData.url,\n    referrer: inputData.referrer,\n    userAgent: inputData.userAgent,\n    agentID: inputData.agentID\n  }\n};"
+      },
+      "name": "Preparar Redis Set",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        4208,
+        1712
+      ],
+      "id": "4a93aa2c-5ddf-4f92-8467-80b85d487344"
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "={{ $json.redisKey }}",
+        "value": "={{ $json.redisValue }}",
+        "expire": true,
+        "ttl": "={{ $json.redisTTL }}"
+      },
+      "name": "Salvar no Redis",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        4368,
+        1712
+      ],
+      "id": "744dc0ba-d97f-48aa-a4ad-e476b0727fcc",
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "Merge Resultados",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        4592,
+        1552
+      ],
+      "id": "04bbed01-14bd-4c8f-9b01-3ad4ca91cf61"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Log de performance para debug\nconst source = $json.source;\nconst cacheHit = $json.cacheHit;\n\nconsole.log(`[Performance] Agent config fetched from: ${source}`);\nconsole.log(`[Performance] Cache hit: ${cacheHit}`);\n\nreturn {\n  json: $json\n};"
+      },
+      "name": "Log Performance",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        4800,
+        1552
+      ],
+      "id": "7decaab4-e43d-49a8-8b8a-611673de30df"
+    },
+    {
+      "parameters": {
+        "functionCode": "const message = $input.item.json.body.message;\nconst sessionId = $input.item.json.body.sessionId;\nconst timestamp = $input.item.json.body.timestamp;\nconst metadata = $input.item.json.body.metadata || {};\nconst agentID = $input.item.json.body.agentId;\n\nreturn {\n  json: {\n    message: message,\n    sessionId: sessionId,\n    timestamp: timestamp,\n    url: metadata.url,\n    referrer: metadata.referrer,\n    userAgent: $input.item.json.body.userAgent,\n    agentID: agentID\n  }\n};"
+      },
+      "name": "Processar Entrada",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        3520,
+        1552
+      ],
+      "id": "4283bf8d-d937-4f58-be21-b6aee6cd5934"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dados_cliente",
+          "mode": "list",
+          "cachedResultName": "dados_cliente"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "telefone",
+              "value": "={{ $json.sessionId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4992,
+        1440
+      ],
+      "id": "bb4b2478-1e5c-4edd-a649-e4338cbb412e",
+      "name": "Select rows from a table",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dados_cliente",
+          "mode": "list",
+          "cachedResultName": "dados_cliente"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "telefone": "={{ $('Log Performance').item.json.sessionId }}",
+            "clientid": "={{ $('Log Performance').item.json.agentConfig.client_id }}",
+            "agentid": "={{ $('Log Performance').item.json.agentConfig.id }}",
+            "created_at": "={{ $('Log Performance').item.json.timestamp }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "telefone",
+              "displayName": "telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nomewpp",
+              "displayName": "nomewpp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "atendimento_ia",
+              "displayName": "atendimento_ia",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "agentid",
+              "displayName": "agentid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "clientid",
+              "displayName": "clientid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5264,
+        1600
+      ],
+      "id": "fea8d06e-c0a4-4066-b4e3-5230fc290ce3",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chats",
+          "mode": "list",
+          "cachedResultName": "chats"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "phone",
+              "value": "={{ $('Log Performance').item.json.sessionId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        7600,
+        1280
+      ],
+      "id": "058c276d-f74a-4159-a8c5-dfaba288e76a",
+      "name": "Select rows from a table1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chats",
+          "mode": "list",
+          "cachedResultName": "chats"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone": "={{ $('Log Performance').item.json.sessionId }}",
+            "updated_at": "={{ $now }}",
+            "created_at": "={{ $now}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        8032,
+        1056
+      ],
+      "id": "a4fa82e0-6a14-4eab-b8ee-9f49de80b4f6",
+      "name": "Insert rows in a table1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chats",
+          "mode": "list",
+          "cachedResultName": "chats"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone": "={{ $('Log Performance').item.json.sessionId }}",
+            "updated_at": "={{ $now }}",
+            "created_at": "={{ $now}}"
+          },
+          "matchingColumns": [
+            "phone"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        8032,
+        1328
+      ],
+      "id": "1b649932-f602-4f96-8737-20c1a7671adb",
+      "name": "Update rows in a table",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_messages",
+          "mode": "list",
+          "cachedResultName": "chat_messages"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "active": false,
+            "created_at": "={{ $now }}",
+            "phone": "={{ $json.phone }}",
+            "nomewpp": "site",
+            "bot_message": "={{ $('Atendente1').item.json.output }}",
+            "user_message": "={{ $('Processar Entrada').item.json.message }}",
+            "clientid": "={{ $('Log Performance').item.json.agentConfig.client_id }}",
+            "agentid": "{{ $('Log Performance').item.json.agentID }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nomewpp",
+              "displayName": "nomewpp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "bot_message",
+              "displayName": "bot_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_message",
+              "displayName": "user_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message_type",
+              "displayName": "message_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "active",
+              "displayName": "active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "clientid",
+              "displayName": "clientid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "agentid",
+              "displayName": "agentid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        8416,
+        1280
+      ],
+      "id": "5f10b05d-2d8b-4f84-bb1f-9e83d503c2f6",
+      "name": "Insert rows in a table2",
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "buscar_base_conhecimento",
+        "description": "=Busca documentos e devolve as informações para a IA. Parâmetros: {\"query\": \"texto da busca\", \"agentId\": \"{{ $('Log Performance').item.json.agentID }}\"}",
+        "workflowId": "=msojwySJMhnRwCtF",
+        "fields": {
+          "values": [
+            {
+              "name": "agentId",
+              "stringValue": "={{ $('Log Performance').item.json.agentID }}"
+            }
+          ]
+        }
+      },
+      "id": "fcb9609e-4bf9-411d-9db7-89b15bec0822",
+      "name": "Tool - Buscar RAG",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        7088,
+        1840
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5922557b-71e7-4390-af21-10b683e7a875",
+                    "leftValue": "={{ $json.Telefone }}",
+                    "rightValue": "554198710023@s.whatsapp.net",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Numero pessoal"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "9865cb5b-33da-490c-afc3-186457d5b564",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notStartsWith"
+                    },
+                    "leftValue": "={{ $json.Telefone }}",
+                    "rightValue": "553173374875@s.whatsapp.net"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Rota normal"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "79e0e7b8-74b9-4f53-b925-ea7c2ec4bd09",
+      "name": "Rotas",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        3536,
+        2800
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c33f9527-e661-49e5-8e5e-64f3b430928a",
+              "name": "message.content_type",
+              "value": "={{ $('Webhook').item.json.body.data.message.extendedTextMessage ? 'text' : '' }}{{ $('Webhook').item.json.body.data.message.conversation ? 'text' : '' }}{{ $('Webhook').item.json.body.data.message.audioMessage ? 'audio' : '' }}{{ $('Webhook').item.json.body.data.message.imageMessage ? 'image' : '' }}",
+              "type": "string"
+            },
+            {
+              "id": "06eba1c9-cff0-4f68-b6da-6bb0092466b7",
+              "name": "message.content",
+              "value": "={{ $('Webhook').item.json.body.data.message.extendedTextMessage?.text || '' }}{{ $('Webhook').item.json.body.data.message.imageMessage?.caption || '' }}{{ $('Webhook').item.json.body.data.message.conversation || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "b97f1af3-5361-46fc-9303-d644921231d8",
+              "name": "message.timestamp",
+              "value": "={{ $('Webhook').item.json.body.data.messageTimestamp.toDateTime('s').toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "dc3dc59c-90a3-4a45-bea2-de092c91083b",
+              "name": "message.content_url",
+              "value": "={{ $('Webhook').item.json.body.data.message.audioMessage?.url || '' }}{{ $('Webhook').item.json.body.data.message.imageMessage?.url || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "8b01a818-a456-476e-bace-adefe2f04eb4",
+              "name": "message.event",
+              "value": "={{ $('Webhook').item.json.body.data.key.fromMe ? 'outcoming' : 'incoming' }}",
+              "type": "string"
+            },
+            {
+              "id": "886e3751-e39b-4fc6-98d1-3113eaeebbb4",
+              "name": "=body.event",
+              "value": "={{ $('Webhook').item.json.body.event }}",
+              "type": "string"
+            },
+            {
+              "id": "d04a0c6e-7842-41d2-bdb0-c0ce51d6dad7",
+              "name": "Telefone",
+              "value": "={{ $json.selectedNumber }}",
+              "type": "string"
+            },
+            {
+              "id": "a57db642-3e13-452e-bb5b-19f7e9f3bd5d",
+              "name": "NomeWpp",
+              "value": "={{ $('Webhook').item.json.body.data.pushName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "abb650fc-a318-466a-9105-fb71b871ffb3",
+      "name": "Dados",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3520,
+        2480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "ROTA PARA TESTE",
+        "height": 208,
+        "width": 198,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3504,
+        2736
+      ],
+      "typeVersion": 1,
+      "id": "8e66cd4f-0a32-40bf-8f5d-439aa6c4bed3",
+      "name": "Sticky Note27"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pegamos os dois campos de onde o WhatsApp envia os JIDs\nconst jid1 = $input.first().json.body.data.key.remoteJid || \"\";\nconst jid2 = $input.first().json.body.data.key.remoteJidAlt || \"\";\n\n// Variável onde vamos guardar o correto\nlet correctJid = \"\";\n\n// Testa qual deles possui \"@s.whatsapp.net\"\nif (jid1.includes(\"@s.whatsapp.net\")) {\n  correctJid = jid1;\n} else if (jid2.includes(\"@s.whatsapp.net\")) {\n  correctJid = jid2;\n}\n\n// Retornamos somente o que é válido\nreturn [\n  {\n    json: {\n      selectedNumber: correctJid\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3504,
+        2256
+      ],
+      "id": "337beac4-a847-46c4-86fa-e4fa863398d6",
+      "name": "Seletor de número"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "99f1e701-9f72-4b8a-85cb-3e73f99cada8",
+              "leftValue": "={{ $json.body.sessionId }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "ae60de23-cdc2-4369-b9fc-b07dec4a9a62",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3376,
+        2032
+      ],
+      "id": "853fa70d-09b4-4b68-9ef9-e46de3f21a82",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4a6d9aac-8565-4c58-abe3-8741393a5535",
+              "leftValue": "={{ $json.telefone }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5776,
+        2448
+      ],
+      "id": "f1bde148-70c7-4489-873a-6d076d213ac0",
+      "name": "If5"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Cache Hit - Parse config do Redis\nconst cachedConfig = JSON.parse($json.propertyName);\n\nreturn {\n  json: {\n    agentConfig: cachedConfig,\n    source: 'redis',\n    cacheHit: true,\n    // Dados originais\n   \n  }\n};"
+      },
+      "name": "Usar Config do Redis1",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        4656,
+        2592
+      ],
+      "id": "87b58358-3227-441a-8672-1352038f031a"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "agent_configs",
+          "mode": "list",
+          "cachedResultName": "agent_configs"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "whatsapp_instance_name",
+              "value": "={{ $('Webhook').item.json.body.instance }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4544,
+        2832
+      ],
+      "id": "68a3f0c0-a44a-431c-bd85-2153de975db9",
+      "name": "Buscar no PostgreSQL1",
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const agentConfig = $json;\nconst instance = $('Webhook').item.json.body.instance;\nconst inputData = $('Dados').item.json;\n\nreturn {\n  json: {\n    redisKey: `agent::${instance}::config`,\n    redisValue: JSON.stringify(agentConfig),\n    redisTTL: 300, // 5 minutos\n    agentConfig: agentConfig,\n    source: 'database',\n    cacheHit: false,\n    // Dados originais\n    message: inputData.message,\n    sessionId: inputData.sessionId,\n    timestamp: inputData.timestamp,\n    url: inputData.url,\n    referrer: inputData.referrer,\n    userAgent: inputData.userAgent,\n    agentID: inputData.agentID\n  }\n};"
+      },
+      "name": "Preparar Redis Set1",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        4704,
+        2832
+      ],
+      "id": "930718d4-f156-42aa-bd05-a81d0b21bf7f"
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "={{ $json.redisKey }}",
+        "value": "={{ $json.redisValue }}",
+        "expire": true,
+        "ttl": "={{ $json.redisTTL }}"
+      },
+      "name": "Salvar no Redis1",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        4864,
+        2832
+      ],
+      "id": "98db306f-13c6-4431-a875-5b143271cfc6",
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "Merge Resultados1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        5088,
+        2672
+      ],
+      "id": "042656c8-5083-4956-a54a-b79c694f93c2"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dados_cliente",
+          "mode": "list",
+          "cachedResultName": "dados_cliente"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "telefone",
+              "value": "={{ $('Seletor de número').item.json.selectedNumber }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5488,
+        2560
+      ],
+      "id": "a9db6f14-b846-4134-a613-30091ac8dac3",
+      "name": "Select rows from a table2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dados_cliente",
+          "mode": "list",
+          "cachedResultName": "dados_cliente"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "telefone": "={{ $('Seletor de número').item.json.selectedNumber }}",
+            "clientid": "={{ $('Log Performance Whatsapp').item.json.agentConfig.client_id }}",
+            "agentid": "={{ $('Log Performance Whatsapp').item.json.agentConfig.id }}",
+            "created_at": "={{ $('Log Performance Whatsapp').item.json.message.timestamp }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "telefone",
+              "displayName": "telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nomewpp",
+              "displayName": "nomewpp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "atendimento_ia",
+              "displayName": "atendimento_ia",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "agentid",
+              "displayName": "agentid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "clientid",
+              "displayName": "clientid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5760,
+        2720
+      ],
+      "id": "f890754d-8959-477f-8146-31ae738dc308",
+      "name": "Insert rows in a table3",
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "=agent::{{ $('Webhook').item.json.body.instance }}::config",
+        "options": {}
+      },
+      "name": "Tentar Cache Redis1",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        3904,
+        2736
+      ],
+      "id": "f34f0c11-7db4-4579-8acc-237fc98e3935",
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.propertyName }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Cache Hit?1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        4320,
+        2736
+      ],
+      "id": "6a346ff2-d65d-4455-bb35-d8745bf8d238"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data",
+        "options": {
+          "fileName": "file.png",
+          "mimeType": "image/png"
+        }
+      },
+      "id": "f7f1b679-3f86-407e-9049-d794363b28f8",
+      "name": "Convert to File2",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        6384,
+        2800
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3c5ccbc9-69d1-4b13-a7c3-e6945bc8c655",
+              "name": "data",
+              "value": "={{ $('Webhook EVO').item.json.body.data.message.base64 }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3f97fdb5-2fbc-415d-9de8-13a58d2fe0cf",
+      "name": "Edit Fields4",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6240,
+        2800
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "ade56c50-1520-4760-8df5-e99617d6d3ad",
+              "leftValue": "={{ $('Webhook EVO').item.json.body.data.message.imageMessage.caption }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0f835869-9829-4017-908d-fa3a07c53863",
+      "name": "If6",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        6720,
+        2800
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $('Dados').item.json.Telefone }}",
+        "messageData": "={{ $('Dados').item.json.message.content }}, {{ $json.content.replace(/\\n/g, \"\\\\n\").replace(/['\"]/g, '').trim()  }}",
+        "tail": true
+      },
+      "id": "4669328b-6eb1-4f2f-99e7-88b533fc8339",
+      "name": "Redis",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        6880,
+        2816
+      ],
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $('Dados').item.json.Telefone }}",
+        "messageData": "={{ $json.content.replace(/\\n/g, \"\\\\n\").replace(/['\"]/g, '').trim()  }}",
+        "tail": true
+      },
+      "id": "ad953fee-3d66-4126-a1bd-85b1be3c2ff7",
+      "name": "Redis6",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        6880,
+        2640
+      ],
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "52aaf749-fe4f-44e4-880e-15b2bfc027f1",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "extendedTextMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "e514e613-fd6a-48bd-b0ae-bae2448c810e",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "conversation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "c0e434dd-1268-421d-b81b-3a5e90ed9550",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "imageMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fcb66ff8-58d8-4e56-8e37-2a11a894a28c",
+      "name": "Switch4",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        6144,
+        2560
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "Analise a imagem e me traga um resumo simples e o mais curto possível do que ela é",
+        "inputType": "base64",
+        "options": {}
+      },
+      "id": "182f3b45-7069-4973-bb88-77cbfa35f691",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        6544,
+        2800
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "eMMWZiXCBqinwcPB",
+          "name": "Pixbot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $('Dados').item.json.Telefone }}",
+        "messageData": "={{ $json.text }}",
+        "tail": true
+      },
+      "id": "80329aab-5bc2-41bc-a926-2eca12862c69",
+      "name": "Audio Memory",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        6880,
+        2480
+      ],
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data",
+        "options": {
+          "fileName": "file.ogg",
+          "mimeType": "application/ogg"
+        }
+      },
+      "id": "de0161ab-5fb6-4132-9e67-b4f2302d7e4f",
+      "name": "Convert to File3",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        6512,
+        2608
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "id": "0d656625-21b5-4dbc-a93b-680ee80d18b1",
+      "name": "OpenAI5",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        6704,
+        2608
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "5t9QpVtTwdE9N6Qg",
+          "name": "API GPT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $('Dados').item.json.Telefone }}",
+        "messageData": "={{ $('Dados').item.json.message.content }}",
+        "tail": true
+      },
+      "id": "21aa5cfc-1bb7-432e-a911-7bffe4265212",
+      "name": "Text Memory2",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        6880,
+        2320
+      ],
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3c5ccbc9-69d1-4b13-a7c3-e6945bc8c655",
+              "name": "data",
+              "value": "={{ $('Webhook EVO').item.json.body.data.message.base64 }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "73a53988-be23-4f35-9865-1abad7f2cbfc",
+      "name": "Edit Fields2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6352,
+        2608
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "id": "af3bb873-ae47-4a7f-9b57-bbc668a0275a",
+      "name": "Espera para responder1",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        7408,
+        2528
+      ],
+      "webhookId": "9162d5f5-e5bd-4d2a-9499-c69ba0ada76b"
+    },
+    {
+      "parameters": {
+        "content": "TEMPO DE ESPERRA",
+        "height": 192,
+        "width": 198,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        7360,
+        2496
+      ],
+      "typeVersion": 1,
+      "id": "270ffb32-50ef-4134-98ef-cda27b53816d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d5a342e9-585b-42ea-be44-644adae10199",
+              "leftValue": "={{ $json.Redis2 }}",
+              "rightValue": "={{ $json.Redis1 }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "696d7a90-c6a0-4699-a277-93e345740984",
+      "name": "Compara Get Memory2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        7904,
+        2528
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f336a1ff-e577-489d-a739-1eb8bd509245",
+              "name": "Redis2",
+              "value": "={{ $json.propertyName }}",
+              "type": "string"
+            },
+            {
+              "id": "946d1420-e379-46e3-8fcd-3816340fbabb",
+              "name": "Redis1",
+              "value": "={{ $('Get Memory 4').item.json.propertyName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dbc2d04a-c1df-47e1-8990-d902b304b552",
+      "name": "Edit Fields10",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        7760,
+        2528
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "={{ $('Dados').item.json.Telefone }}",
+        "options": {}
+      },
+      "id": "2e2cbeb7-eb29-4065-815e-b1fd197c4ffa",
+      "name": "Get Memory 4",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        7216,
+        2528
+      ],
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "={{ $('Dados').item.json.Telefone }}",
+        "options": {}
+      },
+      "id": "eb0ed4ee-987b-4540-9426-196ec42ebd5f",
+      "name": "Get Memory 5",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        7600,
+        2528
+      ],
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const redis1 = JSON.parse($json.Redis1);\nconst redis2 = JSON.parse($json.Redis2);\n\nconst combinadoSemDuplicatas = Array.from(new Set([...redis1, ...redis2]));\n\nconst mensagem = combinadoSemDuplicatas.join(\" \");\n\nreturn [{ json: { mensagem_completa: mensagem } }];"
+      },
+      "id": "8731a623-100d-48e9-857f-ed941fbc3c5e",
+      "name": "Mensagem Completa2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8096,
+        2512
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# Agente IA",
+        "height": 80,
+        "width": 196,
+        "color": 5
+      },
+      "id": "00f98a76-79ec-474d-9fde-25cd40006e49",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        8656,
+        2352
+      ]
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Seletor de número').item.json.selectedNumber }}",
+        "contextWindowLength": 30
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        8496,
+        2672
+      ],
+      "id": "5d0c50a7-8270-4343-8ebc-b913a7d5cc67",
+      "name": "Postgres Chat Memory3",
+      "credentials": {
+        "postgres": {
+          "id": "kTGzKIdOeLv9M1WI",
+          "name": "Banco de dados"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        8336,
+        2656
+      ],
+      "id": "a623e7d6-54c1-48d8-9160-fa77aaaa643c",
+      "name": "OpenAI Chat Model5",
+      "credentials": {
+        "openAiApi": {
+          "id": "5t9QpVtTwdE9N6Qg",
+          "name": "API GPT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Mensagem Completa2').item.json.mensagem_completa }}",
+        "options": {
+          "systemMessage": "={{ $('Log Performance Whatsapp').item.json.agentConfig.system_prompt }}"
+        }
+      },
+      "id": "904182e6-38e5-4ab2-92c6-f83681fdd860",
+      "name": "Atendente",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        8528,
+        2512
+      ]
+    },
+    {
+      "parameters": {
+        "name": "buscar_base_conhecimento",
+        "description": "=Busca documentos e devolve as informações para a IA. Parâmetros: {\"query\": \"texto da busca\", \"agentId\": \"{{ $('Log Performance Whatsapp').item.json.agentConfig.id }}\"}",
+        "workflowId": "=msojwySJMhnRwCtF",
+        "fields": {
+          "values": [
+            {
+              "name": "agentId",
+              "stringValue": "={{ $('Log Performance Whatsapp').item.json.agentConfig.id }}"
+            }
+          ]
+        }
+      },
+      "id": "21285322-4ccb-4578-b2c7-a2b1522ac589",
+      "name": "Tool - Buscar RAG1",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        8688,
+        2704
+      ]
+    },
+    {
+      "parameters": {
+        "content": "TEMPO ENTRE MENSAGENS",
+        "height": 192,
+        "width": 198,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        10080,
+        2608
+      ],
+      "typeVersion": 1,
+      "id": "b295cdb0-11a1-4d13-b3c7-d7af782e92eb",
+      "name": "Sticky Note31"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "defac08a-6745-422b-bb05-90da9f47d91b",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        9312,
+        2288
+      ],
+      "id": "00732539-8d82-4c4b-a456-f318e7c2f0e5",
+      "name": "If7"
+    },
+    {
+      "parameters": {
+        "content": "# Chat Supabase",
+        "height": 80,
+        "width": 450,
+        "color": 5
+      },
+      "id": "39958a05-19b2-4c64-a153-d696e2f99904",
+      "name": "Sticky Note56",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        9072,
+        2096
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chats",
+          "mode": "list",
+          "cachedResultName": "chats"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "phone",
+              "value": "={{ $('Seletor de número').item.json.selectedNumber }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9104,
+        2288
+      ],
+      "id": "b11ff194-c877-481b-81e7-b85d73909139",
+      "name": "Select rows from a table3",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chats",
+          "mode": "list",
+          "cachedResultName": "chats"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone": "={{ $('Seletor de número').item.json.selectedNumber }}",
+            "updated_at": "={{ $now }}",
+            "created_at": "={{ $now}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9536,
+        2064
+      ],
+      "id": "3cce9c33-bc00-4de5-b1a5-6e84305f3a91",
+      "name": "Insert rows in a table4",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chats",
+          "mode": "list",
+          "cachedResultName": "chats"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone": "={{ $('Seletor de número').item.json.selectedNumber }}",
+            "updated_at": "={{ $now }}",
+            "created_at": "={{ $now}}"
+          },
+          "matchingColumns": [
+            "phone"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9536,
+        2336
+      ],
+      "id": "8acf2d6a-aeed-4aba-a412-bbcbee47b8b0",
+      "name": "Update rows in a table1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_messages",
+          "mode": "list",
+          "cachedResultName": "chat_messages"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "active": false,
+            "created_at": "={{ $now }}",
+            "phone": "={{ $json.phone }}",
+            "nomewpp": "site",
+            "bot_message": "={{ $('Atendente').item.json.output }}",
+            "user_message": "={{ $('Log Performance Whatsapp').item.json.message.content }}",
+            "clientid": "={{ $('Seletor de número').item.json.selectedNumber }}",
+            "agentid": "={{ $('Log Performance Whatsapp').item.json.agentConfig.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nomewpp",
+              "displayName": "nomewpp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "bot_message",
+              "displayName": "bot_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_message",
+              "displayName": "user_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message_type",
+              "displayName": "message_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "active",
+              "displayName": "active",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "clientid",
+              "displayName": "clientid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "agentid",
+              "displayName": "agentid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9920,
+        2288
+      ],
+      "id": "8d82d723-fba4-4a6f-8738-b2460a9111cb",
+      "name": "Insert rows in a table5",
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Log de performance para debug\nconst source = $json.source;\nconst cacheHit = $json.cacheHit;\n\nconsole.log(`[Performance] Agent config fetched from: ${source}`);\nconsole.log(`[Performance] Cache hit: ${cacheHit}`);\n\nreturn {\n  json: $json\n};"
+      },
+      "name": "Log Performance Whatsapp",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        5296,
+        2672
+      ],
+      "id": "8ae6e577-3d9c-49a5-a220-4adf9407d741"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega a mensagem de entrada\nlet text = $input.item.json.Resposta || $input.item.json.texto || $input.item.json.output || '';\n\n// Limpa formatação markdown e normaliza\ntext = text\n  .replace(/\\*\\*/g, '*')  // ** -> *\n  .replace(/\\s+/g, ' ')   // múltiplos espaços -> 1 espaço\n  .trim();\n\n// Função para dividir mensagens de forma natural\nfunction splitMessageNaturally(text, minLength = 100, maxLength = 100) {\n  const messages = [];\n  \n  // Divide em sentenças (por ponto, exclamação, interrogação ou quebra de linha)\n  const sentences = text.match(/[^.!?\\n]+[.!?\\n]+/g) || [text];\n  \n  let currentChunk = '';\n  \n  for (let i = 0; i < sentences.length; i++) {\n    const sentence = sentences[i].trim();\n    const isQuestion = sentence.endsWith('?');\n    const isExclamation = sentence.endsWith('!');\n    const isLastSentence = i === sentences.length - 1;\n    \n    // Testa adicionar a sentença ao chunk atual\n    const testChunk = currentChunk \n      ? currentChunk + ' ' + sentence \n      : sentence;\n    \n    // CONDIÇÕES PARA QUEBRAR:\n    \n    // 1. Se for uma pergunta/exclamação E já temos conteúdo suficiente\n    if ((isQuestion || isExclamation) && currentChunk.length >= minLength) {\n      // Adiciona a sentença ao chunk atual e finaliza\n      currentChunk = testChunk;\n      messages.push(currentChunk.trim());\n      currentChunk = '';\n    }\n    // 2. Se ultrapassar o limite máximo\n    else if (testChunk.length > maxLength && currentChunk.length >= minLength) {\n      messages.push(currentChunk.trim());\n      currentChunk = sentence;\n    }\n    // 3. Adiciona ao chunk atual\n    else {\n      currentChunk = testChunk;\n    }\n  }\n  \n  // Adiciona o último chunk se sobrou algo\n  if (currentChunk.trim().length > 0) {\n    messages.push(currentChunk.trim());\n  }\n  \n  // Se não conseguiu dividir nada, retorna a mensagem original\n  if (messages.length === 0) {\n    messages.push(text);\n  }\n  \n  return messages;\n}\n\nconst messages = splitMessageNaturally(text);\n\nconsole.log(`📨 Dividido em ${messages.length} mensagens:`);\nmessages.forEach((msg, i) => {\n  console.log(`   ${i + 1}. ${msg.substring(0, 50)}... (${msg.length} chars)`);\n});\n\n// Retorna no formato que o Split Out espera\nreturn {\n  json: {\n    messages: messages,\n    sessionId: $input.item.json.sessionId || $input.item.json.ID,\n    totalMessages: messages.length,\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9024,
+        2848
+      ],
+      "id": "3a3bc2ca-2d99-4f24-b53b-f9d7c370eaff",
+      "name": "Dividir Mensagens JS"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "messages",
+        "options": {}
+      },
+      "id": "6871a065-144b-4402-ba31-eff0e9f79770",
+      "name": "Split de Mensagens",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        9264,
+        2848
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('Webhook').item.json.body.instance }}",
+        "remoteJid": "={{ $('Dados').item.json.Telefone }}",
+        "messageText": "={{ $json.messages }}",
+        "options_message": {
+          "delay": 4200,
+          "linkPreview": false
+        }
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        9744,
+        2848
+      ],
+      "id": "2ced2d9a-6a63-4ccb-83e8-5666495d4c78",
+      "name": "Enviar Mensagem Evolution",
+      "credentials": {
+        "evolutionApi": {
+          "id": "goyqtyxz2nWd03iu",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "id": "df0ed904-59fd-4acf-bb9e-1b294c0c8010",
+      "name": "Delay 3 segundos",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        9984,
+        2848
+      ],
+      "webhookId": "aa7f729c-994f-4706-98be-e7d22555dfd4"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "b2729d1d-f3a4-4849-96fe-aa67bcc8a0d6",
+      "name": "Loop Over Items1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        9504,
+        2848
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        4368,
+        3024
+      ],
+      "id": "10729234-f65b-44e6-986d-a8c8439d5c80",
+      "name": "Redis1",
+      "credentials": {
+        "redis": {
+          "id": "P4kxoeyCKpte19Q5",
+          "name": "Redis account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Atendente1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Text Memory1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compara Get Memory1": {
+      "main": [
+        [
+          {
+            "node": "Mensagem Completa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Memory1": {
+      "main": [
+        [
+          {
+            "node": "Get Memory 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "Compara Get Memory1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Get Memory 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Memory 1": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Memory 2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagem Completa": {
+      "main": [
+        [
+          {
+            "node": "Atendente1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Atendente1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atendente1": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Select rows from a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Processar Mensagens Splitadas": {
+      "main": [
+        [
+          {
+            "node": "Responder ao Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responder ao Webhook1": {
+      "main": [
+        []
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Processar Mensagens Splitadas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tentar Cache Redis": {
+      "main": [
+        [
+          {
+            "node": "Cache Hit?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cache Hit?": {
+      "main": [
+        [
+          {
+            "node": "Usar Config do Redis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Buscar no PostgreSQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Usar Config do Redis": {
+      "main": [
+        [
+          {
+            "node": "Merge Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar no PostgreSQL": {
+      "main": [
+        [
+          {
+            "node": "Preparar Redis Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Redis Set": {
+      "main": [
+        [
+          {
+            "node": "Salvar no Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salvar no Redis": {
+      "main": [
+        [
+          {
+            "node": "Merge Resultados",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Resultados": {
+      "main": [
+        [
+          {
+            "node": "Log Performance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Performance": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Processar Entrada": {
+      "main": [
+        [
+          {
+            "node": "Tentar Cache Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Text Memory1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table1": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table1": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool - Buscar RAG": {
+      "ai_tool": [
+        [
+          {
+            "node": "Atendente1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rotas": {
+      "main": [
+        [
+          {
+            "node": "Tentar Cache Redis1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Dados": {
+      "main": [
+        [
+          {
+            "node": "Rotas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seletor de número": {
+      "main": [
+        [
+          {
+            "node": "Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Processar Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Seletor de número",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Switch4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert rows in a table3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Usar Config do Redis1": {
+      "main": [
+        [
+          {
+            "node": "Merge Resultados1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar no PostgreSQL1": {
+      "main": [
+        [
+          {
+            "node": "Preparar Redis Set1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Redis Set1": {
+      "main": [
+        [
+          {
+            "node": "Salvar no Redis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salvar no Redis1": {
+      "main": [
+        [
+          {
+            "node": "Merge Resultados1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Resultados1": {
+      "main": [
+        [
+          {
+            "node": "Log Performance Whatsapp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table2": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table3": {
+      "main": [
+        [
+          {
+            "node": "Switch4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tentar Cache Redis1": {
+      "main": [
+        [
+          {
+            "node": "Cache Hit?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cache Hit?1": {
+      "main": [
+        [
+          {
+            "node": "Usar Config do Redis1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Buscar no PostgreSQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File2": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Convert to File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Redis6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Get Memory 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis6": {
+      "main": [
+        [
+          {
+            "node": "Get Memory 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch4": {
+      "main": [
+        [
+          {
+            "node": "Text Memory2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Text Memory2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audio Memory": {
+      "main": [
+        [
+          {
+            "node": "Get Memory 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File3": {
+      "main": [
+        [
+          {
+            "node": "OpenAI5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI5": {
+      "main": [
+        [
+          {
+            "node": "Audio Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Memory2": {
+      "main": [
+        [
+          {
+            "node": "Get Memory 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Convert to File3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Espera para responder1": {
+      "main": [
+        [
+          {
+            "node": "Get Memory 5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compara Get Memory2": {
+      "main": [
+        [
+          {
+            "node": "Mensagem Completa2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields10": {
+      "main": [
+        [
+          {
+            "node": "Compara Get Memory2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Memory 4": {
+      "main": [
+        [
+          {
+            "node": "Espera para responder1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Memory 5": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagem Completa2": {
+      "main": [
+        [
+          {
+            "node": "Atendente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "Atendente",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Atendente",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atendente": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Dividir Mensagens JS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool - Buscar RAG1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Atendente",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If7": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update rows in a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table3": {
+      "main": [
+        [
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table4": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update rows in a table1": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Performance Whatsapp": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dividir Mensagens JS": {
+      "main": [
+        [
+          {
+            "node": "Split de Mensagens",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split de Mensagens": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Mensagem Evolution": {
+      "main": [
+        [
+          {
+            "node": "Delay 3 segundos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delay 3 segundos": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Enviar Mensagem Evolution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {
+    "Webhook": [
+      {
+        "headers": {
+          "connection": "upgrade",
+          "host": "n8n.agenciacomo.com.br",
+          "x-real-ip": "172.20.0.1, 172.20.0.1",
+          "x-forwarded-for": "172.20.0.1, 172.20.0.1",
+          "x-forwarded-proto": "https, https",
+          "x-forwarded-host": "n8n.agenciacomo.com.br",
+          "x-forwarded-port": "443",
+          "x-forwarded-scheme": "https",
+          "content-length": "1429",
+          "accept": "application/json, text/plain, */*",
+          "content-type": "application/json",
+          "user-agent": "axios/1.13.2",
+          "accept-encoding": "gzip, compress, deflate, br"
+        },
+        "params": {},
+        "query": {},
+        "body": {
+          "event": "messages.upsert",
+          "instance": "agent-45e4c500",
+          "data": {
+            "key": {
+              "remoteJid": "554198710023@s.whatsapp.net",
+              "remoteJidAlt": "212472199942221@lid",
+              "fromMe": false,
+              "id": "3AC2A0B9F724547F2E1A",
+              "participant": "",
+              "addressingMode": "pn"
+            },
+            "pushName": "Fabrício Oliveira",
+            "status": "DELIVERY_ACK",
+            "message": {
+              "conversation": "To testando vc",
+              "messageContextInfo": {
+                "threadId": [],
+                "deviceListMetadata": {
+                  "senderKeyIndexes": [],
+                  "recipientKeyIndexes": [],
+                  "senderKeyHash": {
+                    "0": 57,
+                    "1": 39,
+                    "2": 84,
+                    "3": 177,
+                    "4": 160,
+                    "5": 89,
+                    "6": 155,
+                    "7": 165,
+                    "8": 230,
+                    "9": 19
+                  },
+                  "senderTimestamp": {
+                    "low": 1770904203,
+                    "high": 0,
+                    "unsigned": true
+                  },
+                  "recipientKeyHash": {
+                    "0": 32,
+                    "1": 36,
+                    "2": 114,
+                    "3": 179,
+                    "4": 111,
+                    "5": 190,
+                    "6": 4,
+                    "7": 51,
+                    "8": 60,
+                    "9": 12
+                  },
+                  "recipientTimestamp": {
+                    "low": 1770653693,
+                    "high": 0,
+                    "unsigned": true
+                  }
+                },
+                "deviceListMetadataVersion": 2,
+                "messageSecret": {
+                  "0": 90,
+                  "1": 29,
+                  "2": 23,
+                  "3": 171,
+                  "4": 92,
+                  "5": 42,
+                  "6": 218,
+                  "7": 247,
+                  "8": 131,
+                  "9": 201,
+                  "10": 31,
+                  "11": 42,
+                  "12": 112,
+                  "13": 64,
+                  "14": 20,
+                  "15": 102,
+                  "16": 66,
+                  "17": 31,
+                  "18": 111,
+                  "19": 26,
+                  "20": 186,
+                  "21": 223,
+                  "22": 214,
+                  "23": 100,
+                  "24": 190,
+                  "25": 173,
+                  "26": 246,
+                  "27": 87,
+                  "28": 176,
+                  "29": 110,
+                  "30": 112,
+                  "31": 219
+                }
+              }
+            },
+            "messageType": "conversation",
+            "messageTimestamp": 1770913020,
+            "instanceId": "b8cbe3d0-098f-475c-b7c6-d8d864640e5c",
+            "source": "ios"
+          },
+          "destination": "https://n8n.agenciacomo.com.br/webhook/whatsapp",
+          "date_time": "2026-02-12T13:17:01.018Z",
+          "sender": "554195539095@s.whatsapp.net",
+          "server_url": "https://evo.agenciacomo.com.br",
+          "apikey": "3EC2FED8-BDC9-4531-9A6F-F156EFA601DB"
+        },
+        "webhookUrl": "https://webhook.agenciacomo.com.br/webhook/whatsapp",
+        "executionMode": "production"
+      }
+    ]
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "da60d6f5bca630f373dacb5466f2723711001a9a30279b634390c64b7b3dcb41"
+  }
+}
+
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "bea5b7ba-8c3e-4544-94e2-b3eb3ffbfd4d",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extrair query do input\nconst input = $input.first().json;\nconst query = input.query || input.message || input.input || String(input);\n\nreturn [{\n  json: {\n    message: query\n  }\n}];"
+      },
+      "id": "b5ce8b2c-4012-4638-9239-383e7ddcfcaa",
+      "name": "Extract Query",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "text-embedding-3-small"
+            },
+            {
+              "name": "input",
+              "value": "={{ $json.message }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5b7ed034-8dfd-4475-90b0-5ac7f4b598cc",
+      "name": "Get Embedding",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        192,
+        160
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "5t9QpVtTwdE9N6Qg",
+          "name": "API GPT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pegar embedding e mensagem\nconst embedding = $input.first().json.data[0].embedding;\nconst vectorString = `[${embedding.join(',')}]`;\nconst message = $('Extract Query').first().json.message;\n\nreturn [{\n  json: {\n    vector: vectorString,\n    message: message\n  }\n}];"
+      },
+      "id": "ecf0f5c5-05a9-4d39-a037-313758338c43",
+      "name": "Format Vector",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pegar documentos encontrados\nconst docs = $input.all();\nconst message = $('Format Vector').first().json.message;\n\nif (docs.length === 0) {\n  return [{\n    json: {\n      response: 'Não encontrei documentos relevantes na base de conhecimento para sua pergunta.'\n    }\n  }];\n}\n\n// Formatar contexto para o Agent\nconst formattedDocs = docs.map((item, i) => {\n  const doc = item.json;\n  const similarity = doc.similarity.toFixed(1);\n  return `[Documento ${i+1} - Relevância: ${similarity}%]\\nTítulo: ${doc.title}\\nConteúdo: ${doc.content}`;\n}).join('\\n\\n---\\n\\n');\n\nconst bestSimilarity = docs[0].json.similarity;\n\n// Retornar resposta formatada\nreturn [{\n  json: {\n    response: formattedDocs,\n    similarity: bestSimilarity,\n    docs_found: docs.length\n  }\n}];"
+      },
+      "id": "b74d0406-d542-4d64-b46e-9ce1304d1e9c",
+      "name": "Format Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        736,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT \n  title,\n  content,\n  (1 - (embedding <=> '{{ $json.vector }}'::vector)) * 100 as similarity\nFROM knowledge_base\nWHERE embedding IS NOT NULL\n  AND \"agent_config_id\" = '{{ $('Execute Workflow Trigger').item.json.agentId }}'::uuid\nORDER BY embedding <=> '{{ $json.vector }}'::vector\nLIMIT 10",
+        "options": {
+          "queryReplacement": "="
+        }
+      },
+      "id": "e3f01b1f-a059-40dc-91b7-74973c38af42",
+      "name": "Search Database1",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        544,
+        160
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extrair query do input\nconst input = $input.first().json;\nconst query = 'Espaço necessário para maquina';\n\n// EXPANSÃO DE QUERY COM SINÔNIMOS\nconst expansions = {\n  // Português → Inglês + sinônimos\n  'espaço': 'space distance área required',\n  'dimensão': 'dimension size measurement',\n  'dimensões': 'dimensions size measurements',\n  'tamanho': 'size dimension',\n  'distância': 'distance spacing required',\n  'instalação': 'installation setup required space',\n  'quanto espaço': 'required space distance how much',\n  'qual espaço': 'required space distance what',\n  'espaço necessário': 'required space distance needed',\n  'medidas': 'measurements dimensions size',\n  \n  // Outras expansões úteis\n  'treinar': 'training workout exercise',\n  'equipamento': 'equipment device station',\n  'aparelho': 'device equipment station',\n  'funciona': 'works functions operates',\n  'como usar': 'how to use operation',\n  'preço': 'price cost pricing',\n  'características': 'features characteristics specifications'\n};\n\n// Expandir query\nlet expandedQuery = query;\nconst lowerQuery = query.toLowerCase();\n\nfor (const [pt, en] of Object.entries(expansions)) {\n  if (lowerQuery.includes(pt)) {\n    expandedQuery += ' ' + en;\n  }\n}\n\n// Detectar números específicos (ex: 1,60m, 2,30m)\nconst numbers = query.match(/\\d+[.,]\\d+/g);\nif (numbers) {\n  expandedQuery += ' ' + numbers.join(' ');\n}\n\nconsole.log('🔍 Query original:', query);\nconsole.log('🔍 Query expandida:', expandedQuery);\n\nreturn [{\n  json: {\n    originalMessage: query,\n    expandedMessage: expandedQuery,\n    hasNumbers: numbers ? true : false,\n    detectedNumbers: numbers || []\n  }\n}];"
+      },
+      "id": "ec6cd70b-e95a-4dde-a7b7-a819e4142772",
+      "name": "Extract & Expand Query",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=WITH vector_search AS (\n  SELECT \n    id,\n    title,\n    content,\n    metadata,\n    (1 - (embedding <=> '{{ $json.vector }}'::vector)) * 100 as vector_similarity\n  FROM knowledge_base\n  WHERE embedding IS NOT NULL\n    AND agent_config_id = '{{ $('Execute Workflow Trigger').item.json.agentId }}'::uuid\n  ORDER BY embedding <=> '{{ $json.vector }}'::vector\n  LIMIT 15\n),\ntext_search AS (\n  SELECT \n    id,\n    title,\n    content,\n    metadata,\n    (\n      CASE WHEN LOWER(content) LIKE '%required space%' THEN 15 ELSE 0 END +\n      CASE WHEN LOWER(content) LIKE '%distance%' THEN 10 ELSE 0 END +\n      CASE WHEN LOWER(content) LIKE '%dimensions%' THEN 10 ELSE 0 END +\n      CASE WHEN LOWER(content) LIKE '%1,60%' OR LOWER(content) LIKE '%1.60%' THEN 20 ELSE 0 END +\n      CASE WHEN LOWER(content) LIKE '%2,30%' OR LOWER(content) LIKE '%2.30%' THEN 20 ELSE 0 END +\n      CASE WHEN LOWER(content) LIKE '%installation%' THEN 12 ELSE 0 END +\n      CASE WHEN metadata->>'hasNumbers' = 'true' THEN 5 ELSE 0 END +\n      CASE WHEN metadata->>'hasDimensions' = 'true' THEN 8 ELSE 0 END\n    ) as text_score\n  FROM knowledge_base\n  WHERE agent_config_id = '{{ $('Execute Workflow Trigger').item.json.agentId }}'::uuid\n    AND (\n      LOWER(content) LIKE '%required%'\n      OR LOWER(content) LIKE '%space%'\n      OR LOWER(content) LIKE '%distance%'\n      OR LOWER(content) LIKE '%dimension%'\n      OR LOWER(content) LIKE '%1,60%'\n      OR LOWER(content) LIKE '%2,30%'\n      OR metadata ? 'hasDimensions'\n      OR metadata ? 'hasNumbers'\n    )\n)\nSELECT DISTINCT\n  COALESCE(v.id, t.id) as id,\n  COALESCE(v.title, t.title) as title,\n  COALESCE(v.content, t.content) as content,\n  COALESCE(v.metadata, t.metadata) as metadata,\n  (\n    COALESCE(v.vector_similarity, 0) * 0.6 + \n    COALESCE(t.text_score, 0) * 0.4\n  ) as similarity\nFROM vector_search v\nFULL OUTER JOIN text_search t ON v.id = t.id\nWHERE (\n  COALESCE(v.vector_similarity, 0) * 0.6 + \n  COALESCE(t.text_score, 0) * 0.4\n) > 15\nORDER BY similarity DESC\nLIMIT 5",
+        "options": {
+          "queryReplacement": "="
+        }
+      },
+      "id": "55861e0c-c034-4d5c-ae6a-68d1094c393b",
+      "name": "Hybrid Search",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        512,
+        384
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "UScfa8J9erjcb5Ei",
+          "name": "Agentes IA - Sistema"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "text-embedding-3-small"
+            },
+            {
+              "name": "input",
+              "value": "={{ $json.expandedMessage }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ad6bcd25-d035-4028-92d3-12663a6f2617",
+      "name": "Get Embedding1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        160,
+        384
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "5t9QpVtTwdE9N6Qg",
+          "name": "API GPT"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pegar embedding e mensagens\nconst embedding = $input.first().json.data[0].embedding;\nconst vectorString = `[${embedding.join(',')}]`;\nconst queryData = $('Extract & Expand Query').first().json;\n\nreturn [{\n  json: {\n    vector: vectorString,\n    originalMessage: queryData.originalMessage,\n    expandedMessage: queryData.expandedMessage,\n    hasNumbers: queryData.hasNumbers,\n    detectedNumbers: queryData.detectedNumbers\n  }\n}];"
+      },
+      "id": "4d3b44e2-4c35-4e86-9d8d-07a37592ba0b",
+      "name": "Format Vector1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        336,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pegar documentos encontrados\nconst docs = $input.all();\nconst queryData = $('Format Vector1').first().json;\n\nconsole.log(`\\n${'='.repeat(60)}`);\nconsole.log('🔍 BUSCA RAG - DEBUG');\nconsole.log(`${'='.repeat(60)}`);\nconsole.log('📝 Query original:', queryData.originalMessage);\nconsole.log('📝 Query expandida:', queryData.expandedMessage);\nconsole.log('🔢 Números detectados:', queryData.detectedNumbers);\nconsole.log('📊 Documentos encontrados:', docs.length);\nconsole.log(`${'='.repeat(60)}\\n`);\n\nif (docs.length === 0) {\n  console.log('❌ Nenhum documento relevante encontrado');\n  return [{\n    json: {\n      response: 'Não encontrei documentos relevantes na base de conhecimento para sua pergunta.',\n      similarity: 0,\n      docs_found: 0,\n      query: queryData.originalMessage\n    }\n  }];\n}\n\n// Log detalhado dos resultados\ndocs.forEach((doc, i) => {\n  const d = doc.json;\n  const similarity = typeof d.similarity === 'number' ? d.similarity.toFixed(1) : '0.0';\n  \n  console.log(`\\n📄 Documento ${i + 1}:`);\n  console.log(`   Título: ${d.title || 'Sem título'}`);\n  console.log(`   Similaridade: ${similarity}%`);\n  console.log(`   Preview: ${(d.content || '').substring(0, 150).replace(/\\n/g, ' ')}...`);\n  \n  // Log metadata se existir\n  if (d.metadata) {\n    console.log(`   Metadata:`, JSON.stringify(d.metadata, null, 2));\n  }\n});\n\n// Formatar contexto para o Agent\nconst formattedDocs = docs.map((item, i) => {\n  const doc = item.json;\n  const similarity = typeof doc.similarity === 'number' ? doc.similarity.toFixed(1) : '0.0';\n  \n  let docText = `[Documento ${i+1} - Relevância: ${similarity}%]\\n`;\n  docText += `Título: ${doc.title || 'Sem título'}\\n`;\n  \n  // Adicionar info de metadata se existir\n  if (doc.metadata && typeof doc.metadata === 'object') {\n    const meta = doc.metadata;\n    \n    if (typeof meta.chunkIndex !== 'undefined' && typeof meta.totalChunks !== 'undefined') {\n      docText += `Parte: ${meta.chunkIndex + 1} de ${meta.totalChunks}\\n`;\n    }\n    \n    if (meta.keywords && Array.isArray(meta.keywords) && meta.keywords.length > 0) {\n      docText += `Keywords: ${meta.keywords.join(', ')}\\n`;\n    }\n  }\n  \n  docText += `\\nConteúdo:\\n${doc.content || 'Sem conteúdo'}`;\n  \n  return docText;\n}).join('\\n\\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\\n\\n');\n\nconst bestSimilarity = typeof docs[0].json.similarity === 'number' \n  ? docs[0].json.similarity \n  : 0;\n\nconsole.log(`\\n✅ Retornando ${docs.length} documentos (melhor: ${bestSimilarity.toFixed(1)}%)\\n`);\n\n// Retornar resposta formatada\nreturn [{\n  json: {\n    response: formattedDocs,\n    similarity: bestSimilarity,\n    docs_found: docs.length,\n    query: queryData.originalMessage,\n    expanded_query: queryData.expandedMessage,\n    // Info adicional para debug\n    debug: {\n      hasNumbers: queryData.hasNumbers || false,\n      detectedNumbers: queryData.detectedNumbers || [],\n      docs: docs.map(d => ({\n        title: d.json.title || 'Sem título',\n        similarity: typeof d.json.similarity === 'number' \n          ? d.json.similarity.toFixed(1) \n          : '0.0',\n        hasMetadata: !!(d.json.metadata && typeof d.json.metadata === 'object')\n      }))\n    }\n  }\n}];"
+      },
+      "id": "f1d7ed23-6eaf-4d22-93df-85379deef2e6",
+      "name": "Format Result1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        384
+      ]
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract & Expand Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Query": {
+      "main": [
+        [
+          {
+            "node": "Get Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Embedding": {
+      "main": [
+        [
+          {
+            "node": "Format Vector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Vector": {
+      "main": [
+        [
+          {
+            "node": "Search Database1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Database1": {
+      "main": [
+        [
+          {
+            "node": "Format Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract & Expand Query": {
+      "main": [
+        [
+          {
+            "node": "Get Embedding1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hybrid Search": {
+      "main": [
+        [
+          {
+            "node": "Format Result1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Embedding1": {
+      "main": [
+        [
+          {
+            "node": "Format Vector1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Vector1": {
+      "main": [
+        [
+          {
+            "node": "Hybrid Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {
+    "Execute Workflow Trigger": [
+      {
+        "query": "leads campanha penzsaur",
+        "agentId": "ed903496-29c2-4c2d-8abb-d291de57fb13"
+      }
+    ]
+  },
+  "meta": {
+    "instanceId": "da60d6f5bca630f373dacb5466f2723711001a9a30279b634390c64b7b3dcb41"
+  }
+}
