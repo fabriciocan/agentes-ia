@@ -204,7 +204,6 @@ export async function addKnowledgeChunks(
 ): Promise<KnowledgeBase[]> {
   try {
     const language = detectLanguage(content)
-    const globalKeywords = extractKeywords(content)
     const pages = estimatePages(content)
     const contentHasNumbers = hasNumericalData(content)
     const contentHasTable = hasTableStructure(content)
@@ -222,8 +221,8 @@ export async function addKnowledgeChunks(
     const chunkData = chunks.map((chunk, i) => {
       const chunkTitle = chunks.length === 1 ? title : `${title} - Parte ${i + 1}`
       const contextualContent = `Document: ${title}\n\nPart ${i + 1}/${chunks.length}\n\n${chunk}`
-      const chunkKeywords = extractKeywords(chunk)
-      const allKeywords = [...new Set([...globalKeywords.slice(0, 10), ...chunkKeywords.slice(0, 5)])]
+      // Usa apenas keywords do chunk (não globais) para sparse search ser preciso por chunk
+      const allKeywords = extractKeywords(chunk).slice(0, 15)
       return { chunk, chunkTitle, contextualContent, allKeywords }
     })
 
