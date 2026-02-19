@@ -135,6 +135,23 @@ export const analyticsQuerySchema = z.object({
   granularity: z.enum(['day', 'week', 'month']).optional().default('day')
 })
 
+// Platform company creation schema
+export const platformCompanyCreateSchema = z.object({
+  name: z.string().min(1).max(255),
+  slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/, 'Slug deve conter apenas letras minúsculas, números e hífens'),
+  logo_url: z.string().url().nullable().optional(),
+  client_id: z.string().uuid(),
+  admin_email: z.string().email(),
+  admin_name: z.string().min(1).max(255).optional()
+})
+
+// Direct user creation schema (provisional password, no invite flow)
+export const userCreateSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(1).max(255).optional(),
+  role_ids: z.array(z.string().uuid()).min(1, 'Pelo menos um perfil é obrigatório')
+})
+
 // Audit logs schemas
 export const auditLogsQuerySchema = z.object({
   user_id: z.string().uuid().optional(),

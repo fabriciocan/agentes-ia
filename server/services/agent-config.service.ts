@@ -25,6 +25,21 @@ export async function getAgentConfig(configId: string): Promise<AgentConfig | nu
   return config
 }
 
+export async function getAgentConfigsByCompany(companyId: string): Promise<AgentConfig[]> {
+  const cacheKey = `agent-configs:company:${companyId}`
+  const cached = await cacheGet<AgentConfig[]>(cacheKey)
+  if (cached) return cached
+
+  const result = await prisma.agent_configs.findMany({
+    where: { company_id: companyId },
+    orderBy: { created_at: 'desc' }
+  })
+
+  const configs = result as unknown as AgentConfig[]
+  await cacheSet(cacheKey, configs, CACHE_TTL)
+  return configs
+}
+
 export async function getAgentConfigsByClient(clientId: string): Promise<AgentConfig[]> {
   const cacheKey = `agent-configs:client:${clientId}`
   const cached = await cacheGet<AgentConfig[]>(cacheKey)
@@ -93,11 +108,13 @@ export async function createAgentConfig(
     model?: string
     temperature?: number
     max_tokens?: number
+    company_id?: string | null
   }
 ): Promise<AgentConfig> {
   const result = await prisma.agent_configs.create({
     data: {
       client_id: clientId,
+      company_id: data.company_id || null,
       name: data.name,
       system_prompt: data.system_prompt || '',
       personality: data.personality || 'professional',
@@ -110,7 +127,8 @@ export async function createAgentConfig(
   })
 
   await invalidatePattern(`agent-configs:client:${clientId}`)
-  logger.info({ clientId, name: data.name }, 'Agent config created')
+  if (data.company_id) await invalidatePattern(`agent-configs:company:${data.company_id}`)
+  logger.info({ clientId, companyId: data.company_id, name: data.name }, 'Agent config created')
   return result as unknown as AgentConfig
 }
 

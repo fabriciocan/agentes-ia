@@ -39,6 +39,7 @@ const PERMISSIONS = [
   { slug: 'agents.create',    name: 'Create Agents',          resource: 'agents',        action: 'create' },
   { slug: 'agents.update',    name: 'Update Agents',          resource: 'agents',        action: 'update' },
   { slug: 'agents.delete',    name: 'Delete Agents',          resource: 'agents',        action: 'delete' },
+  { slug: 'agents.manage',    name: 'Manage Agents (Full)',   resource: 'agents',        action: 'manage' },
   { slug: 'agents.publish',   name: 'Publish Agents',         resource: 'agents',        action: 'publish' },
   { slug: 'knowledge.read',   name: 'View Knowledge',         resource: 'knowledge',     action: 'read' },
   { slug: 'knowledge.create', name: 'Upload Knowledge',       resource: 'knowledge',     action: 'create' },
@@ -88,10 +89,11 @@ async function seedPermissionsAndRoles() {
 
   console.log('\n🎭 Seeding system roles...')
   const systemRoles = [
-    { slug: 'platform_admin', name: 'Platform Admin',  description: 'Platform-level administrator with access to all companies' },
-    { slug: 'admin',          name: 'Admin',           description: 'Full system access - can manage everything' },
-    { slug: 'agent_manager',  name: 'Agent Manager',   description: 'Can manage agents and knowledge base' },
-    { slug: 'viewer',         name: 'Viewer',          description: 'Read-only access' },
+    { slug: 'platform_admin',  name: 'Platform Admin',   description: 'Platform-level administrator with access to all companies' },
+    { slug: 'admin',           name: 'Admin',            description: 'Full system access - can manage everything' },
+    { slug: 'company-admin',   name: 'Admin da Empresa', description: 'Administrador da empresa com acesso completo exceto plataforma' },
+    { slug: 'agent_manager',   name: 'Agent Manager',    description: 'Can manage agents and knowledge base' },
+    { slug: 'viewer',          name: 'Viewer',           description: 'Read-only access' },
   ]
   for (const r of systemRoles) {
     const existing = await prisma.roles.findFirst({ where: { slug: r.slug, is_system: true } })
@@ -111,6 +113,7 @@ async function seedPermissionsAndRoles() {
   const rolePermMap: Record<string, (p: typeof allPerms[0]) => boolean> = {
     platform_admin: () => true,
     admin:          () => true,
+    'company-admin': (p) => p.resource !== 'platform',
     agent_manager:  (p) => p.resource === 'agents' || p.resource === 'knowledge' || (p.resource !== 'users' && p.action === 'read'),
     viewer:         (p) => p.action === 'read' && p.resource !== 'users',
   }

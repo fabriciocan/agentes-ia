@@ -10,22 +10,34 @@ const isPlatformAdmin = computed(() => {
          session.value?.user?.email?.includes('@platform.')
 })
 
+// Fetch company data for logo and name (only for non-platform admins)
+const { data: companyData } = useFetch('/api/admin/company', {
+  server: false,
+  immediate: true,
+  onResponseError: () => {} // silently ignore errors (platform admin has no company)
+})
+const companyLogoUrl = computed(() => (companyData.value as Record<string, unknown> | null)?.logo_url as string | null ?? null)
+const companyName = computed(() => (companyData.value as Record<string, unknown> | null)?.name as string | null ?? null)
+
 // Navigation for regular admins (Usuários hidden if no users.read permission)
 const adminNavigation = computed(() => [
   { label: 'Dashboard', icon: 'i-lucide-layout-dashboard', to: '/admin' },
-  { label: 'Agents', icon: 'i-lucide-bot', to: '/admin/agents' },
-  { label: 'Conversations', icon: 'i-lucide-message-square', to: '/admin/conversations' },
-  ...(can('users.read') ? [{ label: 'Usuários', icon: 'i-lucide-users', to: '/admin/users' }] : [])
+  { label: 'Agentes', icon: 'i-lucide-bot', to: '/admin/agents' },
+  { label: 'Conversas', icon: 'i-lucide-message-square', to: '/admin/conversations' },
+  ...(can('users.read') ? [{ label: 'Usuários', icon: 'i-lucide-users', to: '/admin/users' }] : []),
+  ...(can('company.update') ? [{ label: 'Configurações', icon: 'i-lucide-settings-2', to: '/admin/settings' }] : [])
 ])
 
 // Navigation for platform admins
 const platformNavigation = [
-  { label: 'Platform Dashboard', icon: 'i-lucide-layout-dashboard', to: '/platform' },
+  { label: 'Dashboard', icon: 'i-lucide-layout-dashboard', to: '/platform' },
+  { label: 'Empresas', icon: 'i-lucide-building-2', to: '/platform/companies' },
+  { label: 'Agentes', icon: 'i-lucide-bot', to: '/platform/agents' },
+  { label: 'Usuários', icon: 'i-lucide-users', to: '/platform/users' },
   { label: 'Analytics', icon: 'i-lucide-bar-chart-3', to: '/platform/analytics' },
-  { label: 'All Users', icon: 'i-lucide-users', to: '/platform/users' },
-  { label: 'Settings', icon: 'i-lucide-settings', to: '/platform/settings' },
+  { label: 'Configurações', icon: 'i-lucide-settings', to: '/platform/settings' },
   { label: '---', icon: '', to: '' },
-  { label: 'Company Admin', icon: 'i-lucide-user-cog', to: '/admin' }
+  { label: 'Admin da Empresa', icon: 'i-lucide-user-cog', to: '/admin' }
 ]
 
 const navigation = computed(() => isPlatformAdmin.value ? platformNavigation : adminNavigation.value)
@@ -50,13 +62,14 @@ function isActive(to: string) {
       <!-- Header -->
       <div class="p-4 border-b border-(--ui-border) flex items-center gap-3">
         <template v-if="!isSidebarCollapsed">
-          <AppLogo class="w-7 h-7 shrink-0" />
+          <AppLogo :logo-url="companyLogoUrl" class="w-7 h-7 shrink-0" />
           <h1 class="font-bold text-lg truncate">
-            AI Agents
+            {{ companyName || 'AI Agents' }}
           </h1>
         </template>
         <AppLogo
           v-else
+          :logo-url="companyLogoUrl"
           class="w-7 h-7 mx-auto"
         />
       </div>

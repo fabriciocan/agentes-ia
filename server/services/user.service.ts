@@ -140,6 +140,67 @@ export async function inviteUser(
 }
 
 // ============================================================================
+// Create User with Provisional Password (direct, no invite flow)
+// ============================================================================
+
+function generateProvisionalPassword(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#$'
+  const bytes = crypto.randomBytes(12)
+  return Array.from(bytes)
+    .map(b => chars[b % chars.length])
+    .join('')
+}
+
+export async function createUserWithPassword(
+  companyId: string,
+  createdByUserId: string,
+  data: {
+    email: string
+    name?: string
+    roleIds: string[]
+  }
+): Promise<{ user: TeamUser; provisionalPassword: string }> {
+  // Check if user already exists
+  const existing = await getUserByEmail(companyId, data.email)
+  if (existing) {
+    throw createError({
+      statusCode: 409,
+      message: 'Já existe um usuário com este e-mail nesta empresa'
+    })
+  }
+
+  // Generate provisional password and hash it
+  const provisionalPassword = generateProvisionalPassword()
+  const passwordHash = await hashAppPassword(provisionalPassword)
+
+  // Create user with 'active' status (no invitation flow needed)
+  const user = await prisma.users.create({
+    data: {
+      company_id: companyId,
+      email: data.email,
+      name: data.name || null,
+      password_hash: passwordHash,
+      status: 'active',
+      invitation_token: null
+    }
+  })
+
+  if (!user) throw createError({ statusCode: 500, message: 'Falha ao criar usuário' })
+
+  // Assign roles
+  if (data.roleIds.length > 0) {
+    await assignRolesToUser(user.id, data.roleIds, createdByUserId)
+  }
+
+  logger.info(
+    { userId: user.id, email: data.email, companyId, createdBy: createdByUserId },
+    'User created with provisional password'
+  )
+
+  return { user: user as unknown as TeamUser, provisionalPassword }
+}
+
+// ============================================================================
 // Accept Invitation
 // ============================================================================
 

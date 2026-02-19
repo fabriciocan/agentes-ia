@@ -4,13 +4,10 @@ definePageMeta({
   middleware: ['auth']
 })
 
-const { data: session } = await useFetch('/api/auth/session')
-const clientId = computed(() => session.value?.user?.clientId || '')
-
 const { updateAgentConfig, createAgent, deleteAgent } = useAgent()
 const { can } = usePermissions()
 
-const { data: configsData, refresh } = await useFetch(`/api/agents/${clientId.value}/config`)
+const { data: configsData, refresh } = await useFetch('/api/admin/agents')
 const configs = computed(() => (configsData.value as { data: Array<Record<string, unknown>> } | null)?.data || [])
 
 const selectedConfig = ref<Record<string, unknown> | null>(null)
@@ -40,14 +37,17 @@ function selectConfig(config: Record<string, unknown>) {
 }
 
 async function saveConfig(data: Record<string, unknown>) {
-  if (!selectedConfig.value?.id || !clientId.value) return
+  if (!selectedConfig.value?.id) return
   saving.value = true
   try {
-    await updateAgentConfig(clientId.value, selectedConfig.value.id as string, data)
-    toast.add({ title: 'Configuration saved', color: 'success' })
+    await $fetch(`/api/admin/agents/${selectedConfig.value.id as string}`, {
+      method: 'PATCH',
+      body: data
+    })
+    toast.add({ title: 'Configuração salva', color: 'success' })
     await refresh()
   } catch {
-    toast.add({ title: 'Failed to save configuration', color: 'error' })
+    toast.add({ title: 'Falha ao salvar configuração', color: 'error' })
   } finally {
     saving.value = false
   }

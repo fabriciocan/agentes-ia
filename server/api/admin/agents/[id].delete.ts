@@ -2,13 +2,13 @@ import { deleteAgentConfig } from '../../../services/agent-config.service'
 import { requirePermission } from '../../../utils/authorization'
 
 export default defineEventHandler(async (event) => {
-  // Check permission (RBAC)
-  if (event.context.can) {
-    requirePermission(event, 'agents.delete')
-  }
+  await requirePermission(event, 'agents.delete')
 
-  const adminUser = event.context.adminUser as unknown as { clientId: string }
-  if (!adminUser?.clientId) {
+  const user = event.context.user
+  const adminUser = event.context.adminUser as unknown as { clientId?: string }
+  const clientId = user?.client_id || adminUser?.clientId
+
+  if (!clientId) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Missing agent id' })
   }
 
-  const deleted = await deleteAgentConfig(configId, adminUser.clientId)
+  const deleted = await deleteAgentConfig(configId, clientId)
   if (!deleted) {
     throw createError({ statusCode: 404, statusMessage: 'Agent not found' })
   }

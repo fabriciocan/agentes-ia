@@ -1,5 +1,18 @@
+<script setup lang="ts">
+defineProps<{
+  logoUrl?: string | null
+}>()
+</script>
+
 <template>
+  <img
+    v-if="logoUrl"
+    :src="logoUrl"
+    alt="Logo"
+    class="object-contain w-full h-full"
+  />
   <svg
+    v-else
     width="1020"
     height="200"
     viewBox="0 0 1020 200"

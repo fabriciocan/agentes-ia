@@ -141,6 +141,57 @@ async function updateUserRoles() {
   }
 }
 
+// Create user with provisional password
+const isCreateModalOpen = ref(false)
+const createForm = ref({
+  email: '',
+  name: '',
+  role_ids: [] as string[]
+})
+const creating = ref(false)
+const createdUserResult = ref<{ email: string; provisionalPassword: string } | null>(null)
+const showCreatedPasswordModal = ref(false)
+const passwordCopied = ref(false)
+
+function copyCreatedPassword() {
+  if (!createdUserResult.value) return
+  navigator.clipboard.writeText(createdUserResult.value.provisionalPassword)
+  passwordCopied.value = true
+  setTimeout(() => { passwordCopied.value = false }, 2000)
+}
+
+async function createUserWithPassword() {
+  if (!createForm.value.email || createForm.value.role_ids.length === 0) return
+  creating.value = true
+  try {
+    const result = await $fetch('/api/admin/users/create', {
+      method: 'POST',
+      body: {
+        email: createForm.value.email,
+        name: createForm.value.name || undefined,
+        role_ids: createForm.value.role_ids
+      }
+    }) as { user: { email: string }; provisionalPassword: string }
+
+    createdUserResult.value = {
+      email: result.user.email,
+      provisionalPassword: result.provisionalPassword
+    }
+    isCreateModalOpen.value = false
+    showCreatedPasswordModal.value = true
+    createForm.value = { email: '', name: '', role_ids: [] }
+    await refreshUsers()
+  } catch (error: any) {
+    toast.add({
+      title: 'Erro ao criar usuário',
+      description: error.data?.message || error.data?.statusMessage || 'Tente novamente',
+      color: 'error'
+    })
+  } finally {
+    creating.value = false
+  }
+}
+
 // Status badge color
 function getStatusColor(status: string): 'success' | 'primary' | 'warning' | 'error' | 'neutral' {
   const colors: Record<string, 'success' | 'primary' | 'warning' | 'error' | 'neutral'> = {
@@ -177,14 +228,24 @@ function formatDate(date: string | null) {
           Gerencie os usuários da sua empresa
         </p>
       </div>
-      <UButton
-        v-if="can('users.invite')"
-        icon="i-lucide-user-plus"
-        size="lg"
-        @click="isInviteModalOpen = true"
-      >
-        Convidar Usuário
-      </UButton>
+      <div v-if="can('users.invite')" class="flex gap-2">
+        <UButton
+          icon="i-lucide-user-plus"
+          size="lg"
+          variant="outline"
+          color="neutral"
+          @click="isInviteModalOpen = true"
+        >
+          Convidar por E-mail
+        </UButton>
+        <UButton
+          icon="i-lucide-key-round"
+          size="lg"
+          @click="isCreateModalOpen = true"
+        >
+          Criar com Senha
+        </UButton>
+      </div>
     </div>
 
     <!-- Filters -->
@@ -489,6 +550,115 @@ function formatDate(date: string | null) {
           </div>
         </template>
       </UCard>
+      </template>
+    </UModal>
+
+    <!-- Create User with Provisional Password Modal -->
+    <UModal v-model:open="isCreateModalOpen" title="Criar Usuário com Senha Provisória">
+      <template #body>
+        <div class="space-y-4">
+          <UFormField label="E-mail" required>
+            <UInput
+              v-model="createForm.email"
+              type="email"
+              placeholder="usuario@exemplo.com"
+              size="lg"
+              class="w-full"
+            />
+          </UFormField>
+
+          <UFormField label="Nome (opcional)">
+            <UInput
+              v-model="createForm.name"
+              placeholder="Nome completo"
+              size="lg"
+              class="w-full"
+            />
+          </UFormField>
+
+          <UFormField label="Perfis" required>
+            <div class="space-y-2 max-h-48 overflow-y-auto border border-(--ui-border) rounded-lg p-3">
+              <label
+                v-for="role in (roles as any)?.data"
+                :key="role.id"
+                class="flex items-center gap-2 cursor-pointer hover:bg-(--ui-bg-elevated) p-2 rounded"
+              >
+                <UCheckbox
+                  :model-value="createForm.role_ids.includes(role.id)"
+                  @update:model-value="(checked) => {
+                    if (checked === true) createForm.role_ids.push(role.id)
+                    else createForm.role_ids = createForm.role_ids.filter((id: string) => id !== role.id)
+                  }"
+                />
+                <div class="flex-1">
+                  <p class="font-medium">{{ role.name }}</p>
+                  <p class="text-xs text-(--ui-text-muted)">{{ role.description }}</p>
+                </div>
+              </label>
+            </div>
+          </UFormField>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <UButton color="neutral" variant="ghost" @click="isCreateModalOpen = false">
+            Cancelar
+          </UButton>
+          <UButton
+            :loading="creating"
+            :disabled="!createForm.email || createForm.role_ids.length === 0"
+            @click="createUserWithPassword"
+          >
+            Criar Usuário
+          </UButton>
+        </div>
+      </template>
+    </UModal>
+
+    <!-- Provisional Password Result Modal -->
+    <UModal v-model:open="showCreatedPasswordModal" title="Usuário Criado com Sucesso">
+      <template #body>
+        <div v-if="createdUserResult" class="space-y-4">
+          <div class="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+            <UIcon name="i-lucide-check-circle-2" class="text-green-600 text-xl shrink-0" />
+            <p class="font-medium text-green-800 dark:text-green-300">
+              {{ createdUserResult.email }} criado com sucesso!
+            </p>
+          </div>
+
+          <div class="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg">
+            <div class="flex items-start gap-2 mb-3">
+              <UIcon name="i-lucide-alert-triangle" class="text-amber-600 text-lg shrink-0 mt-0.5" />
+              <p class="text-sm font-medium text-amber-800 dark:text-amber-300">
+                Senha provisória — exibida apenas uma vez
+              </p>
+            </div>
+            <p class="text-sm text-amber-700 dark:text-amber-400 mb-3">
+              Compartilhe esta senha com o usuário. Ela não será exibida novamente.
+            </p>
+            <div class="flex items-center gap-2">
+              <code class="flex-1 bg-white dark:bg-gray-800 border border-amber-300 dark:border-amber-600 rounded px-3 py-2 font-mono text-lg font-bold tracking-wider text-gray-900 dark:text-white">
+                {{ createdUserResult.provisionalPassword }}
+              </code>
+              <UButton
+                :icon="passwordCopied ? 'i-lucide-check' : 'i-lucide-copy'"
+                :color="passwordCopied ? 'success' : 'neutral'"
+                variant="outline"
+                size="sm"
+                @click="copyCreatedPassword"
+              >
+                {{ passwordCopied ? 'Copiado!' : 'Copiar' }}
+              </UButton>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex justify-end">
+          <UButton color="primary" @click="showCreatedPasswordModal = false; createdUserResult = null">
+            Entendido
+          </UButton>
+        </div>
       </template>
     </UModal>
 
