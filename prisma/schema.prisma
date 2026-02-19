@@ -47,6 +47,7 @@ model agent_configs {
   chats                    chats[]
   conversations            conversations[]
   knowledge_base           knowledge_base[]
+  knowledge_files          knowledge_files[]
 
   @@index([client_id, is_active], map: "idx_agent_configs_client_active", where: raw("(is_active = true)"))
   @@index([client_id], map: "idx_agent_configs_client_id")
@@ -200,23 +201,47 @@ model end_users {
 }
 
 /// Embeddings are stored in Qdrant. The UUID here is used as the Qdrant point ID.
+/// knowledge_file_id NULL = entrada standalone (texto/FAQ) visível na UI.
+/// knowledge_file_id preenchido = chunk de arquivo agrupado em knowledge_files (oculto na UI).
 model knowledge_base {
-  id              String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  agent_config_id String        @db.Uuid
-  title           String        @db.VarChar(500)
-  content         String
-  content_type    String        @default("text") @db.VarChar(50)
-  metadata        Json          @default("{}")
-  created_at      DateTime      @default(now()) @db.Timestamptz(6)
-  updated_at      DateTime      @default(now()) @db.Timestamptz(6)
-  file_size       Int?
-  file_type       String?       @db.VarChar(100)
-  chunk_index     Int?          @default(0)
-  agent_configs   agent_configs @relation(fields: [agent_config_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id                String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  agent_config_id   String           @db.Uuid
+  title             String           @db.VarChar(500)
+  content           String
+  content_type      String           @default("text") @db.VarChar(50)
+  metadata          Json             @default("{}")
+  created_at        DateTime         @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime         @default(now()) @db.Timestamptz(6)
+  file_size         Int?
+  file_type         String?          @db.VarChar(100)
+  chunk_index       Int?             @default(0)
+  knowledge_file_id String?          @db.Uuid
+  agent_configs     agent_configs    @relation(fields: [agent_config_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  knowledge_files   knowledge_files? @relation(fields: [knowledge_file_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([agent_config_id, chunk_index], map: "idx_knowledge_base_agent_chunk")
   @@index([agent_config_id], map: "idx_knowledge_base_agent_config_id")
+  @@index([knowledge_file_id], map: "idx_knowledge_base_file_id")
   @@index([metadata], map: "idx_knowledge_metadata_gin", type: Gin)
+}
+
+/// Um registro por arquivo enviado. Os chunks em knowledge_base com knowledge_file_id apontando aqui ficam ocultos na UI.
+model knowledge_files {
+  id              String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  agent_config_id String         @db.Uuid
+  title           String         @db.VarChar(500)
+  file_name       String         @db.VarChar(500)
+  file_size       Int
+  file_type       String         @db.VarChar(100)
+  content_type    String         @default("document") @db.VarChar(50)
+  chunk_count     Int            @default(0)
+  metadata        Json           @default("{}")
+  created_at      DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime       @default(now()) @db.Timestamptz(6)
+  agent_configs   agent_configs  @relation(fields: [agent_config_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  knowledge_base  knowledge_base[]
+
+  @@index([agent_config_id], map: "idx_knowledge_files_agent_config_id")
 }
 
 model messages {

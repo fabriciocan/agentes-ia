@@ -61,6 +61,7 @@ export const ModelName = {
   dados_cliente: 'dados_cliente',
   end_users: 'end_users',
   knowledge_base: 'knowledge_base',
+  knowledge_files: 'knowledge_files',
   messages: 'messages',
   migrations: 'migrations',
   n8n_chat_histories: 'n8n_chat_histories',
@@ -248,10 +249,28 @@ export const Knowledge_baseScalarFieldEnum = {
   updated_at: 'updated_at',
   file_size: 'file_size',
   file_type: 'file_type',
-  chunk_index: 'chunk_index'
+  chunk_index: 'chunk_index',
+  knowledge_file_id: 'knowledge_file_id'
 } as const
 
 export type Knowledge_baseScalarFieldEnum = (typeof Knowledge_baseScalarFieldEnum)[keyof typeof Knowledge_baseScalarFieldEnum]
+
+
+export const Knowledge_filesScalarFieldEnum = {
+  id: 'id',
+  agent_config_id: 'agent_config_id',
+  title: 'title',
+  file_name: 'file_name',
+  file_size: 'file_size',
+  file_type: 'file_type',
+  content_type: 'content_type',
+  chunk_count: 'chunk_count',
+  metadata: 'metadata',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Knowledge_filesScalarFieldEnum = (typeof Knowledge_filesScalarFieldEnum)[keyof typeof Knowledge_filesScalarFieldEnum]
 
 
 export const MessagesScalarFieldEnum = {

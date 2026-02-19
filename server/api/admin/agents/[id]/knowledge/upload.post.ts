@@ -1,5 +1,5 @@
 import { getAgentConfig } from '../../../../../services/agent-config.service'
-import { addKnowledgeChunks } from '../../../../../services/knowledge.service'
+import { addKnowledgeChunks, createKnowledgeFile } from '../../../../../services/knowledge.service'
 import { extractTextFromFile, validateFileSize, validateFileType } from '../../../../../utils/document-parser'
 import { detectLanguage, hasNumericalData, hasTableStructure, estimatePages } from '../../../../../utils/text-analysis'
 import { requirePermission } from '../../../../../utils/authorization'
@@ -72,7 +72,17 @@ export default defineEventHandler(async (event) => {
       contentLength: content.length
     }
 
-    // Save to knowledge base with chunking and embeddings
+    // Criar registro do arquivo pai (knowledge_files)
+    const knowledgeFile = await createKnowledgeFile(agentId, {
+      title: filename,
+      file_name: filename,
+      file_size: fileData.data.length,
+      file_type: mimeType,
+      content_type: 'document',
+      metadata: uploadMetadata as unknown as Record<string, unknown>
+    })
+
+    // Salvar chunks na knowledge_base vinculados ao arquivo pai
     const entries = await addKnowledgeChunks(
       agentId,
       filename,
@@ -80,7 +90,8 @@ export default defineEventHandler(async (event) => {
       'document',
       fileData.data.length,
       mimeType,
-      uploadMetadata
+      uploadMetadata,
+      knowledgeFile.id
     )
 
     console.log(`✅ Successfully processed ${filename}: ${entries.length} chunks created`)

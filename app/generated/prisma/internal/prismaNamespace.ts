@@ -394,6 +394,7 @@ export const ModelName = {
   dados_cliente: 'dados_cliente',
   end_users: 'end_users',
   knowledge_base: 'knowledge_base',
+  knowledge_files: 'knowledge_files',
   messages: 'messages',
   migrations: 'migrations',
   n8n_chat_histories: 'n8n_chat_histories',
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "admin_users" | "agent_configs" | "audit_logs" | "chat_messages" | "clients" | "companies" | "conversations" | "dados_cliente" | "end_users" | "knowledge_base" | "messages" | "migrations" | "n8n_chat_histories" | "permissions" | "role_permissions" | "roles" | "subscription_plans" | "subscriptions" | "usage_logs" | "user_roles" | "users" | "chats"
+    modelProps: "admin_users" | "agent_configs" | "audit_logs" | "chat_messages" | "clients" | "companies" | "conversations" | "dados_cliente" | "end_users" | "knowledge_base" | "knowledge_files" | "messages" | "migrations" | "n8n_chat_histories" | "permissions" | "role_permissions" | "roles" | "subscription_plans" | "subscriptions" | "usage_logs" | "user_roles" | "users" | "chats"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1162,6 +1163,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.knowledge_baseCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.Knowledge_baseCountAggregateOutputType> | number
+        }
+      }
+    }
+    knowledge_files: {
+      payload: Prisma.$knowledge_filesPayload<ExtArgs>
+      fields: Prisma.knowledge_filesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.knowledge_filesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$knowledge_filesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.knowledge_filesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$knowledge_filesPayload>
+        }
+        findFirst: {
+          args: Prisma.knowledge_filesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$knowledge_filesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.knowledge_filesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$knowledge_filesPayload>
+        }
+        findMany: {
+          args: Prisma.knowledge_filesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$knowledge_filesPayload>[]
+        }
+        create: {
+          args: Prisma.knowledge_filesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$knowledge_filesPayload>
+        }
+        createMany: {
+          args: Prisma.knowledge_filesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.knowledge_filesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$knowledge_filesPayload>[]
+        }
+        delete: {
+          args: Prisma.knowledge_filesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$knowledge_filesPayload>
+        }
+        update: {
+          args: Prisma.knowledge_filesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$knowledge_filesPayload>
+        }
+        deleteMany: {
+          args: Prisma.knowledge_filesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.knowledge_filesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.knowledge_filesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$knowledge_filesPayload>[]
+        }
+        upsert: {
+          args: Prisma.knowledge_filesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$knowledge_filesPayload>
+        }
+        aggregate: {
+          args: Prisma.Knowledge_filesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKnowledge_files>
+        }
+        groupBy: {
+          args: Prisma.knowledge_filesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Knowledge_filesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.knowledge_filesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Knowledge_filesCountAggregateOutputType> | number
         }
       }
     }
@@ -2249,10 +2324,28 @@ export const Knowledge_baseScalarFieldEnum = {
   updated_at: 'updated_at',
   file_size: 'file_size',
   file_type: 'file_type',
-  chunk_index: 'chunk_index'
+  chunk_index: 'chunk_index',
+  knowledge_file_id: 'knowledge_file_id'
 } as const
 
 export type Knowledge_baseScalarFieldEnum = (typeof Knowledge_baseScalarFieldEnum)[keyof typeof Knowledge_baseScalarFieldEnum]
+
+
+export const Knowledge_filesScalarFieldEnum = {
+  id: 'id',
+  agent_config_id: 'agent_config_id',
+  title: 'title',
+  file_name: 'file_name',
+  file_size: 'file_size',
+  file_type: 'file_type',
+  content_type: 'content_type',
+  chunk_count: 'chunk_count',
+  metadata: 'metadata',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Knowledge_filesScalarFieldEnum = (typeof Knowledge_filesScalarFieldEnum)[keyof typeof Knowledge_filesScalarFieldEnum]
 
 
 export const MessagesScalarFieldEnum = {
@@ -2693,6 +2786,7 @@ export type GlobalOmitConfig = {
   dados_cliente?: Prisma.dados_clienteOmit
   end_users?: Prisma.end_usersOmit
   knowledge_base?: Prisma.knowledge_baseOmit
+  knowledge_files?: Prisma.knowledge_filesOmit
   messages?: Prisma.messagesOmit
   migrations?: Prisma.migrationsOmit
   n8n_chat_histories?: Prisma.n8n_chat_historiesOmit

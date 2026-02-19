@@ -9,7 +9,7 @@ import {
   hasTableStructure,
   estimatePages
 } from '../utils/text-analysis'
-import type { KnowledgeBase } from '../types'
+import type { KnowledgeBase, KnowledgeFile, KnowledgeListItem } from '../types'
 
 const logger = createLogger('knowledge')
 
@@ -112,25 +112,125 @@ function buildPayload(params: {
   }
 }
 
-export async function getKnowledgeEntries(agentConfigId: string): Promise<KnowledgeBase[]> {
-  const result = await prisma.knowledge_base.findMany({
+export async function getKnowledgeEntries(agentConfigId: string): Promise<KnowledgeListItem[]> {
+  // 1. Arquivos enviados (cada um agrupa N chunks ocultos)
+  const files = await prisma.knowledge_files.findMany({
     where: { agent_config_id: agentConfigId },
     orderBy: { created_at: 'desc' },
     select: {
       id: true,
-      agent_config_id: true,
+      title: true,
+      file_name: true,
+      file_size: true,
+      file_type: true,
+      content_type: true,
+      chunk_count: true,
+      created_at: true,
+      updated_at: true,
+    }
+  })
+
+  // 2. Entradas standalone (texto/FAQ sem arquivo associado)
+  const standaloneEntries = await prisma.knowledge_base.findMany({
+    where: { agent_config_id: agentConfigId, knowledge_file_id: null },
+    orderBy: { created_at: 'desc' },
+    select: {
+      id: true,
       title: true,
       content: true,
       content_type: true,
-      metadata: true,
-      file_size: true,
-      file_type: true,
-      chunk_index: true,
       created_at: true,
-      updated_at: true
+      updated_at: true,
     }
   })
-  return result as unknown as KnowledgeBase[]
+
+  const fileItems: KnowledgeListItem[] = files.map(f => ({
+    kind: 'file' as const,
+    id: f.id,
+    title: f.title,
+    file_name: f.file_name,
+    file_size: f.file_size,
+    file_type: f.file_type,
+    content_type: f.content_type,
+    chunk_count: f.chunk_count,
+    created_at: f.created_at,
+    updated_at: f.updated_at,
+  }))
+
+  const entryItems: KnowledgeListItem[] = standaloneEntries.map(e => ({
+    kind: 'entry' as const,
+    id: e.id,
+    title: e.title,
+    content: e.content,
+    content_type: e.content_type,
+    created_at: e.created_at,
+    updated_at: e.updated_at,
+  }))
+
+  return [...fileItems, ...entryItems].sort(
+    (a, b) => b.created_at.getTime() - a.created_at.getTime()
+  )
+}
+
+export async function createKnowledgeFile(
+  agentConfigId: string,
+  data: {
+    title: string
+    file_name: string
+    file_size: number
+    file_type: string
+    content_type?: string
+    metadata?: Record<string, unknown>
+  }
+): Promise<KnowledgeFile> {
+  const record = await prisma.knowledge_files.create({
+    data: {
+      agent_config_id: agentConfigId,
+      title: data.title,
+      file_name: data.file_name,
+      file_size: data.file_size,
+      file_type: data.file_type,
+      content_type: data.content_type ?? 'document',
+      chunk_count: 0,
+      metadata: (data.metadata ?? {}) as any,
+    }
+  })
+  return record as unknown as KnowledgeFile
+}
+
+export async function deleteKnowledgeFile(
+  fileId: string,
+  agentConfigId: string
+): Promise<boolean> {
+  const file = await prisma.knowledge_files.findFirst({
+    where: { id: fileId, agent_config_id: agentConfigId }
+  })
+  if (!file) return false
+
+  // Coletar IDs dos chunks antes de deletar (para remover do Qdrant)
+  const chunks = await prisma.knowledge_base.findMany({
+    where: { knowledge_file_id: fileId },
+    select: { id: true }
+  })
+  const chunkIds = chunks.map(c => c.id)
+
+  // Deleta o arquivo (cascade remove os chunks do Postgres)
+  await prisma.knowledge_files.delete({ where: { id: fileId } })
+
+  // Remover vetores do Qdrant
+  if (chunkIds.length > 0) {
+    try {
+      await qdrant.delete(knowledgeCollectionName(agentConfigId), {
+        wait: true,
+        points: chunkIds
+      })
+    } catch (err) {
+      logger.warn({ err, fileId, agentConfigId }, 'Falha parcial ao deletar vetores Qdrant do arquivo')
+    }
+  }
+
+  logger.info({ fileId, agentConfigId, chunkCount: chunkIds.length }, 'Arquivo de conhecimento deletado')
+  return true
 }
 
 export async function addKnowledgeEntry(
@@ -200,7 +300,8 @@ export async function addKnowledgeChunks(
   contentType: string,
   fileSize?: number,
   fileType?: string,
-  additionalMetadata?: Record<string, any>
+  additionalMetadata?: Record<string, any>,
+  knowledgeFileId?: string
 ): Promise<KnowledgeBase[]> {
   try {
     const language = detectLanguage(content)
@@ -238,6 +339,7 @@ export async function addKnowledgeChunks(
             file_size: fileSize || null,
             file_type: fileType || null,
             chunk_index: i,
+            knowledge_file_id: knowledgeFileId ?? null,
             metadata: {
               ...additionalMetadata,
               chunkIndex: i,
@@ -282,6 +384,14 @@ export async function addKnowledgeChunks(
         }),
       }))
     })
+
+    // Atualizar chunk_count no registro pai (knowledge_files)
+    if (knowledgeFileId) {
+      await prisma.knowledge_files.update({
+        where: { id: knowledgeFileId },
+        data: { chunk_count: chunks.length }
+      })
+    }
 
     dbEntries.forEach((e: unknown) => entries.push(e as unknown as KnowledgeBase))
 

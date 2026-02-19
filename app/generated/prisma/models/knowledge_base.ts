@@ -15,6 +15,8 @@ import type * as Prisma from "../internal/prismaNamespace.js"
 /**
  * Model knowledge_base
  * Embeddings are stored in Qdrant. The UUID here is used as the Qdrant point ID.
+ * knowledge_file_id NULL = entrada standalone (texto/FAQ) visível na UI.
+ * knowledge_file_id preenchido = chunk de arquivo agrupado em knowledge_files (oculto na UI).
  */
 export type knowledge_baseModel = runtime.Types.Result.DefaultSelection<Prisma.$knowledge_basePayload>
 
@@ -47,6 +49,7 @@ export type Knowledge_baseMinAggregateOutputType = {
   file_size: number | null
   file_type: string | null
   chunk_index: number | null
+  knowledge_file_id: string | null
 }
 
 export type Knowledge_baseMaxAggregateOutputType = {
@@ -60,6 +63,7 @@ export type Knowledge_baseMaxAggregateOutputType = {
   file_size: number | null
   file_type: string | null
   chunk_index: number | null
+  knowledge_file_id: string | null
 }
 
 export type Knowledge_baseCountAggregateOutputType = {
@@ -74,6 +78,7 @@ export type Knowledge_baseCountAggregateOutputType = {
   file_size: number
   file_type: number
   chunk_index: number
+  knowledge_file_id: number
   _all: number
 }
 
@@ -99,6 +104,7 @@ export type Knowledge_baseMinAggregateInputType = {
   file_size?: true
   file_type?: true
   chunk_index?: true
+  knowledge_file_id?: true
 }
 
 export type Knowledge_baseMaxAggregateInputType = {
@@ -112,6 +118,7 @@ export type Knowledge_baseMaxAggregateInputType = {
   file_size?: true
   file_type?: true
   chunk_index?: true
+  knowledge_file_id?: true
 }
 
 export type Knowledge_baseCountAggregateInputType = {
@@ -126,6 +133,7 @@ export type Knowledge_baseCountAggregateInputType = {
   file_size?: true
   file_type?: true
   chunk_index?: true
+  knowledge_file_id?: true
   _all?: true
 }
 
@@ -227,6 +235,7 @@ export type Knowledge_baseGroupByOutputType = {
   file_size: number | null
   file_type: string | null
   chunk_index: number | null
+  knowledge_file_id: string | null
   _count: Knowledge_baseCountAggregateOutputType | null
   _avg: Knowledge_baseAvgAggregateOutputType | null
   _sum: Knowledge_baseSumAggregateOutputType | null
@@ -264,7 +273,9 @@ export type knowledge_baseWhereInput = {
   file_size?: Prisma.IntNullableFilter<"knowledge_base"> | number | null
   file_type?: Prisma.StringNullableFilter<"knowledge_base"> | string | null
   chunk_index?: Prisma.IntNullableFilter<"knowledge_base"> | number | null
+  knowledge_file_id?: Prisma.UuidNullableFilter<"knowledge_base"> | string | null
   agent_configs?: Prisma.XOR<Prisma.Agent_configsScalarRelationFilter, Prisma.agent_configsWhereInput>
+  knowledge_files?: Prisma.XOR<Prisma.Knowledge_filesNullableScalarRelationFilter, Prisma.knowledge_filesWhereInput> | null
 }
 
 export type knowledge_baseOrderByWithRelationInput = {
@@ -279,7 +290,9 @@ export type knowledge_baseOrderByWithRelationInput = {
   file_size?: Prisma.SortOrderInput | Prisma.SortOrder
   file_type?: Prisma.SortOrderInput | Prisma.SortOrder
   chunk_index?: Prisma.SortOrderInput | Prisma.SortOrder
+  knowledge_file_id?: Prisma.SortOrderInput | Prisma.SortOrder
   agent_configs?: Prisma.agent_configsOrderByWithRelationInput
+  knowledge_files?: Prisma.knowledge_filesOrderByWithRelationInput
 }
 
 export type knowledge_baseWhereUniqueInput = Prisma.AtLeast<{
@@ -297,7 +310,9 @@ export type knowledge_baseWhereUniqueInput = Prisma.AtLeast<{
   file_size?: Prisma.IntNullableFilter<"knowledge_base"> | number | null
   file_type?: Prisma.StringNullableFilter<"knowledge_base"> | string | null
   chunk_index?: Prisma.IntNullableFilter<"knowledge_base"> | number | null
+  knowledge_file_id?: Prisma.UuidNullableFilter<"knowledge_base"> | string | null
   agent_configs?: Prisma.XOR<Prisma.Agent_configsScalarRelationFilter, Prisma.agent_configsWhereInput>
+  knowledge_files?: Prisma.XOR<Prisma.Knowledge_filesNullableScalarRelationFilter, Prisma.knowledge_filesWhereInput> | null
 }, "id">
 
 export type knowledge_baseOrderByWithAggregationInput = {
@@ -312,6 +327,7 @@ export type knowledge_baseOrderByWithAggregationInput = {
   file_size?: Prisma.SortOrderInput | Prisma.SortOrder
   file_type?: Prisma.SortOrderInput | Prisma.SortOrder
   chunk_index?: Prisma.SortOrderInput | Prisma.SortOrder
+  knowledge_file_id?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.knowledge_baseCountOrderByAggregateInput
   _avg?: Prisma.knowledge_baseAvgOrderByAggregateInput
   _max?: Prisma.knowledge_baseMaxOrderByAggregateInput
@@ -334,6 +350,7 @@ export type knowledge_baseScalarWhereWithAggregatesInput = {
   file_size?: Prisma.IntNullableWithAggregatesFilter<"knowledge_base"> | number | null
   file_type?: Prisma.StringNullableWithAggregatesFilter<"knowledge_base"> | string | null
   chunk_index?: Prisma.IntNullableWithAggregatesFilter<"knowledge_base"> | number | null
+  knowledge_file_id?: Prisma.UuidNullableWithAggregatesFilter<"knowledge_base"> | string | null
 }
 
 export type knowledge_baseCreateInput = {
@@ -348,6 +365,7 @@ export type knowledge_baseCreateInput = {
   file_type?: string | null
   chunk_index?: number | null
   agent_configs: Prisma.agent_configsCreateNestedOneWithoutKnowledge_baseInput
+  knowledge_files?: Prisma.knowledge_filesCreateNestedOneWithoutKnowledge_baseInput
 }
 
 export type knowledge_baseUncheckedCreateInput = {
@@ -362,6 +380,7 @@ export type knowledge_baseUncheckedCreateInput = {
   file_size?: number | null
   file_type?: string | null
   chunk_index?: number | null
+  knowledge_file_id?: string | null
 }
 
 export type knowledge_baseUpdateInput = {
@@ -376,6 +395,7 @@ export type knowledge_baseUpdateInput = {
   file_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chunk_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   agent_configs?: Prisma.agent_configsUpdateOneRequiredWithoutKnowledge_baseNestedInput
+  knowledge_files?: Prisma.knowledge_filesUpdateOneWithoutKnowledge_baseNestedInput
 }
 
 export type knowledge_baseUncheckedUpdateInput = {
@@ -390,6 +410,7 @@ export type knowledge_baseUncheckedUpdateInput = {
   file_size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   file_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chunk_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  knowledge_file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type knowledge_baseCreateManyInput = {
@@ -404,6 +425,7 @@ export type knowledge_baseCreateManyInput = {
   file_size?: number | null
   file_type?: string | null
   chunk_index?: number | null
+  knowledge_file_id?: string | null
 }
 
 export type knowledge_baseUpdateManyMutationInput = {
@@ -431,6 +453,7 @@ export type knowledge_baseUncheckedUpdateManyInput = {
   file_size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   file_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chunk_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  knowledge_file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type Knowledge_baseListRelationFilter = {
@@ -455,6 +478,7 @@ export type knowledge_baseCountOrderByAggregateInput = {
   file_size?: Prisma.SortOrder
   file_type?: Prisma.SortOrder
   chunk_index?: Prisma.SortOrder
+  knowledge_file_id?: Prisma.SortOrder
 }
 
 export type knowledge_baseAvgOrderByAggregateInput = {
@@ -473,6 +497,7 @@ export type knowledge_baseMaxOrderByAggregateInput = {
   file_size?: Prisma.SortOrder
   file_type?: Prisma.SortOrder
   chunk_index?: Prisma.SortOrder
+  knowledge_file_id?: Prisma.SortOrder
 }
 
 export type knowledge_baseMinOrderByAggregateInput = {
@@ -486,6 +511,7 @@ export type knowledge_baseMinOrderByAggregateInput = {
   file_size?: Prisma.SortOrder
   file_type?: Prisma.SortOrder
   chunk_index?: Prisma.SortOrder
+  knowledge_file_id?: Prisma.SortOrder
 }
 
 export type knowledge_baseSumOrderByAggregateInput = {
@@ -543,6 +569,48 @@ export type NullableIntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type knowledge_baseCreateNestedManyWithoutKnowledge_filesInput = {
+  create?: Prisma.XOR<Prisma.knowledge_baseCreateWithoutKnowledge_filesInput, Prisma.knowledge_baseUncheckedCreateWithoutKnowledge_filesInput> | Prisma.knowledge_baseCreateWithoutKnowledge_filesInput[] | Prisma.knowledge_baseUncheckedCreateWithoutKnowledge_filesInput[]
+  connectOrCreate?: Prisma.knowledge_baseCreateOrConnectWithoutKnowledge_filesInput | Prisma.knowledge_baseCreateOrConnectWithoutKnowledge_filesInput[]
+  createMany?: Prisma.knowledge_baseCreateManyKnowledge_filesInputEnvelope
+  connect?: Prisma.knowledge_baseWhereUniqueInput | Prisma.knowledge_baseWhereUniqueInput[]
+}
+
+export type knowledge_baseUncheckedCreateNestedManyWithoutKnowledge_filesInput = {
+  create?: Prisma.XOR<Prisma.knowledge_baseCreateWithoutKnowledge_filesInput, Prisma.knowledge_baseUncheckedCreateWithoutKnowledge_filesInput> | Prisma.knowledge_baseCreateWithoutKnowledge_filesInput[] | Prisma.knowledge_baseUncheckedCreateWithoutKnowledge_filesInput[]
+  connectOrCreate?: Prisma.knowledge_baseCreateOrConnectWithoutKnowledge_filesInput | Prisma.knowledge_baseCreateOrConnectWithoutKnowledge_filesInput[]
+  createMany?: Prisma.knowledge_baseCreateManyKnowledge_filesInputEnvelope
+  connect?: Prisma.knowledge_baseWhereUniqueInput | Prisma.knowledge_baseWhereUniqueInput[]
+}
+
+export type knowledge_baseUpdateManyWithoutKnowledge_filesNestedInput = {
+  create?: Prisma.XOR<Prisma.knowledge_baseCreateWithoutKnowledge_filesInput, Prisma.knowledge_baseUncheckedCreateWithoutKnowledge_filesInput> | Prisma.knowledge_baseCreateWithoutKnowledge_filesInput[] | Prisma.knowledge_baseUncheckedCreateWithoutKnowledge_filesInput[]
+  connectOrCreate?: Prisma.knowledge_baseCreateOrConnectWithoutKnowledge_filesInput | Prisma.knowledge_baseCreateOrConnectWithoutKnowledge_filesInput[]
+  upsert?: Prisma.knowledge_baseUpsertWithWhereUniqueWithoutKnowledge_filesInput | Prisma.knowledge_baseUpsertWithWhereUniqueWithoutKnowledge_filesInput[]
+  createMany?: Prisma.knowledge_baseCreateManyKnowledge_filesInputEnvelope
+  set?: Prisma.knowledge_baseWhereUniqueInput | Prisma.knowledge_baseWhereUniqueInput[]
+  disconnect?: Prisma.knowledge_baseWhereUniqueInput | Prisma.knowledge_baseWhereUniqueInput[]
+  delete?: Prisma.knowledge_baseWhereUniqueInput | Prisma.knowledge_baseWhereUniqueInput[]
+  connect?: Prisma.knowledge_baseWhereUniqueInput | Prisma.knowledge_baseWhereUniqueInput[]
+  update?: Prisma.knowledge_baseUpdateWithWhereUniqueWithoutKnowledge_filesInput | Prisma.knowledge_baseUpdateWithWhereUniqueWithoutKnowledge_filesInput[]
+  updateMany?: Prisma.knowledge_baseUpdateManyWithWhereWithoutKnowledge_filesInput | Prisma.knowledge_baseUpdateManyWithWhereWithoutKnowledge_filesInput[]
+  deleteMany?: Prisma.knowledge_baseScalarWhereInput | Prisma.knowledge_baseScalarWhereInput[]
+}
+
+export type knowledge_baseUncheckedUpdateManyWithoutKnowledge_filesNestedInput = {
+  create?: Prisma.XOR<Prisma.knowledge_baseCreateWithoutKnowledge_filesInput, Prisma.knowledge_baseUncheckedCreateWithoutKnowledge_filesInput> | Prisma.knowledge_baseCreateWithoutKnowledge_filesInput[] | Prisma.knowledge_baseUncheckedCreateWithoutKnowledge_filesInput[]
+  connectOrCreate?: Prisma.knowledge_baseCreateOrConnectWithoutKnowledge_filesInput | Prisma.knowledge_baseCreateOrConnectWithoutKnowledge_filesInput[]
+  upsert?: Prisma.knowledge_baseUpsertWithWhereUniqueWithoutKnowledge_filesInput | Prisma.knowledge_baseUpsertWithWhereUniqueWithoutKnowledge_filesInput[]
+  createMany?: Prisma.knowledge_baseCreateManyKnowledge_filesInputEnvelope
+  set?: Prisma.knowledge_baseWhereUniqueInput | Prisma.knowledge_baseWhereUniqueInput[]
+  disconnect?: Prisma.knowledge_baseWhereUniqueInput | Prisma.knowledge_baseWhereUniqueInput[]
+  delete?: Prisma.knowledge_baseWhereUniqueInput | Prisma.knowledge_baseWhereUniqueInput[]
+  connect?: Prisma.knowledge_baseWhereUniqueInput | Prisma.knowledge_baseWhereUniqueInput[]
+  update?: Prisma.knowledge_baseUpdateWithWhereUniqueWithoutKnowledge_filesInput | Prisma.knowledge_baseUpdateWithWhereUniqueWithoutKnowledge_filesInput[]
+  updateMany?: Prisma.knowledge_baseUpdateManyWithWhereWithoutKnowledge_filesInput | Prisma.knowledge_baseUpdateManyWithWhereWithoutKnowledge_filesInput[]
+  deleteMany?: Prisma.knowledge_baseScalarWhereInput | Prisma.knowledge_baseScalarWhereInput[]
+}
+
 export type knowledge_baseCreateWithoutAgent_configsInput = {
   id?: string
   title: string
@@ -554,6 +622,7 @@ export type knowledge_baseCreateWithoutAgent_configsInput = {
   file_size?: number | null
   file_type?: string | null
   chunk_index?: number | null
+  knowledge_files?: Prisma.knowledge_filesCreateNestedOneWithoutKnowledge_baseInput
 }
 
 export type knowledge_baseUncheckedCreateWithoutAgent_configsInput = {
@@ -567,6 +636,7 @@ export type knowledge_baseUncheckedCreateWithoutAgent_configsInput = {
   file_size?: number | null
   file_type?: string | null
   chunk_index?: number | null
+  knowledge_file_id?: string | null
 }
 
 export type knowledge_baseCreateOrConnectWithoutAgent_configsInput = {
@@ -610,6 +680,61 @@ export type knowledge_baseScalarWhereInput = {
   file_size?: Prisma.IntNullableFilter<"knowledge_base"> | number | null
   file_type?: Prisma.StringNullableFilter<"knowledge_base"> | string | null
   chunk_index?: Prisma.IntNullableFilter<"knowledge_base"> | number | null
+  knowledge_file_id?: Prisma.UuidNullableFilter<"knowledge_base"> | string | null
+}
+
+export type knowledge_baseCreateWithoutKnowledge_filesInput = {
+  id?: string
+  title: string
+  content: string
+  content_type?: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  file_size?: number | null
+  file_type?: string | null
+  chunk_index?: number | null
+  agent_configs: Prisma.agent_configsCreateNestedOneWithoutKnowledge_baseInput
+}
+
+export type knowledge_baseUncheckedCreateWithoutKnowledge_filesInput = {
+  id?: string
+  agent_config_id: string
+  title: string
+  content: string
+  content_type?: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  file_size?: number | null
+  file_type?: string | null
+  chunk_index?: number | null
+}
+
+export type knowledge_baseCreateOrConnectWithoutKnowledge_filesInput = {
+  where: Prisma.knowledge_baseWhereUniqueInput
+  create: Prisma.XOR<Prisma.knowledge_baseCreateWithoutKnowledge_filesInput, Prisma.knowledge_baseUncheckedCreateWithoutKnowledge_filesInput>
+}
+
+export type knowledge_baseCreateManyKnowledge_filesInputEnvelope = {
+  data: Prisma.knowledge_baseCreateManyKnowledge_filesInput | Prisma.knowledge_baseCreateManyKnowledge_filesInput[]
+  skipDuplicates?: boolean
+}
+
+export type knowledge_baseUpsertWithWhereUniqueWithoutKnowledge_filesInput = {
+  where: Prisma.knowledge_baseWhereUniqueInput
+  update: Prisma.XOR<Prisma.knowledge_baseUpdateWithoutKnowledge_filesInput, Prisma.knowledge_baseUncheckedUpdateWithoutKnowledge_filesInput>
+  create: Prisma.XOR<Prisma.knowledge_baseCreateWithoutKnowledge_filesInput, Prisma.knowledge_baseUncheckedCreateWithoutKnowledge_filesInput>
+}
+
+export type knowledge_baseUpdateWithWhereUniqueWithoutKnowledge_filesInput = {
+  where: Prisma.knowledge_baseWhereUniqueInput
+  data: Prisma.XOR<Prisma.knowledge_baseUpdateWithoutKnowledge_filesInput, Prisma.knowledge_baseUncheckedUpdateWithoutKnowledge_filesInput>
+}
+
+export type knowledge_baseUpdateManyWithWhereWithoutKnowledge_filesInput = {
+  where: Prisma.knowledge_baseScalarWhereInput
+  data: Prisma.XOR<Prisma.knowledge_baseUpdateManyMutationInput, Prisma.knowledge_baseUncheckedUpdateManyWithoutKnowledge_filesInput>
 }
 
 export type knowledge_baseCreateManyAgent_configsInput = {
@@ -623,6 +748,7 @@ export type knowledge_baseCreateManyAgent_configsInput = {
   file_size?: number | null
   file_type?: string | null
   chunk_index?: number | null
+  knowledge_file_id?: string | null
 }
 
 export type knowledge_baseUpdateWithoutAgent_configsInput = {
@@ -636,6 +762,7 @@ export type knowledge_baseUpdateWithoutAgent_configsInput = {
   file_size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   file_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chunk_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  knowledge_files?: Prisma.knowledge_filesUpdateOneWithoutKnowledge_baseNestedInput
 }
 
 export type knowledge_baseUncheckedUpdateWithoutAgent_configsInput = {
@@ -649,10 +776,68 @@ export type knowledge_baseUncheckedUpdateWithoutAgent_configsInput = {
   file_size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   file_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chunk_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  knowledge_file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type knowledge_baseUncheckedUpdateManyWithoutAgent_configsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  content_type?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  file_size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  file_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chunk_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  knowledge_file_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type knowledge_baseCreateManyKnowledge_filesInput = {
+  id?: string
+  agent_config_id: string
+  title: string
+  content: string
+  content_type?: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  file_size?: number | null
+  file_type?: string | null
+  chunk_index?: number | null
+}
+
+export type knowledge_baseUpdateWithoutKnowledge_filesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  content_type?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  file_size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  file_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chunk_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  agent_configs?: Prisma.agent_configsUpdateOneRequiredWithoutKnowledge_baseNestedInput
+}
+
+export type knowledge_baseUncheckedUpdateWithoutKnowledge_filesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  agent_config_id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  content_type?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  file_size?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  file_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chunk_index?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+}
+
+export type knowledge_baseUncheckedUpdateManyWithoutKnowledge_filesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  agent_config_id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   content_type?: Prisma.StringFieldUpdateOperationsInput | string
@@ -678,7 +863,9 @@ export type knowledge_baseSelect<ExtArgs extends runtime.Types.Extensions.Intern
   file_size?: boolean
   file_type?: boolean
   chunk_index?: boolean
+  knowledge_file_id?: boolean
   agent_configs?: boolean | Prisma.agent_configsDefaultArgs<ExtArgs>
+  knowledge_files?: boolean | Prisma.knowledge_base$knowledge_filesArgs<ExtArgs>
 }, ExtArgs["result"]["knowledge_base"]>
 
 export type knowledge_baseSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -693,7 +880,9 @@ export type knowledge_baseSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   file_size?: boolean
   file_type?: boolean
   chunk_index?: boolean
+  knowledge_file_id?: boolean
   agent_configs?: boolean | Prisma.agent_configsDefaultArgs<ExtArgs>
+  knowledge_files?: boolean | Prisma.knowledge_base$knowledge_filesArgs<ExtArgs>
 }, ExtArgs["result"]["knowledge_base"]>
 
 export type knowledge_baseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -708,7 +897,9 @@ export type knowledge_baseSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   file_size?: boolean
   file_type?: boolean
   chunk_index?: boolean
+  knowledge_file_id?: boolean
   agent_configs?: boolean | Prisma.agent_configsDefaultArgs<ExtArgs>
+  knowledge_files?: boolean | Prisma.knowledge_base$knowledge_filesArgs<ExtArgs>
 }, ExtArgs["result"]["knowledge_base"]>
 
 export type knowledge_baseSelectScalar = {
@@ -723,23 +914,28 @@ export type knowledge_baseSelectScalar = {
   file_size?: boolean
   file_type?: boolean
   chunk_index?: boolean
+  knowledge_file_id?: boolean
 }
 
-export type knowledge_baseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "agent_config_id" | "title" | "content" | "content_type" | "metadata" | "created_at" | "updated_at" | "file_size" | "file_type" | "chunk_index", ExtArgs["result"]["knowledge_base"]>
+export type knowledge_baseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "agent_config_id" | "title" | "content" | "content_type" | "metadata" | "created_at" | "updated_at" | "file_size" | "file_type" | "chunk_index" | "knowledge_file_id", ExtArgs["result"]["knowledge_base"]>
 export type knowledge_baseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agent_configs?: boolean | Prisma.agent_configsDefaultArgs<ExtArgs>
+  knowledge_files?: boolean | Prisma.knowledge_base$knowledge_filesArgs<ExtArgs>
 }
 export type knowledge_baseIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agent_configs?: boolean | Prisma.agent_configsDefaultArgs<ExtArgs>
+  knowledge_files?: boolean | Prisma.knowledge_base$knowledge_filesArgs<ExtArgs>
 }
 export type knowledge_baseIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agent_configs?: boolean | Prisma.agent_configsDefaultArgs<ExtArgs>
+  knowledge_files?: boolean | Prisma.knowledge_base$knowledge_filesArgs<ExtArgs>
 }
 
 export type $knowledge_basePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "knowledge_base"
   objects: {
     agent_configs: Prisma.$agent_configsPayload<ExtArgs>
+    knowledge_files: Prisma.$knowledge_filesPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -753,6 +949,7 @@ export type $knowledge_basePayload<ExtArgs extends runtime.Types.Extensions.Inte
     file_size: number | null
     file_type: string | null
     chunk_index: number | null
+    knowledge_file_id: string | null
   }, ExtArgs["result"]["knowledge_base"]>
   composites: {}
 }
@@ -1148,6 +1345,7 @@ readonly fields: knowledge_baseFieldRefs;
 export interface Prisma__knowledge_baseClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   agent_configs<T extends Prisma.agent_configsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.agent_configsDefaultArgs<ExtArgs>>): Prisma.Prisma__agent_configsClient<runtime.Types.Result.GetResult<Prisma.$agent_configsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  knowledge_files<T extends Prisma.knowledge_base$knowledge_filesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.knowledge_base$knowledge_filesArgs<ExtArgs>>): Prisma.Prisma__knowledge_filesClient<runtime.Types.Result.GetResult<Prisma.$knowledge_filesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1188,6 +1386,7 @@ export interface knowledge_baseFieldRefs {
   readonly file_size: Prisma.FieldRef<"knowledge_base", 'Int'>
   readonly file_type: Prisma.FieldRef<"knowledge_base", 'String'>
   readonly chunk_index: Prisma.FieldRef<"knowledge_base", 'Int'>
+  readonly knowledge_file_id: Prisma.FieldRef<"knowledge_base", 'String'>
 }
     
 
@@ -1581,6 +1780,25 @@ export type knowledge_baseDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many knowledge_bases to delete.
    */
   limit?: number
+}
+
+/**
+ * knowledge_base.knowledge_files
+ */
+export type knowledge_base$knowledge_filesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the knowledge_files
+   */
+  select?: Prisma.knowledge_filesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the knowledge_files
+   */
+  omit?: Prisma.knowledge_filesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.knowledge_filesInclude<ExtArgs> | null
+  where?: Prisma.knowledge_filesWhereInput
 }
 
 /**

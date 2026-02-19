@@ -3,23 +3,40 @@ const props = defineProps<{
   agentId: string
 }>()
 
-const { getKnowledge, addKnowledge, updateKnowledge, deleteKnowledge, uploadDocument } = useAgent()
+const { getKnowledge, addKnowledge, updateKnowledge, deleteKnowledge, uploadDocument, deleteKnowledgeFile } = useAgent()
 const toast = useToast()
 const { can } = usePermissions()
 
-interface KnowledgeEntry {
+interface KnowledgeFileItem {
+  kind: 'file'
+  id: string
+  title: string
+  file_name: string
+  file_size: number
+  file_type: string
+  content_type: string
+  chunk_count: number
+  created_at: string
+  updated_at: string
+}
+
+interface KnowledgeEntryItem {
+  kind: 'entry'
   id: string
   title: string
   content: string
   content_type: string
   created_at: string
+  updated_at: string
 }
 
-const entries = ref<KnowledgeEntry[]>([])
+type KnowledgeListItem = KnowledgeFileItem | KnowledgeEntryItem
+
+const entries = ref<KnowledgeListItem[]>([])
 const loading = ref(false)
 const uploading = ref(false)
 const showForm = ref(false)
-const editingEntry = ref<KnowledgeEntry | null>(null)
+const editingEntry = ref<KnowledgeEntryItem | null>(null)
 const selectedFile = ref<File | null>(null)
 
 const form = reactive({
@@ -42,10 +59,16 @@ const contentTypeBadgeColor: Record<string, 'primary' | 'success' | 'warning'> =
 
 const isDocumentType = computed(() => form.content_type === 'document')
 
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
 async function fetchEntries() {
   loading.value = true
   try {
-    const res = await getKnowledge(props.agentId) as { data: KnowledgeEntry[] }
+    const res = await getKnowledge(props.agentId) as { data: KnowledgeListItem[] }
     entries.value = res.data
   } catch {
     toast.add({ title: 'Failed to load knowledge base', color: 'error' })
@@ -63,15 +86,19 @@ function openAddForm() {
   showForm.value = true
 }
 
-function openEditForm(entry: KnowledgeEntry) {
-  if (entry.content_type === 'document') {
+function openEditForm(item: KnowledgeListItem) {
+  if (item.kind === 'file') {
+    toast.add({ title: 'Arquivos não podem ser editados. Delete e envie novamente.', color: 'warning' })
+    return
+  }
+  if (item.content_type === 'document') {
     toast.add({ title: 'Document entries cannot be edited. Delete and re-upload instead.', color: 'warning' })
     return
   }
-  editingEntry.value = entry
-  form.title = entry.title
-  form.content = entry.content
-  form.content_type = entry.content_type
+  editingEntry.value = item
+  form.title = item.title
+  form.content = item.content
+  form.content_type = item.content_type
   showForm.value = true
 }
 
@@ -135,13 +162,18 @@ async function submitForm() {
   }
 }
 
-async function removeEntry(entry: KnowledgeEntry) {
+async function removeEntry(item: KnowledgeListItem) {
   try {
-    await deleteKnowledge(props.agentId, entry.id)
-    toast.add({ title: 'Entry removed', color: 'success' })
+    if (item.kind === 'file') {
+      await deleteKnowledgeFile(props.agentId, item.id)
+      toast.add({ title: 'Arquivo e todos os chunks removidos', color: 'success' })
+    } else {
+      await deleteKnowledge(props.agentId, item.id)
+      toast.add({ title: 'Entry removed', color: 'success' })
+    }
     await fetchEntries()
   } catch {
-    toast.add({ title: 'Failed to remove entry', color: 'error' })
+    toast.add({ title: 'Failed to remove item', color: 'error' })
   }
 }
 
@@ -255,46 +287,86 @@ watch(() => props.agentId, () => fetchEntries(), { immediate: true })
       v-else
       class="space-y-3"
     >
-      <UCard
-        v-for="entry in entries"
-        :key="entry.id"
+      <template
+        v-for="item in entries"
+        :key="item.id"
       >
-        <div class="flex items-start justify-between gap-4">
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="font-medium">{{ entry.title }}</span>
-              <UBadge
-                :color="contentTypeBadgeColor[entry.content_type] || 'primary'"
-                variant="subtle"
-                size="xs"
-              >
-                {{ entry.content_type }}
-              </UBadge>
+        <!-- Card de arquivo (kind === 'file') -->
+        <UCard v-if="item.kind === 'file'">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <UIcon
+                  name="i-heroicons-document-text"
+                  class="text-warning-500 shrink-0 size-4"
+                />
+                <span class="font-medium">{{ item.title }}</span>
+                <UBadge
+                  color="warning"
+                  variant="subtle"
+                  size="xs"
+                >
+                  document
+                </UBadge>
+              </div>
+              <div class="flex flex-wrap gap-3 text-xs text-muted mt-1">
+                <span>{{ item.file_name }}</span>
+                <span>{{ formatFileSize(item.file_size) }}</span>
+                <span>{{ item.chunk_count }} chunks</span>
+              </div>
             </div>
-            <p class="text-sm text-muted truncate">
-              {{ entry.content.slice(0, 200) }}{{ entry.content.length > 200 ? '...' : '' }}
-            </p>
+            <div class="flex gap-1 shrink-0">
+              <UButton
+                v-if="can('knowledge.delete')"
+                icon="i-heroicons-trash"
+                variant="ghost"
+                size="xs"
+                color="error"
+                @click="removeEntry(item)"
+              />
+            </div>
           </div>
-          <div class="flex gap-1 shrink-0">
-            <UButton
-              v-if="can('knowledge.update') && entry.content_type !== 'document'"
-              icon="i-heroicons-pencil-square"
-              variant="ghost"
-              size="xs"
-              color="neutral"
-              @click="openEditForm(entry)"
-            />
-            <UButton
-              v-if="can('knowledge.delete')"
-              icon="i-heroicons-trash"
-              variant="ghost"
-              size="xs"
-              color="error"
-              @click="removeEntry(entry)"
-            />
+        </UCard>
+
+        <!-- Card de entrada standalone (kind === 'entry') -->
+        <UCard v-else>
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-medium">{{ item.title }}</span>
+                <UBadge
+                  :color="contentTypeBadgeColor[item.content_type] || 'primary'"
+                  variant="subtle"
+                  size="xs"
+                >
+                  {{ item.content_type }}
+                </UBadge>
+              </div>
+              <p class="text-sm text-muted truncate">
+                {{ item.content.slice(0, 200) }}{{ item.content.length > 200 ? '...' : '' }}
+              </p>
+            </div>
+            <div class="flex gap-1 shrink-0">
+              <UButton
+                v-if="can('knowledge.update') && item.content_type !== 'document'"
+                icon="i-heroicons-pencil-square"
+                variant="ghost"
+                size="xs"
+                color="neutral"
+                @click="openEditForm(item)"
+              />
+              <UButton
+                v-if="can('knowledge.delete')"
+                icon="i-heroicons-trash"
+                variant="ghost"
+                size="xs"
+                color="error"
+                @click="removeEntry(item)"
+              />
+            </div>
           </div>
-        </div>
-      </UCard>
+        </UCard>
+      </template>
     </div>
   </div>
 </template>

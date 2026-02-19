@@ -268,6 +268,25 @@ export interface KnowledgeBase {
   file_size: number | null
   file_type: string | null
   chunk_index: number | null
+  knowledge_file_id: string | null
   created_at: Date
   updated_at: Date
 }
+
+export interface KnowledgeFile {
+  id: string
+  agent_config_id: string
+  title: string
+  file_name: string
+  file_size: number
+  file_type: string
+  content_type: string
+  chunk_count: number
+  metadata: Record<string, unknown>
+  created_at: Date
+  updated_at: Date
+}
+
+export type KnowledgeListItem =
+  | { kind: 'file'; id: string; title: string; file_name: string; file_size: number; file_type: string; content_type: string; chunk_count: number; created_at: Date; updated_at: Date }
+  | { kind: 'entry'; id: string; title: string; content: string; content_type: string; created_at: Date; updated_at: Date }

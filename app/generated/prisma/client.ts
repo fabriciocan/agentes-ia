@@ -87,8 +87,15 @@ export type end_users = Prisma.end_usersModel
 /**
  * Model knowledge_base
  * Embeddings are stored in Qdrant. The UUID here is used as the Qdrant point ID.
+ * knowledge_file_id NULL = entrada standalone (texto/FAQ) visível na UI.
+ * knowledge_file_id preenchido = chunk de arquivo agrupado em knowledge_files (oculto na UI).
  */
 export type knowledge_base = Prisma.knowledge_baseModel
+/**
+ * Model knowledge_files
+ * Um registro por arquivo enviado. Os chunks em knowledge_base com knowledge_file_id apontando aqui ficam ocultos na UI.
+ */
+export type knowledge_files = Prisma.knowledge_filesModel
 /**
  * Model messages
  * 

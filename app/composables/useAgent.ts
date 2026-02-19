@@ -69,6 +69,13 @@ export function useAgent() {
     })
   }
 
+  async function deleteKnowledgeFile(agentId: string, fileId: string) {
+    return $fetch(`/api/admin/agents/${agentId}/knowledge/files/${fileId}`, {
+      method: 'DELETE',
+      headers: useAdminHeaders()
+    })
+  }
+
   async function connectWhatsApp(agentId: string) {
     return $fetch(`/api/admin/agents/${agentId}/whatsapp/connect`, {
       method: 'POST'
@@ -103,6 +110,7 @@ export function useAgent() {
     updateKnowledge,
     deleteKnowledge,
     uploadDocument,
+    deleteKnowledgeFile,
     connectWhatsApp,
     getWhatsAppStatus,
     disconnectWhatsApp,
