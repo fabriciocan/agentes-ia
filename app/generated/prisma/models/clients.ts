@@ -192,6 +192,7 @@ export type clientsWhereInput = {
   updated_at?: Prisma.DateTimeFilter<"clients"> | Date | string
   admin_users?: Prisma.Admin_usersListRelationFilter
   agent_configs?: Prisma.Agent_configsListRelationFilter
+  chats?: Prisma.ChatsListRelationFilter
   companies?: Prisma.CompaniesListRelationFilter
   conversations?: Prisma.ConversationsListRelationFilter
   end_users?: Prisma.End_usersListRelationFilter
@@ -206,6 +207,7 @@ export type clientsOrderByWithRelationInput = {
   updated_at?: Prisma.SortOrder
   admin_users?: Prisma.admin_usersOrderByRelationAggregateInput
   agent_configs?: Prisma.agent_configsOrderByRelationAggregateInput
+  chats?: Prisma.chatsOrderByRelationAggregateInput
   companies?: Prisma.companiesOrderByRelationAggregateInput
   conversations?: Prisma.conversationsOrderByRelationAggregateInput
   end_users?: Prisma.end_usersOrderByRelationAggregateInput
@@ -223,6 +225,7 @@ export type clientsWhereUniqueInput = Prisma.AtLeast<{
   updated_at?: Prisma.DateTimeFilter<"clients"> | Date | string
   admin_users?: Prisma.Admin_usersListRelationFilter
   agent_configs?: Prisma.Agent_configsListRelationFilter
+  chats?: Prisma.ChatsListRelationFilter
   companies?: Prisma.CompaniesListRelationFilter
   conversations?: Prisma.ConversationsListRelationFilter
   end_users?: Prisma.End_usersListRelationFilter
@@ -261,6 +264,7 @@ export type clientsCreateInput = {
   updated_at?: Date | string
   admin_users?: Prisma.admin_usersCreateNestedManyWithoutClientsInput
   agent_configs?: Prisma.agent_configsCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
@@ -275,6 +279,7 @@ export type clientsUncheckedCreateInput = {
   updated_at?: Date | string
   admin_users?: Prisma.admin_usersUncheckedCreateNestedManyWithoutClientsInput
   agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsUncheckedCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
@@ -289,6 +294,7 @@ export type clientsUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admin_users?: Prisma.admin_usersUpdateManyWithoutClientsNestedInput
   agent_configs?: Prisma.agent_configsUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
@@ -303,6 +309,7 @@ export type clientsUncheckedUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admin_users?: Prisma.admin_usersUncheckedUpdateManyWithoutClientsNestedInput
   agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUncheckedUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
@@ -437,6 +444,20 @@ export type clientsUpdateOneRequiredWithoutEnd_usersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.clientsUpdateToOneWithWhereWithoutEnd_usersInput, Prisma.clientsUpdateWithoutEnd_usersInput>, Prisma.clientsUncheckedUpdateWithoutEnd_usersInput>
 }
 
+export type clientsCreateNestedOneWithoutChatsInput = {
+  create?: Prisma.XOR<Prisma.clientsCreateWithoutChatsInput, Prisma.clientsUncheckedCreateWithoutChatsInput>
+  connectOrCreate?: Prisma.clientsCreateOrConnectWithoutChatsInput
+  connect?: Prisma.clientsWhereUniqueInput
+}
+
+export type clientsUpdateOneRequiredWithoutChatsNestedInput = {
+  create?: Prisma.XOR<Prisma.clientsCreateWithoutChatsInput, Prisma.clientsUncheckedCreateWithoutChatsInput>
+  connectOrCreate?: Prisma.clientsCreateOrConnectWithoutChatsInput
+  upsert?: Prisma.clientsUpsertWithoutChatsInput
+  connect?: Prisma.clientsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.clientsUpdateToOneWithWhereWithoutChatsInput, Prisma.clientsUpdateWithoutChatsInput>, Prisma.clientsUncheckedUpdateWithoutChatsInput>
+}
+
 export type clientsCreateWithoutAdmin_usersInput = {
   id?: string
   name: string
@@ -445,6 +466,7 @@ export type clientsCreateWithoutAdmin_usersInput = {
   created_at?: Date | string
   updated_at?: Date | string
   agent_configs?: Prisma.agent_configsCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
@@ -458,6 +480,7 @@ export type clientsUncheckedCreateWithoutAdmin_usersInput = {
   created_at?: Date | string
   updated_at?: Date | string
   agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsUncheckedCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
@@ -487,6 +510,7 @@ export type clientsUpdateWithoutAdmin_usersInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent_configs?: Prisma.agent_configsUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
@@ -500,6 +524,7 @@ export type clientsUncheckedUpdateWithoutAdmin_usersInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUncheckedUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
@@ -513,6 +538,7 @@ export type clientsCreateWithoutAgent_configsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   admin_users?: Prisma.admin_usersCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
@@ -526,6 +552,7 @@ export type clientsUncheckedCreateWithoutAgent_configsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   admin_users?: Prisma.admin_usersUncheckedCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsUncheckedCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
@@ -555,6 +582,7 @@ export type clientsUpdateWithoutAgent_configsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admin_users?: Prisma.admin_usersUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
@@ -568,6 +596,7 @@ export type clientsUncheckedUpdateWithoutAgent_configsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admin_users?: Prisma.admin_usersUncheckedUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUncheckedUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
@@ -582,6 +611,7 @@ export type clientsCreateWithoutCompaniesInput = {
   updated_at?: Date | string
   admin_users?: Prisma.admin_usersCreateNestedManyWithoutClientsInput
   agent_configs?: Prisma.agent_configsCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
 }
@@ -595,6 +625,7 @@ export type clientsUncheckedCreateWithoutCompaniesInput = {
   updated_at?: Date | string
   admin_users?: Prisma.admin_usersUncheckedCreateNestedManyWithoutClientsInput
   agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsUncheckedCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
 }
@@ -624,6 +655,7 @@ export type clientsUpdateWithoutCompaniesInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admin_users?: Prisma.admin_usersUpdateManyWithoutClientsNestedInput
   agent_configs?: Prisma.agent_configsUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
 }
@@ -637,6 +669,7 @@ export type clientsUncheckedUpdateWithoutCompaniesInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admin_users?: Prisma.admin_usersUncheckedUpdateManyWithoutClientsNestedInput
   agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUncheckedUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
 }
@@ -650,6 +683,7 @@ export type clientsCreateWithoutConversationsInput = {
   updated_at?: Date | string
   admin_users?: Prisma.admin_usersCreateNestedManyWithoutClientsInput
   agent_configs?: Prisma.agent_configsCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
 }
@@ -663,6 +697,7 @@ export type clientsUncheckedCreateWithoutConversationsInput = {
   updated_at?: Date | string
   admin_users?: Prisma.admin_usersUncheckedCreateNestedManyWithoutClientsInput
   agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsUncheckedCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
 }
@@ -692,6 +727,7 @@ export type clientsUpdateWithoutConversationsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admin_users?: Prisma.admin_usersUpdateManyWithoutClientsNestedInput
   agent_configs?: Prisma.agent_configsUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
 }
@@ -705,6 +741,7 @@ export type clientsUncheckedUpdateWithoutConversationsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admin_users?: Prisma.admin_usersUncheckedUpdateManyWithoutClientsNestedInput
   agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUncheckedUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
 }
@@ -718,6 +755,7 @@ export type clientsCreateWithoutEnd_usersInput = {
   updated_at?: Date | string
   admin_users?: Prisma.admin_usersCreateNestedManyWithoutClientsInput
   agent_configs?: Prisma.agent_configsCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
 }
@@ -731,6 +769,7 @@ export type clientsUncheckedCreateWithoutEnd_usersInput = {
   updated_at?: Date | string
   admin_users?: Prisma.admin_usersUncheckedCreateNestedManyWithoutClientsInput
   agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsUncheckedCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
 }
@@ -760,6 +799,7 @@ export type clientsUpdateWithoutEnd_usersInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admin_users?: Prisma.admin_usersUpdateManyWithoutClientsNestedInput
   agent_configs?: Prisma.agent_configsUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
 }
@@ -773,8 +813,81 @@ export type clientsUncheckedUpdateWithoutEnd_usersInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   admin_users?: Prisma.admin_usersUncheckedUpdateManyWithoutClientsNestedInput
   agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUncheckedUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
+}
+
+export type clientsCreateWithoutChatsInput = {
+  id?: string
+  name: string
+  slug: string
+  api_key: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  admin_users?: Prisma.admin_usersCreateNestedManyWithoutClientsInput
+  agent_configs?: Prisma.agent_configsCreateNestedManyWithoutClientsInput
+  companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
+  conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
+  end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
+}
+
+export type clientsUncheckedCreateWithoutChatsInput = {
+  id?: string
+  name: string
+  slug: string
+  api_key: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  admin_users?: Prisma.admin_usersUncheckedCreateNestedManyWithoutClientsInput
+  agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutClientsInput
+  companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
+  conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
+  end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
+}
+
+export type clientsCreateOrConnectWithoutChatsInput = {
+  where: Prisma.clientsWhereUniqueInput
+  create: Prisma.XOR<Prisma.clientsCreateWithoutChatsInput, Prisma.clientsUncheckedCreateWithoutChatsInput>
+}
+
+export type clientsUpsertWithoutChatsInput = {
+  update: Prisma.XOR<Prisma.clientsUpdateWithoutChatsInput, Prisma.clientsUncheckedUpdateWithoutChatsInput>
+  create: Prisma.XOR<Prisma.clientsCreateWithoutChatsInput, Prisma.clientsUncheckedCreateWithoutChatsInput>
+  where?: Prisma.clientsWhereInput
+}
+
+export type clientsUpdateToOneWithWhereWithoutChatsInput = {
+  where?: Prisma.clientsWhereInput
+  data: Prisma.XOR<Prisma.clientsUpdateWithoutChatsInput, Prisma.clientsUncheckedUpdateWithoutChatsInput>
+}
+
+export type clientsUpdateWithoutChatsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  api_key?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  admin_users?: Prisma.admin_usersUpdateManyWithoutClientsNestedInput
+  agent_configs?: Prisma.agent_configsUpdateManyWithoutClientsNestedInput
+  companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
+  conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
+  end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
+}
+
+export type clientsUncheckedUpdateWithoutChatsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  api_key?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  admin_users?: Prisma.admin_usersUncheckedUpdateManyWithoutClientsNestedInput
+  agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutClientsNestedInput
+  companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
+  conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
+  end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
 }
 
 
@@ -785,6 +898,7 @@ export type clientsUncheckedUpdateWithoutEnd_usersInput = {
 export type ClientsCountOutputType = {
   admin_users: number
   agent_configs: number
+  chats: number
   companies: number
   conversations: number
   end_users: number
@@ -793,6 +907,7 @@ export type ClientsCountOutputType = {
 export type ClientsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   admin_users?: boolean | ClientsCountOutputTypeCountAdmin_usersArgs
   agent_configs?: boolean | ClientsCountOutputTypeCountAgent_configsArgs
+  chats?: boolean | ClientsCountOutputTypeCountChatsArgs
   companies?: boolean | ClientsCountOutputTypeCountCompaniesArgs
   conversations?: boolean | ClientsCountOutputTypeCountConversationsArgs
   end_users?: boolean | ClientsCountOutputTypeCountEnd_usersArgs
@@ -820,6 +935,13 @@ export type ClientsCountOutputTypeCountAdmin_usersArgs<ExtArgs extends runtime.T
  */
 export type ClientsCountOutputTypeCountAgent_configsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.agent_configsWhereInput
+}
+
+/**
+ * ClientsCountOutputType without action
+ */
+export type ClientsCountOutputTypeCountChatsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.chatsWhereInput
 }
 
 /**
@@ -853,6 +975,7 @@ export type clientsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updated_at?: boolean
   admin_users?: boolean | Prisma.clients$admin_usersArgs<ExtArgs>
   agent_configs?: boolean | Prisma.clients$agent_configsArgs<ExtArgs>
+  chats?: boolean | Prisma.clients$chatsArgs<ExtArgs>
   companies?: boolean | Prisma.clients$companiesArgs<ExtArgs>
   conversations?: boolean | Prisma.clients$conversationsArgs<ExtArgs>
   end_users?: boolean | Prisma.clients$end_usersArgs<ExtArgs>
@@ -890,6 +1013,7 @@ export type clientsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type clientsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   admin_users?: boolean | Prisma.clients$admin_usersArgs<ExtArgs>
   agent_configs?: boolean | Prisma.clients$agent_configsArgs<ExtArgs>
+  chats?: boolean | Prisma.clients$chatsArgs<ExtArgs>
   companies?: boolean | Prisma.clients$companiesArgs<ExtArgs>
   conversations?: boolean | Prisma.clients$conversationsArgs<ExtArgs>
   end_users?: boolean | Prisma.clients$end_usersArgs<ExtArgs>
@@ -903,6 +1027,7 @@ export type $clientsPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     admin_users: Prisma.$admin_usersPayload<ExtArgs>[]
     agent_configs: Prisma.$agent_configsPayload<ExtArgs>[]
+    chats: Prisma.$chatsPayload<ExtArgs>[]
     companies: Prisma.$companiesPayload<ExtArgs>[]
     conversations: Prisma.$conversationsPayload<ExtArgs>[]
     end_users: Prisma.$end_usersPayload<ExtArgs>[]
@@ -1310,6 +1435,7 @@ export interface Prisma__clientsClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   admin_users<T extends Prisma.clients$admin_usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clients$admin_usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$admin_usersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   agent_configs<T extends Prisma.clients$agent_configsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clients$agent_configsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$agent_configsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chats<T extends Prisma.clients$chatsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clients$chatsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$chatsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   companies<T extends Prisma.clients$companiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clients$companiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$companiesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversations<T extends Prisma.clients$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clients$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$conversationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   end_users<T extends Prisma.clients$end_usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clients$end_usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$end_usersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1781,6 +1907,30 @@ export type clients$agent_configsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.Agent_configsScalarFieldEnum | Prisma.Agent_configsScalarFieldEnum[]
+}
+
+/**
+ * clients.chats
+ */
+export type clients$chatsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the chats
+   */
+  select?: Prisma.chatsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the chats
+   */
+  omit?: Prisma.chatsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.chatsInclude<ExtArgs> | null
+  where?: Prisma.chatsWhereInput
+  orderBy?: Prisma.chatsOrderByWithRelationInput | Prisma.chatsOrderByWithRelationInput[]
+  cursor?: Prisma.chatsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatsScalarFieldEnum | Prisma.ChatsScalarFieldEnum[]
 }
 
 /**

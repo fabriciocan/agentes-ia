@@ -71,7 +71,8 @@ export const ModelName = {
   subscriptions: 'subscriptions',
   usage_logs: 'usage_logs',
   user_roles: 'user_roles',
-  users: 'users'
+  users: 'users',
+  chats: 'chats'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -122,7 +123,8 @@ export const Agent_configsScalarFieldEnum = {
   whatsapp_instance_status: 'whatsapp_instance_status',
   whatsapp_number: 'whatsapp_number',
   widget_config: 'widget_config',
-  company_id: 'company_id'
+  company_id: 'company_id',
+  qdrant_collection: 'qdrant_collection'
 } as const
 
 export type Agent_configsScalarFieldEnum = (typeof Agent_configsScalarFieldEnum)[keyof typeof Agent_configsScalarFieldEnum]
@@ -413,6 +415,18 @@ export const UsersScalarFieldEnum = {
 } as const
 
 export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
+
+
+export const ChatsScalarFieldEnum = {
+  id: 'id',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  phone: 'phone',
+  client_id: 'client_id',
+  agent_config_id: 'agent_config_id'
+} as const
+
+export type ChatsScalarFieldEnum = (typeof ChatsScalarFieldEnum)[keyof typeof ChatsScalarFieldEnum]
 
 
 export const SortOrder = {

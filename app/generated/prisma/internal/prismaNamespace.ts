@@ -404,7 +404,8 @@ export const ModelName = {
   subscriptions: 'subscriptions',
   usage_logs: 'usage_logs',
   user_roles: 'user_roles',
-  users: 'users'
+  users: 'users',
+  chats: 'chats'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -420,7 +421,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "admin_users" | "agent_configs" | "audit_logs" | "chat_messages" | "clients" | "companies" | "conversations" | "dados_cliente" | "end_users" | "knowledge_base" | "messages" | "migrations" | "n8n_chat_histories" | "permissions" | "role_permissions" | "roles" | "subscription_plans" | "subscriptions" | "usage_logs" | "user_roles" | "users"
+    modelProps: "admin_users" | "agent_configs" | "audit_logs" | "chat_messages" | "clients" | "companies" | "conversations" | "dados_cliente" | "end_users" | "knowledge_base" | "messages" | "migrations" | "n8n_chat_histories" | "permissions" | "role_permissions" | "roles" | "subscription_plans" | "subscriptions" | "usage_logs" | "user_roles" | "users" | "chats"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1978,6 +1979,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    chats: {
+      payload: Prisma.$chatsPayload<ExtArgs>
+      fields: Prisma.chatsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.chatsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$chatsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.chatsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$chatsPayload>
+        }
+        findFirst: {
+          args: Prisma.chatsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$chatsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.chatsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$chatsPayload>
+        }
+        findMany: {
+          args: Prisma.chatsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$chatsPayload>[]
+        }
+        create: {
+          args: Prisma.chatsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$chatsPayload>
+        }
+        createMany: {
+          args: Prisma.chatsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.chatsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$chatsPayload>[]
+        }
+        delete: {
+          args: Prisma.chatsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$chatsPayload>
+        }
+        update: {
+          args: Prisma.chatsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$chatsPayload>
+        }
+        deleteMany: {
+          args: Prisma.chatsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.chatsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.chatsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$chatsPayload>[]
+        }
+        upsert: {
+          args: Prisma.chatsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$chatsPayload>
+        }
+        aggregate: {
+          args: Prisma.ChatsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChats>
+        }
+        groupBy: {
+          args: Prisma.chatsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.chatsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChatsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2049,7 +2124,8 @@ export const Agent_configsScalarFieldEnum = {
   whatsapp_instance_status: 'whatsapp_instance_status',
   whatsapp_number: 'whatsapp_number',
   widget_config: 'widget_config',
-  company_id: 'company_id'
+  company_id: 'company_id',
+  qdrant_collection: 'qdrant_collection'
 } as const
 
 export type Agent_configsScalarFieldEnum = (typeof Agent_configsScalarFieldEnum)[keyof typeof Agent_configsScalarFieldEnum]
@@ -2342,6 +2418,18 @@ export const UsersScalarFieldEnum = {
 export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
 
 
+export const ChatsScalarFieldEnum = {
+  id: 'id',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  phone: 'phone',
+  client_id: 'client_id',
+  agent_config_id: 'agent_config_id'
+} as const
+
+export type ChatsScalarFieldEnum = (typeof ChatsScalarFieldEnum)[keyof typeof ChatsScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2616,6 +2704,7 @@ export type GlobalOmitConfig = {
   usage_logs?: Prisma.usage_logsOmit
   user_roles?: Prisma.user_rolesOmit
   users?: Prisma.usersOmit
+  chats?: Prisma.chatsOmit
 }
 
 /* Types for Logging */

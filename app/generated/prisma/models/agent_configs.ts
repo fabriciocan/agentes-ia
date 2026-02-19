@@ -54,6 +54,7 @@ export type Agent_configsMinAggregateOutputType = {
   whatsapp_instance_status: string | null
   whatsapp_number: string | null
   company_id: string | null
+  qdrant_collection: string | null
 }
 
 export type Agent_configsMaxAggregateOutputType = {
@@ -74,6 +75,7 @@ export type Agent_configsMaxAggregateOutputType = {
   whatsapp_instance_status: string | null
   whatsapp_number: string | null
   company_id: string | null
+  qdrant_collection: string | null
 }
 
 export type Agent_configsCountAggregateOutputType = {
@@ -95,6 +97,7 @@ export type Agent_configsCountAggregateOutputType = {
   whatsapp_number: number
   widget_config: number
   company_id: number
+  qdrant_collection: number
   _all: number
 }
 
@@ -127,6 +130,7 @@ export type Agent_configsMinAggregateInputType = {
   whatsapp_instance_status?: true
   whatsapp_number?: true
   company_id?: true
+  qdrant_collection?: true
 }
 
 export type Agent_configsMaxAggregateInputType = {
@@ -147,6 +151,7 @@ export type Agent_configsMaxAggregateInputType = {
   whatsapp_instance_status?: true
   whatsapp_number?: true
   company_id?: true
+  qdrant_collection?: true
 }
 
 export type Agent_configsCountAggregateInputType = {
@@ -168,6 +173,7 @@ export type Agent_configsCountAggregateInputType = {
   whatsapp_number?: true
   widget_config?: true
   company_id?: true
+  qdrant_collection?: true
   _all?: true
 }
 
@@ -276,6 +282,7 @@ export type Agent_configsGroupByOutputType = {
   whatsapp_number: string | null
   widget_config: runtime.JsonValue
   company_id: string | null
+  qdrant_collection: string | null
   _count: Agent_configsCountAggregateOutputType | null
   _avg: Agent_configsAvgAggregateOutputType | null
   _sum: Agent_configsSumAggregateOutputType | null
@@ -320,8 +327,10 @@ export type agent_configsWhereInput = {
   whatsapp_number?: Prisma.StringNullableFilter<"agent_configs"> | string | null
   widget_config?: Prisma.JsonFilter<"agent_configs">
   company_id?: Prisma.UuidNullableFilter<"agent_configs"> | string | null
+  qdrant_collection?: Prisma.StringNullableFilter<"agent_configs"> | string | null
   clients?: Prisma.XOR<Prisma.ClientsScalarRelationFilter, Prisma.clientsWhereInput>
   companies?: Prisma.XOR<Prisma.CompaniesNullableScalarRelationFilter, Prisma.companiesWhereInput> | null
+  chats?: Prisma.ChatsListRelationFilter
   conversations?: Prisma.ConversationsListRelationFilter
   knowledge_base?: Prisma.Knowledge_baseListRelationFilter
 }
@@ -345,8 +354,10 @@ export type agent_configsOrderByWithRelationInput = {
   whatsapp_number?: Prisma.SortOrderInput | Prisma.SortOrder
   widget_config?: Prisma.SortOrder
   company_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  qdrant_collection?: Prisma.SortOrderInput | Prisma.SortOrder
   clients?: Prisma.clientsOrderByWithRelationInput
   companies?: Prisma.companiesOrderByWithRelationInput
+  chats?: Prisma.chatsOrderByRelationAggregateInput
   conversations?: Prisma.conversationsOrderByRelationAggregateInput
   knowledge_base?: Prisma.knowledge_baseOrderByRelationAggregateInput
 }
@@ -373,8 +384,10 @@ export type agent_configsWhereUniqueInput = Prisma.AtLeast<{
   whatsapp_number?: Prisma.StringNullableFilter<"agent_configs"> | string | null
   widget_config?: Prisma.JsonFilter<"agent_configs">
   company_id?: Prisma.UuidNullableFilter<"agent_configs"> | string | null
+  qdrant_collection?: Prisma.StringNullableFilter<"agent_configs"> | string | null
   clients?: Prisma.XOR<Prisma.ClientsScalarRelationFilter, Prisma.clientsWhereInput>
   companies?: Prisma.XOR<Prisma.CompaniesNullableScalarRelationFilter, Prisma.companiesWhereInput> | null
+  chats?: Prisma.ChatsListRelationFilter
   conversations?: Prisma.ConversationsListRelationFilter
   knowledge_base?: Prisma.Knowledge_baseListRelationFilter
 }, "id">
@@ -398,6 +411,7 @@ export type agent_configsOrderByWithAggregationInput = {
   whatsapp_number?: Prisma.SortOrderInput | Prisma.SortOrder
   widget_config?: Prisma.SortOrder
   company_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  qdrant_collection?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.agent_configsCountOrderByAggregateInput
   _avg?: Prisma.agent_configsAvgOrderByAggregateInput
   _max?: Prisma.agent_configsMaxOrderByAggregateInput
@@ -427,6 +441,7 @@ export type agent_configsScalarWhereWithAggregatesInput = {
   whatsapp_number?: Prisma.StringNullableWithAggregatesFilter<"agent_configs"> | string | null
   widget_config?: Prisma.JsonWithAggregatesFilter<"agent_configs">
   company_id?: Prisma.UuidNullableWithAggregatesFilter<"agent_configs"> | string | null
+  qdrant_collection?: Prisma.StringNullableWithAggregatesFilter<"agent_configs"> | string | null
 }
 
 export type agent_configsCreateInput = {
@@ -446,8 +461,10 @@ export type agent_configsCreateInput = {
   whatsapp_instance_status?: string
   whatsapp_number?: string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: string | null
   clients: Prisma.clientsCreateNestedOneWithoutAgent_configsInput
   companies?: Prisma.companiesCreateNestedOneWithoutAgent_configsInput
+  chats?: Prisma.chatsCreateNestedManyWithoutAgent_configsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseCreateNestedManyWithoutAgent_configsInput
 }
@@ -471,6 +488,8 @@ export type agent_configsUncheckedCreateInput = {
   whatsapp_number?: string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   company_id?: string | null
+  qdrant_collection?: string | null
+  chats?: Prisma.chatsUncheckedCreateNestedManyWithoutAgent_configsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseUncheckedCreateNestedManyWithoutAgent_configsInput
 }
@@ -492,8 +511,10 @@ export type agent_configsUpdateInput = {
   whatsapp_instance_status?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clients?: Prisma.clientsUpdateOneRequiredWithoutAgent_configsNestedInput
   companies?: Prisma.companiesUpdateOneWithoutAgent_configsNestedInput
+  chats?: Prisma.chatsUpdateManyWithoutAgent_configsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUpdateManyWithoutAgent_configsNestedInput
 }
@@ -517,6 +538,8 @@ export type agent_configsUncheckedUpdateInput = {
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chats?: Prisma.chatsUncheckedUpdateManyWithoutAgent_configsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUncheckedUpdateManyWithoutAgent_configsNestedInput
 }
@@ -540,6 +563,7 @@ export type agent_configsCreateManyInput = {
   whatsapp_number?: string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   company_id?: string | null
+  qdrant_collection?: string | null
 }
 
 export type agent_configsUpdateManyMutationInput = {
@@ -559,6 +583,7 @@ export type agent_configsUpdateManyMutationInput = {
   whatsapp_instance_status?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type agent_configsUncheckedUpdateManyInput = {
@@ -580,6 +605,7 @@ export type agent_configsUncheckedUpdateManyInput = {
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type agent_configsCountOrderByAggregateInput = {
@@ -601,6 +627,7 @@ export type agent_configsCountOrderByAggregateInput = {
   whatsapp_number?: Prisma.SortOrder
   widget_config?: Prisma.SortOrder
   company_id?: Prisma.SortOrder
+  qdrant_collection?: Prisma.SortOrder
 }
 
 export type agent_configsAvgOrderByAggregateInput = {
@@ -626,6 +653,7 @@ export type agent_configsMaxOrderByAggregateInput = {
   whatsapp_instance_status?: Prisma.SortOrder
   whatsapp_number?: Prisma.SortOrder
   company_id?: Prisma.SortOrder
+  qdrant_collection?: Prisma.SortOrder
 }
 
 export type agent_configsMinOrderByAggregateInput = {
@@ -646,6 +674,7 @@ export type agent_configsMinOrderByAggregateInput = {
   whatsapp_instance_status?: Prisma.SortOrder
   whatsapp_number?: Prisma.SortOrder
   company_id?: Prisma.SortOrder
+  qdrant_collection?: Prisma.SortOrder
 }
 
 export type agent_configsSumOrderByAggregateInput = {
@@ -804,6 +833,20 @@ export type agent_configsUpdateOneRequiredWithoutKnowledge_baseNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.agent_configsUpdateToOneWithWhereWithoutKnowledge_baseInput, Prisma.agent_configsUpdateWithoutKnowledge_baseInput>, Prisma.agent_configsUncheckedUpdateWithoutKnowledge_baseInput>
 }
 
+export type agent_configsCreateNestedOneWithoutChatsInput = {
+  create?: Prisma.XOR<Prisma.agent_configsCreateWithoutChatsInput, Prisma.agent_configsUncheckedCreateWithoutChatsInput>
+  connectOrCreate?: Prisma.agent_configsCreateOrConnectWithoutChatsInput
+  connect?: Prisma.agent_configsWhereUniqueInput
+}
+
+export type agent_configsUpdateOneRequiredWithoutChatsNestedInput = {
+  create?: Prisma.XOR<Prisma.agent_configsCreateWithoutChatsInput, Prisma.agent_configsUncheckedCreateWithoutChatsInput>
+  connectOrCreate?: Prisma.agent_configsCreateOrConnectWithoutChatsInput
+  upsert?: Prisma.agent_configsUpsertWithoutChatsInput
+  connect?: Prisma.agent_configsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.agent_configsUpdateToOneWithWhereWithoutChatsInput, Prisma.agent_configsUpdateWithoutChatsInput>, Prisma.agent_configsUncheckedUpdateWithoutChatsInput>
+}
+
 export type agent_configsCreateWithoutClientsInput = {
   id?: string
   name?: string
@@ -821,7 +864,9 @@ export type agent_configsCreateWithoutClientsInput = {
   whatsapp_instance_status?: string
   whatsapp_number?: string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: string | null
   companies?: Prisma.companiesCreateNestedOneWithoutAgent_configsInput
+  chats?: Prisma.chatsCreateNestedManyWithoutAgent_configsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseCreateNestedManyWithoutAgent_configsInput
 }
@@ -844,6 +889,8 @@ export type agent_configsUncheckedCreateWithoutClientsInput = {
   whatsapp_number?: string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   company_id?: string | null
+  qdrant_collection?: string | null
+  chats?: Prisma.chatsUncheckedCreateNestedManyWithoutAgent_configsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseUncheckedCreateNestedManyWithoutAgent_configsInput
 }
@@ -896,6 +943,7 @@ export type agent_configsScalarWhereInput = {
   whatsapp_number?: Prisma.StringNullableFilter<"agent_configs"> | string | null
   widget_config?: Prisma.JsonFilter<"agent_configs">
   company_id?: Prisma.UuidNullableFilter<"agent_configs"> | string | null
+  qdrant_collection?: Prisma.StringNullableFilter<"agent_configs"> | string | null
 }
 
 export type agent_configsCreateWithoutCompaniesInput = {
@@ -915,7 +963,9 @@ export type agent_configsCreateWithoutCompaniesInput = {
   whatsapp_instance_status?: string
   whatsapp_number?: string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: string | null
   clients: Prisma.clientsCreateNestedOneWithoutAgent_configsInput
+  chats?: Prisma.chatsCreateNestedManyWithoutAgent_configsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseCreateNestedManyWithoutAgent_configsInput
 }
@@ -938,6 +988,8 @@ export type agent_configsUncheckedCreateWithoutCompaniesInput = {
   whatsapp_instance_status?: string
   whatsapp_number?: string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: string | null
+  chats?: Prisma.chatsUncheckedCreateNestedManyWithoutAgent_configsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseUncheckedCreateNestedManyWithoutAgent_configsInput
 }
@@ -985,8 +1037,10 @@ export type agent_configsCreateWithoutConversationsInput = {
   whatsapp_instance_status?: string
   whatsapp_number?: string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: string | null
   clients: Prisma.clientsCreateNestedOneWithoutAgent_configsInput
   companies?: Prisma.companiesCreateNestedOneWithoutAgent_configsInput
+  chats?: Prisma.chatsCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseCreateNestedManyWithoutAgent_configsInput
 }
 
@@ -1009,6 +1063,8 @@ export type agent_configsUncheckedCreateWithoutConversationsInput = {
   whatsapp_number?: string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   company_id?: string | null
+  qdrant_collection?: string | null
+  chats?: Prisma.chatsUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseUncheckedCreateNestedManyWithoutAgent_configsInput
 }
 
@@ -1045,8 +1101,10 @@ export type agent_configsUpdateWithoutConversationsInput = {
   whatsapp_instance_status?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clients?: Prisma.clientsUpdateOneRequiredWithoutAgent_configsNestedInput
   companies?: Prisma.companiesUpdateOneWithoutAgent_configsNestedInput
+  chats?: Prisma.chatsUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUpdateManyWithoutAgent_configsNestedInput
 }
 
@@ -1069,6 +1127,8 @@ export type agent_configsUncheckedUpdateWithoutConversationsInput = {
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chats?: Prisma.chatsUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUncheckedUpdateManyWithoutAgent_configsNestedInput
 }
 
@@ -1089,8 +1149,10 @@ export type agent_configsCreateWithoutKnowledge_baseInput = {
   whatsapp_instance_status?: string
   whatsapp_number?: string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: string | null
   clients: Prisma.clientsCreateNestedOneWithoutAgent_configsInput
   companies?: Prisma.companiesCreateNestedOneWithoutAgent_configsInput
+  chats?: Prisma.chatsCreateNestedManyWithoutAgent_configsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutAgent_configsInput
 }
 
@@ -1113,6 +1175,8 @@ export type agent_configsUncheckedCreateWithoutKnowledge_baseInput = {
   whatsapp_number?: string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   company_id?: string | null
+  qdrant_collection?: string | null
+  chats?: Prisma.chatsUncheckedCreateNestedManyWithoutAgent_configsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutAgent_configsInput
 }
 
@@ -1149,8 +1213,10 @@ export type agent_configsUpdateWithoutKnowledge_baseInput = {
   whatsapp_instance_status?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clients?: Prisma.clientsUpdateOneRequiredWithoutAgent_configsNestedInput
   companies?: Prisma.companiesUpdateOneWithoutAgent_configsNestedInput
+  chats?: Prisma.chatsUpdateManyWithoutAgent_configsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutAgent_configsNestedInput
 }
 
@@ -1173,7 +1239,121 @@ export type agent_configsUncheckedUpdateWithoutKnowledge_baseInput = {
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chats?: Prisma.chatsUncheckedUpdateManyWithoutAgent_configsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutAgent_configsNestedInput
+}
+
+export type agent_configsCreateWithoutChatsInput = {
+  id?: string
+  name?: string
+  system_prompt?: string
+  personality?: string
+  tone?: string
+  language?: string
+  model?: string
+  temperature?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  max_tokens?: number
+  is_active?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  whatsapp_instance_name?: string | null
+  whatsapp_instance_status?: string
+  whatsapp_number?: string | null
+  widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: string | null
+  clients: Prisma.clientsCreateNestedOneWithoutAgent_configsInput
+  companies?: Prisma.companiesCreateNestedOneWithoutAgent_configsInput
+  conversations?: Prisma.conversationsCreateNestedManyWithoutAgent_configsInput
+  knowledge_base?: Prisma.knowledge_baseCreateNestedManyWithoutAgent_configsInput
+}
+
+export type agent_configsUncheckedCreateWithoutChatsInput = {
+  id?: string
+  client_id: string
+  name?: string
+  system_prompt?: string
+  personality?: string
+  tone?: string
+  language?: string
+  model?: string
+  temperature?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  max_tokens?: number
+  is_active?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  whatsapp_instance_name?: string | null
+  whatsapp_instance_status?: string
+  whatsapp_number?: string | null
+  widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  company_id?: string | null
+  qdrant_collection?: string | null
+  conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutAgent_configsInput
+  knowledge_base?: Prisma.knowledge_baseUncheckedCreateNestedManyWithoutAgent_configsInput
+}
+
+export type agent_configsCreateOrConnectWithoutChatsInput = {
+  where: Prisma.agent_configsWhereUniqueInput
+  create: Prisma.XOR<Prisma.agent_configsCreateWithoutChatsInput, Prisma.agent_configsUncheckedCreateWithoutChatsInput>
+}
+
+export type agent_configsUpsertWithoutChatsInput = {
+  update: Prisma.XOR<Prisma.agent_configsUpdateWithoutChatsInput, Prisma.agent_configsUncheckedUpdateWithoutChatsInput>
+  create: Prisma.XOR<Prisma.agent_configsCreateWithoutChatsInput, Prisma.agent_configsUncheckedCreateWithoutChatsInput>
+  where?: Prisma.agent_configsWhereInput
+}
+
+export type agent_configsUpdateToOneWithWhereWithoutChatsInput = {
+  where?: Prisma.agent_configsWhereInput
+  data: Prisma.XOR<Prisma.agent_configsUpdateWithoutChatsInput, Prisma.agent_configsUncheckedUpdateWithoutChatsInput>
+}
+
+export type agent_configsUpdateWithoutChatsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  system_prompt?: Prisma.StringFieldUpdateOperationsInput | string
+  personality?: Prisma.StringFieldUpdateOperationsInput | string
+  tone?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  model?: Prisma.StringFieldUpdateOperationsInput | string
+  temperature?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  max_tokens?: Prisma.IntFieldUpdateOperationsInput | number
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsapp_instance_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp_instance_status?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clients?: Prisma.clientsUpdateOneRequiredWithoutAgent_configsNestedInput
+  companies?: Prisma.companiesUpdateOneWithoutAgent_configsNestedInput
+  conversations?: Prisma.conversationsUpdateManyWithoutAgent_configsNestedInput
+  knowledge_base?: Prisma.knowledge_baseUpdateManyWithoutAgent_configsNestedInput
+}
+
+export type agent_configsUncheckedUpdateWithoutChatsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  client_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  system_prompt?: Prisma.StringFieldUpdateOperationsInput | string
+  personality?: Prisma.StringFieldUpdateOperationsInput | string
+  tone?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  model?: Prisma.StringFieldUpdateOperationsInput | string
+  temperature?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  max_tokens?: Prisma.IntFieldUpdateOperationsInput | number
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsapp_instance_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp_instance_status?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversations?: Prisma.conversationsUncheckedUpdateManyWithoutAgent_configsNestedInput
+  knowledge_base?: Prisma.knowledge_baseUncheckedUpdateManyWithoutAgent_configsNestedInput
 }
 
 export type agent_configsCreateManyClientsInput = {
@@ -1194,6 +1374,7 @@ export type agent_configsCreateManyClientsInput = {
   whatsapp_number?: string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   company_id?: string | null
+  qdrant_collection?: string | null
 }
 
 export type agent_configsUpdateWithoutClientsInput = {
@@ -1213,7 +1394,9 @@ export type agent_configsUpdateWithoutClientsInput = {
   whatsapp_instance_status?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companies?: Prisma.companiesUpdateOneWithoutAgent_configsNestedInput
+  chats?: Prisma.chatsUpdateManyWithoutAgent_configsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUpdateManyWithoutAgent_configsNestedInput
 }
@@ -1236,6 +1419,8 @@ export type agent_configsUncheckedUpdateWithoutClientsInput = {
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chats?: Prisma.chatsUncheckedUpdateManyWithoutAgent_configsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUncheckedUpdateManyWithoutAgent_configsNestedInput
 }
@@ -1258,6 +1443,7 @@ export type agent_configsUncheckedUpdateManyWithoutClientsInput = {
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type agent_configsCreateManyCompaniesInput = {
@@ -1278,6 +1464,7 @@ export type agent_configsCreateManyCompaniesInput = {
   whatsapp_instance_status?: string
   whatsapp_number?: string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: string | null
 }
 
 export type agent_configsUpdateWithoutCompaniesInput = {
@@ -1297,7 +1484,9 @@ export type agent_configsUpdateWithoutCompaniesInput = {
   whatsapp_instance_status?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   clients?: Prisma.clientsUpdateOneRequiredWithoutAgent_configsNestedInput
+  chats?: Prisma.chatsUpdateManyWithoutAgent_configsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUpdateManyWithoutAgent_configsNestedInput
 }
@@ -1320,6 +1509,8 @@ export type agent_configsUncheckedUpdateWithoutCompaniesInput = {
   whatsapp_instance_status?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chats?: Prisma.chatsUncheckedUpdateManyWithoutAgent_configsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUncheckedUpdateManyWithoutAgent_configsNestedInput
 }
@@ -1342,6 +1533,7 @@ export type agent_configsUncheckedUpdateManyWithoutCompaniesInput = {
   whatsapp_instance_status?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1350,11 +1542,13 @@ export type agent_configsUncheckedUpdateManyWithoutCompaniesInput = {
  */
 
 export type Agent_configsCountOutputType = {
+  chats: number
   conversations: number
   knowledge_base: number
 }
 
 export type Agent_configsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  chats?: boolean | Agent_configsCountOutputTypeCountChatsArgs
   conversations?: boolean | Agent_configsCountOutputTypeCountConversationsArgs
   knowledge_base?: boolean | Agent_configsCountOutputTypeCountKnowledge_baseArgs
 }
@@ -1367,6 +1561,13 @@ export type Agent_configsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Type
    * Select specific fields to fetch from the Agent_configsCountOutputType
    */
   select?: Prisma.Agent_configsCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * Agent_configsCountOutputType without action
+ */
+export type Agent_configsCountOutputTypeCountChatsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.chatsWhereInput
 }
 
 /**
@@ -1403,8 +1604,10 @@ export type agent_configsSelect<ExtArgs extends runtime.Types.Extensions.Interna
   whatsapp_number?: boolean
   widget_config?: boolean
   company_id?: boolean
+  qdrant_collection?: boolean
   clients?: boolean | Prisma.clientsDefaultArgs<ExtArgs>
   companies?: boolean | Prisma.agent_configs$companiesArgs<ExtArgs>
+  chats?: boolean | Prisma.agent_configs$chatsArgs<ExtArgs>
   conversations?: boolean | Prisma.agent_configs$conversationsArgs<ExtArgs>
   knowledge_base?: boolean | Prisma.agent_configs$knowledge_baseArgs<ExtArgs>
   _count?: boolean | Prisma.Agent_configsCountOutputTypeDefaultArgs<ExtArgs>
@@ -1429,6 +1632,7 @@ export type agent_configsSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   whatsapp_number?: boolean
   widget_config?: boolean
   company_id?: boolean
+  qdrant_collection?: boolean
   clients?: boolean | Prisma.clientsDefaultArgs<ExtArgs>
   companies?: boolean | Prisma.agent_configs$companiesArgs<ExtArgs>
 }, ExtArgs["result"]["agent_configs"]>
@@ -1452,6 +1656,7 @@ export type agent_configsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   whatsapp_number?: boolean
   widget_config?: boolean
   company_id?: boolean
+  qdrant_collection?: boolean
   clients?: boolean | Prisma.clientsDefaultArgs<ExtArgs>
   companies?: boolean | Prisma.agent_configs$companiesArgs<ExtArgs>
 }, ExtArgs["result"]["agent_configs"]>
@@ -1475,12 +1680,14 @@ export type agent_configsSelectScalar = {
   whatsapp_number?: boolean
   widget_config?: boolean
   company_id?: boolean
+  qdrant_collection?: boolean
 }
 
-export type agent_configsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "client_id" | "name" | "system_prompt" | "personality" | "tone" | "language" | "model" | "temperature" | "max_tokens" | "is_active" | "created_at" | "updated_at" | "whatsapp_instance_name" | "whatsapp_instance_status" | "whatsapp_number" | "widget_config" | "company_id", ExtArgs["result"]["agent_configs"]>
+export type agent_configsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "client_id" | "name" | "system_prompt" | "personality" | "tone" | "language" | "model" | "temperature" | "max_tokens" | "is_active" | "created_at" | "updated_at" | "whatsapp_instance_name" | "whatsapp_instance_status" | "whatsapp_number" | "widget_config" | "company_id" | "qdrant_collection", ExtArgs["result"]["agent_configs"]>
 export type agent_configsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   clients?: boolean | Prisma.clientsDefaultArgs<ExtArgs>
   companies?: boolean | Prisma.agent_configs$companiesArgs<ExtArgs>
+  chats?: boolean | Prisma.agent_configs$chatsArgs<ExtArgs>
   conversations?: boolean | Prisma.agent_configs$conversationsArgs<ExtArgs>
   knowledge_base?: boolean | Prisma.agent_configs$knowledge_baseArgs<ExtArgs>
   _count?: boolean | Prisma.Agent_configsCountOutputTypeDefaultArgs<ExtArgs>
@@ -1499,6 +1706,7 @@ export type $agent_configsPayload<ExtArgs extends runtime.Types.Extensions.Inter
   objects: {
     clients: Prisma.$clientsPayload<ExtArgs>
     companies: Prisma.$companiesPayload<ExtArgs> | null
+    chats: Prisma.$chatsPayload<ExtArgs>[]
     conversations: Prisma.$conversationsPayload<ExtArgs>[]
     knowledge_base: Prisma.$knowledge_basePayload<ExtArgs>[]
   }
@@ -1521,6 +1729,7 @@ export type $agent_configsPayload<ExtArgs extends runtime.Types.Extensions.Inter
     whatsapp_number: string | null
     widget_config: runtime.JsonValue
     company_id: string | null
+    qdrant_collection: string | null
   }, ExtArgs["result"]["agent_configs"]>
   composites: {}
 }
@@ -1917,6 +2126,7 @@ export interface Prisma__agent_configsClient<T, Null = never, ExtArgs extends ru
   readonly [Symbol.toStringTag]: "PrismaPromise"
   clients<T extends Prisma.clientsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clientsDefaultArgs<ExtArgs>>): Prisma.Prisma__clientsClient<runtime.Types.Result.GetResult<Prisma.$clientsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   companies<T extends Prisma.agent_configs$companiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.agent_configs$companiesArgs<ExtArgs>>): Prisma.Prisma__companiesClient<runtime.Types.Result.GetResult<Prisma.$companiesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  chats<T extends Prisma.agent_configs$chatsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.agent_configs$chatsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$chatsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversations<T extends Prisma.agent_configs$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.agent_configs$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$conversationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   knowledge_base<T extends Prisma.agent_configs$knowledge_baseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.agent_configs$knowledge_baseArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$knowledge_basePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1966,6 +2176,7 @@ export interface agent_configsFieldRefs {
   readonly whatsapp_number: Prisma.FieldRef<"agent_configs", 'String'>
   readonly widget_config: Prisma.FieldRef<"agent_configs", 'Json'>
   readonly company_id: Prisma.FieldRef<"agent_configs", 'String'>
+  readonly qdrant_collection: Prisma.FieldRef<"agent_configs", 'String'>
 }
     
 
@@ -2378,6 +2589,30 @@ export type agent_configs$companiesArgs<ExtArgs extends runtime.Types.Extensions
    */
   include?: Prisma.companiesInclude<ExtArgs> | null
   where?: Prisma.companiesWhereInput
+}
+
+/**
+ * agent_configs.chats
+ */
+export type agent_configs$chatsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the chats
+   */
+  select?: Prisma.chatsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the chats
+   */
+  omit?: Prisma.chatsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.chatsInclude<ExtArgs> | null
+  where?: Prisma.chatsWhereInput
+  orderBy?: Prisma.chatsOrderByWithRelationInput | Prisma.chatsOrderByWithRelationInput[]
+  cursor?: Prisma.chatsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatsScalarFieldEnum | Prisma.ChatsScalarFieldEnum[]
 }
 
 /**

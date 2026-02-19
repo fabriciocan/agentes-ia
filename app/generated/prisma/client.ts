@@ -144,3 +144,8 @@ export type user_roles = Prisma.user_rolesModel
  * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
  */
 export type users = Prisma.usersModel
+/**
+ * Model chats
+ * 
+ */
+export type chats = Prisma.chatsModel
