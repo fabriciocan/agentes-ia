@@ -4,6 +4,18 @@ import { createLogger } from './logger'
 
 const logger = createLogger('document-parser')
 
+export interface PdfMetadata {
+  version: string
+  info: Record<string, unknown>
+  metadata: Record<string, unknown>
+  totalPages: number
+}
+
+export interface DocumentExtraction {
+  text: string
+  pdfMetadata?: PdfMetadata
+}
+
 // Lazy load pdf parser
 let pdfParserModule: any = null
 async function getPdfParser() {
@@ -13,15 +25,15 @@ async function getPdfParser() {
   return pdfParserModule.default
 }
 
-export async function extractTextFromFile(
+export async function extractDocumentWithMetadata(
   file: Buffer,
   filename: string,
   mimeType: string
-): Promise<string> {
+): Promise<DocumentExtraction> {
   try {
     // Plain text files
     if (mimeType === 'text/plain' || filename.endsWith('.txt')) {
-      return file.toString('utf-8')
+      return { text: file.toString('utf-8') }
     }
 
     // PDF files
@@ -29,29 +41,44 @@ export async function extractTextFromFile(
       try {
         const pdfParse = await getPdfParser()
 
-        // Parse with options to reduce memory usage
         const data = await pdfParse(file, {
-          max: 0, // Parse all pages (0 = no limit)
-          version: 'v2.0.550' // Use specific pdf.js version
+          max: 0,
+          version: 'v2.0.550'
         })
 
         if (!data.text || data.text.trim().length === 0) {
           throw new Error('PDF contains no extractable text. It may be a scanned image or image-based PDF.')
         }
 
-        // Limit text size to prevent memory issues
-        const maxChars = 500000 // 500k chars (~100 pages)
-        if (data.text.length > maxChars) {
-          logger.warn({ filename, originalLength: data.text.length }, 'PDF text truncated due to size')
-          return data.text.slice(0, maxChars) + '\n\n[Document truncated due to size limit]'
+        // Extract XMP metadata safely
+        let metadataObj: Record<string, unknown> = {}
+        try {
+          if (data.metadata) {
+            metadataObj = (data.metadata as any)._metadata || {}
+          }
+        } catch {}
+
+        const pdfMetadata: PdfMetadata = {
+          version: data.version || '1.10.550',
+          info: (data.info as Record<string, unknown>) || {},
+          metadata: metadataObj,
+          totalPages: data.numpages || 0,
         }
 
-        return data.text
+        const maxChars = 500000
+        const text = data.text.length > maxChars
+          ? data.text.slice(0, maxChars) + '\n\n[Document truncated due to size limit]'
+          : data.text
+
+        if (data.text.length > maxChars) {
+          logger.warn({ filename, originalLength: data.text.length }, 'PDF text truncated due to size')
+        }
+
+        return { text, pdfMetadata }
       } catch (pdfError) {
         const err = pdfError as Error
         logger.error({ error: err.message, filename }, 'PDF parsing failed')
 
-        // Check if it's an OOM error
         if (err.message?.includes('heap') || err.message?.includes('memory')) {
           throw new Error('PDF is too large to process. Please split into smaller files or convert to .txt format.')
         }
@@ -66,7 +93,7 @@ export async function extractTextFromFile(
       filename.endsWith('.docx')
     ) {
       const result = await mammoth.extractRawText({ buffer: file })
-      return result.value
+      return { text: result.value }
     }
 
     // Excel files (.xlsx)
@@ -74,12 +101,12 @@ export async function extractTextFromFile(
       mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
       filename.endsWith('.xlsx')
     ) {
-      return await extractFromExcel(file)
+      return { text: await extractFromExcel(file) }
     }
 
     // CSV files
     if (mimeType === 'text/csv' || filename.endsWith('.csv')) {
-      return file.toString('utf-8')
+      return { text: file.toString('utf-8') }
     }
 
     // Old Excel format (.xls) - not supported by exceljs, ask user to convert
@@ -89,17 +116,26 @@ export async function extractTextFromFile(
 
     // Fallback: try to parse as text
     logger.warn({ filename, mimeType }, 'Unknown file type, attempting text extraction')
-    return file.toString('utf-8')
+    return { text: file.toString('utf-8') }
   } catch (error) {
     const err = error as Error
     logger.error({ error: err.message || err, filename, mimeType }, 'Failed to extract text from file')
 
-    // Re-throw with better message
     if (err.message) {
       throw err
     }
     throw new Error(`Failed to parse ${filename}. The file may be corrupted or in an unsupported format.`)
   }
+}
+
+// Backward-compat wrapper — retorna apenas o texto
+export async function extractTextFromFile(
+  file: Buffer,
+  filename: string,
+  mimeType: string
+): Promise<string> {
+  const { text } = await extractDocumentWithMetadata(file, filename, mimeType)
+  return text
 }
 
 async function extractFromExcel(buffer: Buffer): Promise<string> {

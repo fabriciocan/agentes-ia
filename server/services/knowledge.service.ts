@@ -9,78 +9,93 @@ import {
   hasTableStructure,
   estimatePages
 } from '../utils/text-analysis'
+import type { PdfMetadata } from '../utils/document-parser'
 import type { KnowledgeBase, KnowledgeFile, KnowledgeListItem } from '../types'
 
 const logger = createLogger('knowledge')
 
-// Gera vetor esparso compatível com o N8N "Build Dense + Sparse Vectors"
-// Usa o mesmo hash djb2 e vocabulário de 30k tokens
-function buildSparseVector(text: string): { indices: number[]; values: number[] } {
-  const stopwords = new Set([
-    'the','and','for','are','but','not','you','all','can','her','was','one','our',
-    'out','day','get','has','him','his','how','its','may','new','now','old','see',
-    'two','who','boy','did','man','men','put','say','she','too','use','way',
-    'com','que','uma','para','por','mas','seu','sua','não','como','mais','isso',
-    'esse','esta','pelo','pela','dos','das','nos','nas','este','qual','quando',
-    'entre','sobre','após','antes','onde'
-  ])
 
-  const words = text.toLowerCase()
-    .replace(/[^a-záéíóúãõàâêîôûçüñ\s]/g, ' ')
-    .split(/\s+/)
-    .filter(w => w.length > 2)
-    .filter(w => !stopwords.has(w))
-
-  const freq: Record<string, number> = {}
-  for (const w of words) {
-    freq[w] = (freq[w] || 0) + 1
-  }
-
-  // Agrupa colisões de hash somando valores
-  const combined: Record<number, number> = {}
-  for (const [word, count] of Object.entries(freq)) {
-    let hash = 0
-    for (let i = 0; i < word.length; i++) {
-      hash = ((hash << 5) - hash) + word.charCodeAt(i)
-      hash = hash & 0x7FFFFFFF
-    }
-    const idx = hash % 30000
-    combined[idx] = (combined[idx] || 0) + count / Math.max(words.length, 1)
-  }
-
-  const indices = Object.keys(combined).map(Number)
-  const values = indices.map(idx => combined[idx]!)
-  return { indices, values }
-}
-
-// Payload salvo no Qdrant — estrutura compatível com o N8N RAG workflow
+// Formato LangChain — compatível com os nós nativos do N8N/Qdrant
 interface QdrantPayload {
-  // Campos top-level (usados pelo N8N diretamente)
+  // Mantido no top-level para filtros Qdrant diretos
   agent_config_id: string
-  title: string
+  // Campos LangChain
   content: string
-  content_type: string
-  // Metadata aninhada (o N8N lê: point.payload.metadata.chunkIndex, etc.)
   metadata: {
+    source: string          // nome do arquivo ou "text"
+    blobType: string        // MIME type
+    loc: {
+      lines: { from: number; to: number }
+    }
+    pdf?: {
+      version: string
+      info: Record<string, unknown>
+      metadata: { _metadata: Record<string, unknown> }
+      totalPages: number
+    }
+    // Campos extras para filtragem e RAG
+    agent_config_id: string
+    title: string
+    language: string
     chunkIndex: number
     totalChunks: number
     keywords: string[]
-    language: string
     hasNumbers: boolean
     hasTable: boolean
     estimatedPages: number
-    fileType: string | null
     fileSize: number | null
     createdAt: string
   }
   [key: string]: unknown
 }
 
+// --- Helpers para rastreamento de linha por chunk ---
+
+function buildLineOffsets(text: string): number[] {
+  const offsets: number[] = [0]
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === '\n') offsets.push(i + 1)
+  }
+  return offsets
+}
+
+function charPosToLineNum(lineOffsets: number[], pos: number): number {
+  let lo = 0, hi = lineOffsets.length - 1
+  while (lo < hi) {
+    const mid = Math.ceil((lo + hi) / 2)
+    if (lineOffsets[mid]! <= pos) lo = mid
+    else hi = mid - 1
+  }
+  return lo + 1  // 1-indexed
+}
+
+function getChunkLines(
+  lineOffsets: number[],
+  originalText: string,
+  chunk: string,
+  searchFrom: number
+): { from: number; to: number; nextOffset: number } {
+  const probe = chunk.substring(0, Math.min(80, chunk.length))
+  const pos = originalText.indexOf(probe, searchFrom)
+  if (pos === -1) {
+    const fallback = charPosToLineNum(lineOffsets, searchFrom)
+    return { from: fallback, to: fallback, nextOffset: searchFrom }
+  }
+  const from = charPosToLineNum(lineOffsets, pos)
+  const to   = charPosToLineNum(lineOffsets, pos + chunk.length - 1)
+  return { from, to, nextOffset: pos + 1 }
+}
+
+// --- Builder de payload ---
+
 function buildPayload(params: {
   agentConfigId: string
   title: string
   content: string
-  contentType: string
+  source: string
+  blobType: string
+  lineFrom: number
+  lineTo: number
   chunkIndex: number
   totalChunks: number
   language: string
@@ -88,24 +103,36 @@ function buildPayload(params: {
   hasNumbers: boolean
   hasTable: boolean
   estimatedPages: number
-  fileType?: string | null
   fileSize?: number | null
   createdAt: string
+  pdfMetadata?: PdfMetadata
 }): QdrantPayload {
   return {
     agent_config_id: params.agentConfigId,
-    title: params.title,
     content: params.content,
-    content_type: params.contentType,
     metadata: {
+      source: params.source,
+      blobType: params.blobType,
+      loc: {
+        lines: { from: params.lineFrom, to: params.lineTo },
+      },
+      ...(params.pdfMetadata && {
+        pdf: {
+          version: params.pdfMetadata.version,
+          info: params.pdfMetadata.info,
+          metadata: { _metadata: params.pdfMetadata.metadata },
+          totalPages: params.pdfMetadata.totalPages,
+        },
+      }),
+      agent_config_id: params.agentConfigId,
+      title: params.title,
+      language: params.language,
       chunkIndex: params.chunkIndex,
       totalChunks: params.totalChunks,
       keywords: params.keywords,
-      language: params.language,
       hasNumbers: params.hasNumbers,
       hasTable: params.hasTable,
       estimatedPages: params.estimatedPages,
-      fileType: params.fileType || null,
       fileSize: params.fileSize || null,
       createdAt: params.createdAt,
     },
@@ -144,7 +171,7 @@ export async function getKnowledgeEntries(agentConfigId: string): Promise<Knowle
     }
   })
 
-  const fileItems: KnowledgeListItem[] = files.map(f => ({
+  const fileItems: KnowledgeListItem[] = files.map((f: (typeof files)[number]) => ({
     kind: 'file' as const,
     id: f.id,
     title: f.title,
@@ -157,7 +184,7 @@ export async function getKnowledgeEntries(agentConfigId: string): Promise<Knowle
     updated_at: f.updated_at,
   }))
 
-  const entryItems: KnowledgeListItem[] = standaloneEntries.map(e => ({
+  const entryItems: KnowledgeListItem[] = standaloneEntries.map((e: (typeof standaloneEntries)[number]) => ({
     kind: 'entry' as const,
     id: e.id,
     title: e.title,
@@ -207,90 +234,66 @@ export async function deleteKnowledgeFile(
   })
   if (!file) return false
 
-  // Coletar IDs dos chunks antes de deletar (para remover do Qdrant)
+  // Coletar IDs dos chunks do Postgres (entradas criadas pela app diretamente)
   const chunks = await prisma.knowledge_base.findMany({
     where: { knowledge_file_id: fileId },
     select: { id: true }
   })
-  const chunkIds = chunks.map(c => c.id)
+  const chunkIds = chunks.map((c: (typeof chunks)[number]) => c.id)
 
-  // Deleta o arquivo (cascade remove os chunks do Postgres)
+  const collectionName = knowledgeCollectionName(agentConfigId)
+
+  // Deleta o arquivo e chunks do Postgres (cascade)
   await prisma.knowledge_files.delete({ where: { id: fileId } })
 
-  // Remover vetores do Qdrant
+  // Remover vetores do Qdrant:
+  // 1) por IDs (chunks criados diretamente pela app)
   if (chunkIds.length > 0) {
     try {
-      await qdrant.delete(knowledgeCollectionName(agentConfigId), {
-        wait: true,
-        points: chunkIds
-      })
+      await qdrant.delete(collectionName, { wait: true, points: chunkIds })
     } catch (err) {
-      logger.warn({ err, fileId, agentConfigId }, 'Falha parcial ao deletar vetores Qdrant do arquivo')
+      logger.warn({ err, fileId }, 'Falha ao deletar vetores por ID')
     }
+  }
+
+  // 2) por filtro (chunks criados pelo N8N via LangChain — metadata.source = filename)
+  try {
+    await qdrant.delete(collectionName, {
+      wait: true,
+      filter: {
+        must: [
+          { key: 'metadata.source',           match: { value: file.file_name } },
+          { key: 'metadata.agent_config_id',   match: { value: agentConfigId } },
+        ],
+      },
+    })
+  } catch (err) {
+    logger.warn({ err, fileId, fileName: file.file_name }, 'Falha ao deletar vetores por filtro (N8N)')
   }
 
   logger.info({ fileId, agentConfigId, chunkCount: chunkIds.length }, 'Arquivo de conhecimento deletado')
   return true
 }
 
+// Salva apenas no Postgres — o N8N cuida do embedding e do Qdrant
 export async function addKnowledgeEntry(
   agentConfigId: string,
   data: { title: string; content: string; content_type: string; file_size?: number; file_type?: string }
 ): Promise<KnowledgeBase> {
-  try {
-    const language = detectLanguage(data.content)
-    const keywords = extractKeywords(data.content)
-    const pages = estimatePages(data.content)
-
-    const entry = await prisma.knowledge_base.create({
-      data: {
-        agent_config_id: agentConfigId,
-        title: data.title,
-        content: data.content,
-        content_type: data.content_type || 'text',
-        file_size: data.file_size || null,
-        file_type: data.file_type || null,
-        chunk_index: 0,
-        metadata: { language, keywords, totalChunks: 1, processedAt: new Date().toISOString() }
-      }
-    })
-
-    await ensureKnowledgeCollection(agentConfigId)
-    const embedding = await generateEmbedding(data.content)
-    const sparse = buildSparseVector(data.content)
-
-    const payload = buildPayload({
-      agentConfigId,
+  const entry = await prisma.knowledge_base.create({
+    data: {
+      agent_config_id: agentConfigId,
       title: data.title,
       content: data.content,
-      contentType: data.content_type || 'text',
-      chunkIndex: 0,
-      totalChunks: 1,
-      language,
-      keywords,
-      hasNumbers: hasNumericalData(data.content),
-      hasTable: hasTableStructure(data.content),
-      estimatedPages: pages,
-      fileType: data.file_type,
-      fileSize: data.file_size,
-      createdAt: entry.created_at.toISOString(),
-    })
-
-    await qdrant.upsert(knowledgeCollectionName(agentConfigId), {
-      wait: true,
-      points: [{
-        id: entry.id,
-        vector: { dense: embedding, sparse },
-        payload,
-      }]
-    })
-
-    logger.info({ agentConfigId, title: data.title }, 'Knowledge entry added')
-    return entry as unknown as KnowledgeBase
-  } catch (error) {
-    logger.error({ error, agentConfigId }, 'Failed to add knowledge entry')
-    throw error
-  }
+      content_type: data.content_type || 'text',
+      file_size: data.file_size || null,
+      file_type: data.file_type || null,
+      chunk_index: 0,
+      metadata: { processedAt: new Date().toISOString() }
+    }
+  })
+  logger.info({ agentConfigId, title: data.title }, 'Knowledge entry saved to Postgres')
+  return entry as unknown as KnowledgeBase
 }
 
 export async function addKnowledgeChunks(
@@ -301,7 +304,8 @@ export async function addKnowledgeChunks(
   fileSize?: number,
   fileType?: string,
   additionalMetadata?: Record<string, any>,
-  knowledgeFileId?: string
+  knowledgeFileId?: string,
+  pdfMetadata?: PdfMetadata
 ): Promise<KnowledgeBase[]> {
   try {
     const language = detectLanguage(content)
@@ -318,13 +322,18 @@ export async function addKnowledgeChunks(
 
     logger.info({ agentConfigId, title, chunkCount: chunks.length }, 'Chunked — generating embeddings (batch)')
 
+    // Rastreamento de posição de linha para o campo loc.lines (formato LangChain)
+    const lineOffsets = buildLineOffsets(content)
+    let searchOffset = 0
+
     // 1. Pre-compute per-chunk data
     const chunkData = chunks.map((chunk, i) => {
       const chunkTitle = chunks.length === 1 ? title : `${title} - Parte ${i + 1}`
       const contextualContent = `Document: ${title}\n\nPart ${i + 1}/${chunks.length}\n\n${chunk}`
-      // Usa apenas keywords do chunk (não globais) para sparse search ser preciso por chunk
       const allKeywords = extractKeywords(chunk).slice(0, 15)
-      return { chunk, chunkTitle, contextualContent, allKeywords }
+      const { from: lineFrom, to: lineTo, nextOffset } = getChunkLines(lineOffsets, content, chunk, searchOffset)
+      searchOffset = nextOffset
+      return { chunk, chunkTitle, contextualContent, allKeywords, lineFrom, lineTo }
     })
 
     // 2. Save all chunks to Postgres
@@ -360,17 +369,20 @@ export async function addKnowledgeChunks(
     // 3. Batch generate all embeddings in a single OpenAI API call
     const embeddings = await generateEmbeddings(chunkData.map(d => d.contextualContent))
 
-    // 4. Batch upsert all points to Qdrant in a single request (dense + sparse)
+    // 4. Batch upsert all points to Qdrant em uma única request
     await qdrant.upsert(knowledgeCollectionName(agentConfigId), {
       wait: true,
       points: dbEntries.map((entry: { id: string; created_at: Date }, i: number) => ({
         id: entry.id,
-        vector: { dense: embeddings[i]!, sparse: buildSparseVector(chunkData[i]!.chunk) },
+        vector: embeddings[i]!,
         payload: buildPayload({
           agentConfigId,
           title: chunkData[i]!.chunkTitle,
           content: chunkData[i]!.chunk,
-          contentType,
+          source: title,
+          blobType: fileType || 'text/plain',
+          lineFrom: chunkData[i]!.lineFrom,
+          lineTo: chunkData[i]!.lineTo,
           chunkIndex: i,
           totalChunks: chunks.length,
           language,
@@ -378,9 +390,9 @@ export async function addKnowledgeChunks(
           hasNumbers: contentHasNumbers,
           hasTable: contentHasTable,
           estimatedPages: pages,
-          fileType: fileType,
           fileSize: fileSize,
           createdAt: entry.created_at.toISOString(),
+          pdfMetadata,
         }),
       }))
     })
@@ -433,11 +445,15 @@ export async function updateKnowledgeEntry(
       const embedding = await generateEmbedding(newContent)
       await ensureKnowledgeCollection(agentConfigId)
 
+      const updLineOffsets = buildLineOffsets(newContent)
       const payload = buildPayload({
         agentConfigId,
         title: newTitle,
         content: newContent,
-        contentType: (data.content_type ?? existing.content_type) as string,
+        source: newTitle,
+        blobType: (existing.file_type as string) || 'text/plain',
+        lineFrom: 1,
+        lineTo: updLineOffsets.length,
         chunkIndex: existing.chunk_index ?? 0,
         totalChunks: existingMeta.totalChunks ?? 1,
         language,
@@ -445,14 +461,13 @@ export async function updateKnowledgeEntry(
         hasNumbers: hasNumericalData(newContent),
         hasTable: hasTableStructure(newContent),
         estimatedPages: estimatePages(newContent),
-        fileType: existing.file_type,
-        fileSize: existing.file_size,
+        fileSize: existing.file_size as number | null,
         createdAt: existing.created_at.toISOString(),
       })
 
       await qdrant.upsert(knowledgeCollectionName(agentConfigId), {
         wait: true,
-        points: [{ id: entryId, vector: { dense: embedding, sparse: buildSparseVector(newContent) }, payload }]
+        points: [{ id: entryId, vector: embedding, payload }]
       })
     } catch (error) {
       logger.warn({ error, entryId }, 'Failed to update Qdrant on knowledge update')
@@ -495,7 +510,6 @@ export async function searchKnowledgeByEmbedding(
 
     const searchResults = await qdrant.query(collectionName, {
       query: queryEmbedding,
-      using: 'dense',
       limit,
       with_payload: true,
       filter: {
@@ -510,11 +524,11 @@ export async function searchKnowledgeByEmbedding(
       return {
         id: r.id as string,
         agent_config_id: p.agent_config_id,
-        title: p.title,
+        title: p.metadata.title,
         content: p.content,
-        content_type: p.content_type,
+        content_type: p.metadata.blobType,
         chunk_index: p.metadata.chunkIndex,
-        file_type: p.metadata.fileType,
+        file_type: p.metadata.blobType,
         file_size: p.metadata.fileSize,
         metadata: p.metadata,
         created_at: new Date(p.metadata.createdAt),

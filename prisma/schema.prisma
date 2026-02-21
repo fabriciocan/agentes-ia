@@ -39,19 +39,26 @@ model agent_configs {
   whatsapp_instance_name   String?          @db.VarChar(255)
   whatsapp_instance_status String           @default("disconnected") @db.VarChar(50)
   whatsapp_number          String?          @db.VarChar(50)
-  widget_config            Json             @default("{}")
-  company_id               String?          @db.Uuid
-  qdrant_collection        String?          @db.VarChar(255)
-  clients                  clients          @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  companies                companies?       @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  chats                    chats[]
-  conversations            conversations[]
-  knowledge_base           knowledge_base[]
-  knowledge_files          knowledge_files[]
+  whatsapp_provider           String?                  @db.VarChar(20)
+  meta_phone_number_id        String?                  @db.VarChar(50)
+  meta_access_token           String?
+  meta_waba_id                String?                  @db.VarChar(50)
+  meta_whatsapp_account_id    String?                  @db.Uuid
+  widget_config               Json                     @default("{}")
+  company_id                  String?                  @db.Uuid
+  qdrant_collection           String?                  @db.VarChar(255)
+  clients                     clients                  @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  companies                   companies?               @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  meta_whatsapp_accounts      meta_whatsapp_accounts?  @relation(fields: [meta_whatsapp_account_id], references: [id], onDelete: SetNull)
+  chats                       chats[]
+  conversations               conversations[]
+  knowledge_base              knowledge_base[]
+  knowledge_files             knowledge_files[]
 
   @@index([client_id, is_active], map: "idx_agent_configs_client_active", where: raw("(is_active = true)"))
   @@index([client_id], map: "idx_agent_configs_client_id")
   @@index([company_id], map: "idx_agent_configs_company_id")
+  @@index([meta_phone_number_id], map: "idx_agent_configs_meta_phone_number_id", where: raw("(meta_phone_number_id IS NOT NULL)"))
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -105,12 +112,13 @@ model clients {
   api_key       String          @unique @db.VarChar(64)
   created_at    DateTime        @default(now()) @db.Timestamptz(6)
   updated_at    DateTime        @default(now()) @db.Timestamptz(6)
-  admin_users   admin_users[]
-  agent_configs agent_configs[]
-  chats         chats[]
-  companies     companies[]
-  conversations conversations[]
-  end_users     end_users[]
+  admin_users              admin_users[]
+  agent_configs            agent_configs[]
+  chats                    chats[]
+  companies                companies[]
+  conversations            conversations[]
+  end_users                end_users[]
+  meta_whatsapp_accounts   meta_whatsapp_accounts[]
 
   @@index([api_key], map: "idx_clients_api_key")
   @@index([slug], map: "idx_clients_slug")
@@ -198,6 +206,23 @@ model end_users {
   @@unique([client_id, external_id], map: "users_client_id_external_id_key")
   @@index([client_id], map: "idx_users_client_id")
   @@index([client_id, external_id], map: "idx_users_external_id")
+}
+
+model meta_whatsapp_accounts {
+  id                   String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  client_id            String          @db.Uuid
+  phone_number_id      String          @unique @db.VarChar(50)
+  waba_id              String          @db.VarChar(50)
+  access_token         String
+  display_phone_number String?         @db.VarChar(30)
+  verified_name        String?         @db.VarChar(255)
+  status               String          @default("connected") @db.VarChar(20)
+  created_at           DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime        @default(now()) @db.Timestamptz(6)
+  clients              clients         @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  agent_configs        agent_configs[]
+
+  @@index([client_id], map: "idx_meta_whatsapp_accounts_client")
 }
 
 /// Embeddings are stored in Qdrant. The UUID here is used as the Qdrant point ID.

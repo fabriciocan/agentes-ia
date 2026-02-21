@@ -60,6 +60,7 @@ export const ModelName = {
   conversations: 'conversations',
   dados_cliente: 'dados_cliente',
   end_users: 'end_users',
+  meta_whatsapp_accounts: 'meta_whatsapp_accounts',
   knowledge_base: 'knowledge_base',
   knowledge_files: 'knowledge_files',
   messages: 'messages',
@@ -123,6 +124,11 @@ export const Agent_configsScalarFieldEnum = {
   whatsapp_instance_name: 'whatsapp_instance_name',
   whatsapp_instance_status: 'whatsapp_instance_status',
   whatsapp_number: 'whatsapp_number',
+  whatsapp_provider: 'whatsapp_provider',
+  meta_phone_number_id: 'meta_phone_number_id',
+  meta_access_token: 'meta_access_token',
+  meta_waba_id: 'meta_waba_id',
+  meta_whatsapp_account_id: 'meta_whatsapp_account_id',
   widget_config: 'widget_config',
   company_id: 'company_id',
   qdrant_collection: 'qdrant_collection'
@@ -236,6 +242,22 @@ export const End_usersScalarFieldEnum = {
 } as const
 
 export type End_usersScalarFieldEnum = (typeof End_usersScalarFieldEnum)[keyof typeof End_usersScalarFieldEnum]
+
+
+export const Meta_whatsapp_accountsScalarFieldEnum = {
+  id: 'id',
+  client_id: 'client_id',
+  phone_number_id: 'phone_number_id',
+  waba_id: 'waba_id',
+  access_token: 'access_token',
+  display_phone_number: 'display_phone_number',
+  verified_name: 'verified_name',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Meta_whatsapp_accountsScalarFieldEnum = (typeof Meta_whatsapp_accountsScalarFieldEnum)[keyof typeof Meta_whatsapp_accountsScalarFieldEnum]
 
 
 export const Knowledge_baseScalarFieldEnum = {

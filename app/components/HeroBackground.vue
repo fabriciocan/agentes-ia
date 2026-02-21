@@ -1,0 +1,49 @@
+<template>
+  <svg
+    class="absolute inset-0 w-full h-full pointer-events-none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
+    <defs>
+      <radialGradient
+        id="hero-gradient"
+        cx="50%"
+        cy="50%"
+        r="60%"
+      >
+        <stop
+          offset="0%"
+          stop-color="rgb(var(--color-primary-500))"
+          stop-opacity="0.15"
+        />
+        <stop
+          offset="100%"
+          stop-color="transparent"
+          stop-opacity="0"
+        />
+      </radialGradient>
+    </defs>
+    <rect
+      width="100%"
+      height="100%"
+      fill="url(#hero-gradient)"
+    />
+    <circle
+      cx="20%"
+      cy="30%"
+      r="300"
+      fill="rgb(var(--color-primary-400))"
+      fill-opacity="0.05"
+      class="animate-pulse"
+    />
+    <circle
+      cx="80%"
+      cy="70%"
+      r="250"
+      fill="rgb(var(--color-primary-500))"
+      fill-opacity="0.04"
+      class="animate-pulse"
+      style="animation-delay: 1s"
+    />
+  </svg>
+</template>

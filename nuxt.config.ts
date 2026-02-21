@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
+    '@nuxt/content',
     'nuxt-auth-utils'
   ],
 
@@ -15,6 +16,10 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   nitro: {
+    prerender: {
+      crawlLinks: false,
+      routes: []
+    },
     experimental: {
       wasm: true,
       asyncContext: true
@@ -45,6 +50,13 @@ export default defineNuxtConfig({
     evoApiUrl: '',
     evoApiKey: '',
     n8nWebhookUrl: '',
+    n8nUploadWebhookUrl: '',
+    metaAppSecret: '',
+    metaWebhookVerifyToken: '',
+    public: {
+      metaAppId: '',
+      metaEmbeddedSignupConfigId: ''
+    },
     session: {
       password: '',
       cookie: {

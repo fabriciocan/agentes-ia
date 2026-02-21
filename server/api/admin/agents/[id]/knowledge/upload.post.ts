@@ -1,11 +1,10 @@
 import { getAgentConfig } from '../../../../../services/agent-config.service'
-import { addKnowledgeChunks, createKnowledgeFile } from '../../../../../services/knowledge.service'
-import { extractTextFromFile, validateFileSize, validateFileType } from '../../../../../utils/document-parser'
-import { detectLanguage, hasNumericalData, hasTableStructure, estimatePages } from '../../../../../utils/text-analysis'
+import { createKnowledgeFile, deleteKnowledgeFile } from '../../../../../services/knowledge.service'
+import { validateFileSize, validateFileType } from '../../../../../utils/document-parser'
 import { requirePermission } from '../../../../../utils/authorization'
+import { knowledgeCollectionName, ensureKnowledgeCollection } from '../../../../../lib/qdrant'
 
 export default defineEventHandler(async (event) => {
-  // Check permission (RBAC)
   if (event.context.can) {
     requirePermission(event, 'knowledge.create')
   }
@@ -39,98 +38,68 @@ export default defineEventHandler(async (event) => {
   const mimeType = fileData.type || 'application/octet-stream'
 
   try {
-    // Validate file
-    validateFileSize(fileData.data.length, 10) // 10MB limit
+    validateFileSize(fileData.data.length, 10)
     validateFileType(mimeType, filename)
 
-    // Extract text content
-    const content = await extractTextFromFile(fileData.data, filename, mimeType)
+    const collectionName = knowledgeCollectionName(agentId)
 
-    if (!content || content.trim().length === 0) {
-      throw createError({ statusCode: 400, statusMessage: 'No text content found in file' })
-    }
+    // Garantir que a collection existe ANTES de chamar o N8N
+    // → quando o nó do N8N tentar criar, ela já existe e ele só insere
+    await ensureKnowledgeCollection(agentId)
 
-    console.log(`📄 Processing: ${filename} (${content.length} characters)`)
-
-    // Analyze content
-    const language = detectLanguage(content)
-    const hasNumbers = hasNumericalData(content)
-    const hasTables = hasTableStructure(content)
-    const estimatedPageCount = estimatePages(content)
-
-    // Prepare metadata for storage
-    const uploadMetadata = {
-      originalFilename: filename,
-      uploadedAt: new Date().toISOString(),
-      uploadedBy: adminUser.clientId,
-      mimeType,
-      fileSize: fileData.data.length,
-      language,
-      hasNumbers,
-      hasTables,
-      estimatedPages: estimatedPageCount,
-      contentLength: content.length
-    }
-
-    // Criar registro do arquivo pai (knowledge_files)
+    // Registrar o arquivo no Postgres (para listagem na UI)
     const knowledgeFile = await createKnowledgeFile(agentId, {
       title: filename,
       file_name: filename,
       file_size: fileData.data.length,
       file_type: mimeType,
       content_type: 'document',
-      metadata: uploadMetadata as unknown as Record<string, unknown>
+      metadata: {
+        uploadedAt: new Date().toISOString(),
+        uploadedBy: adminUser.clientId,
+      }
     })
 
-    // Salvar chunks na knowledge_base vinculados ao arquivo pai
-    const entries = await addKnowledgeChunks(
-      agentId,
-      filename,
-      content.trim(),
-      'document',
-      fileData.data.length,
-      mimeType,
-      uploadMetadata,
-      knowledgeFile.id
-    )
+    // Encaminhar arquivo para o N8N processar (chunking + embedding + Qdrant)
+    const runtimeConfig = useRuntimeConfig()
+    const webhookUrl = (runtimeConfig.n8nUploadWebhookUrl as string)
+      || 'https://webhook.agenciacomo.com.br/webhook/upload-base'
 
-    console.log(`✅ Successfully processed ${filename}: ${entries.length} chunks created`)
+    const n8nForm = new FormData()
+    n8nForm.append('file', new Blob([fileData.data.buffer as ArrayBuffer], { type: mimeType }), filename)
+    n8nForm.append('collectionName', collectionName)
+    n8nForm.append('agentConfigId', agentId)
+    n8nForm.append('knowledgeFileId', knowledgeFile.id)
 
-    // Return detailed response
+    const webhookResp = await fetch(webhookUrl, {
+      method: 'POST',
+      body: n8nForm,
+    })
+
+    if (!webhookResp.ok) {
+      // Reverter registro se o N8N não aceitou
+      await deleteKnowledgeFile(knowledgeFile.id, agentId)
+      const errText = await webhookResp.text().catch(() => webhookResp.statusText)
+      throw createError({ statusCode: 502, statusMessage: `N8N webhook error: ${errText}` })
+    }
+
+    console.log(`✅ File forwarded to N8N: ${filename} → collection "${collectionName}"`)
+
     return {
       data: {
         filename,
         fileSize: fileData.data.length,
         mimeType,
-        chunks: entries.length,
-        totalChars: content.length,
-        avgChunkSize: Math.round(content.length / entries.length),
-        analysis: {
-          language,
-          hasNumericalData: hasNumbers,
-          hasTableStructure: hasTables,
-          estimatedPages: estimatedPageCount
-        },
-        processing: {
-          chunking: 'recursive-character-text-splitter',
-          chunkSize: 800,
-          overlap: 200,
-          embeddingModel: 'text-embedding-3-small',
-          embeddingDimensions: 1536
-        },
-        metadata: {
-          contextAdded: true,
-          keywordExtraction: true,
-          languageDetection: true,
-          richMetadata: true
-        }
+        collectionName,
+        knowledgeFileId: knowledgeFile.id,
+        status: 'processing', // N8N processa de forma assíncrona
       }
     }
   } catch (error) {
     const err = error as Error
-    console.error('❌ Error processing document:', err.message)
+    console.error('❌ Error forwarding document to N8N:', err.message)
     throw createError({
-      statusCode: 400,
+      statusCode: (error as any).statusCode || 400,
       statusMessage: err.message || 'Failed to process document'
     })
   }

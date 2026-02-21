@@ -393,6 +393,7 @@ export const ModelName = {
   conversations: 'conversations',
   dados_cliente: 'dados_cliente',
   end_users: 'end_users',
+  meta_whatsapp_accounts: 'meta_whatsapp_accounts',
   knowledge_base: 'knowledge_base',
   knowledge_files: 'knowledge_files',
   messages: 'messages',
@@ -422,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "admin_users" | "agent_configs" | "audit_logs" | "chat_messages" | "clients" | "companies" | "conversations" | "dados_cliente" | "end_users" | "knowledge_base" | "knowledge_files" | "messages" | "migrations" | "n8n_chat_histories" | "permissions" | "role_permissions" | "roles" | "subscription_plans" | "subscriptions" | "usage_logs" | "user_roles" | "users" | "chats"
+    modelProps: "admin_users" | "agent_configs" | "audit_logs" | "chat_messages" | "clients" | "companies" | "conversations" | "dados_cliente" | "end_users" | "meta_whatsapp_accounts" | "knowledge_base" | "knowledge_files" | "messages" | "migrations" | "n8n_chat_histories" | "permissions" | "role_permissions" | "roles" | "subscription_plans" | "subscriptions" | "usage_logs" | "user_roles" | "users" | "chats"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1089,6 +1090,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.end_usersCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.End_usersCountAggregateOutputType> | number
+        }
+      }
+    }
+    meta_whatsapp_accounts: {
+      payload: Prisma.$meta_whatsapp_accountsPayload<ExtArgs>
+      fields: Prisma.meta_whatsapp_accountsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.meta_whatsapp_accountsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$meta_whatsapp_accountsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.meta_whatsapp_accountsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$meta_whatsapp_accountsPayload>
+        }
+        findFirst: {
+          args: Prisma.meta_whatsapp_accountsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$meta_whatsapp_accountsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.meta_whatsapp_accountsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$meta_whatsapp_accountsPayload>
+        }
+        findMany: {
+          args: Prisma.meta_whatsapp_accountsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$meta_whatsapp_accountsPayload>[]
+        }
+        create: {
+          args: Prisma.meta_whatsapp_accountsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$meta_whatsapp_accountsPayload>
+        }
+        createMany: {
+          args: Prisma.meta_whatsapp_accountsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.meta_whatsapp_accountsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$meta_whatsapp_accountsPayload>[]
+        }
+        delete: {
+          args: Prisma.meta_whatsapp_accountsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$meta_whatsapp_accountsPayload>
+        }
+        update: {
+          args: Prisma.meta_whatsapp_accountsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$meta_whatsapp_accountsPayload>
+        }
+        deleteMany: {
+          args: Prisma.meta_whatsapp_accountsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.meta_whatsapp_accountsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.meta_whatsapp_accountsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$meta_whatsapp_accountsPayload>[]
+        }
+        upsert: {
+          args: Prisma.meta_whatsapp_accountsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$meta_whatsapp_accountsPayload>
+        }
+        aggregate: {
+          args: Prisma.Meta_whatsapp_accountsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMeta_whatsapp_accounts>
+        }
+        groupBy: {
+          args: Prisma.meta_whatsapp_accountsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Meta_whatsapp_accountsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.meta_whatsapp_accountsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Meta_whatsapp_accountsCountAggregateOutputType> | number
         }
       }
     }
@@ -2198,6 +2273,11 @@ export const Agent_configsScalarFieldEnum = {
   whatsapp_instance_name: 'whatsapp_instance_name',
   whatsapp_instance_status: 'whatsapp_instance_status',
   whatsapp_number: 'whatsapp_number',
+  whatsapp_provider: 'whatsapp_provider',
+  meta_phone_number_id: 'meta_phone_number_id',
+  meta_access_token: 'meta_access_token',
+  meta_waba_id: 'meta_waba_id',
+  meta_whatsapp_account_id: 'meta_whatsapp_account_id',
   widget_config: 'widget_config',
   company_id: 'company_id',
   qdrant_collection: 'qdrant_collection'
@@ -2311,6 +2391,22 @@ export const End_usersScalarFieldEnum = {
 } as const
 
 export type End_usersScalarFieldEnum = (typeof End_usersScalarFieldEnum)[keyof typeof End_usersScalarFieldEnum]
+
+
+export const Meta_whatsapp_accountsScalarFieldEnum = {
+  id: 'id',
+  client_id: 'client_id',
+  phone_number_id: 'phone_number_id',
+  waba_id: 'waba_id',
+  access_token: 'access_token',
+  display_phone_number: 'display_phone_number',
+  verified_name: 'verified_name',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Meta_whatsapp_accountsScalarFieldEnum = (typeof Meta_whatsapp_accountsScalarFieldEnum)[keyof typeof Meta_whatsapp_accountsScalarFieldEnum]
 
 
 export const Knowledge_baseScalarFieldEnum = {
@@ -2785,6 +2881,7 @@ export type GlobalOmitConfig = {
   conversations?: Prisma.conversationsOmit
   dados_cliente?: Prisma.dados_clienteOmit
   end_users?: Prisma.end_usersOmit
+  meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsOmit
   knowledge_base?: Prisma.knowledge_baseOmit
   knowledge_files?: Prisma.knowledge_filesOmit
   messages?: Prisma.messagesOmit

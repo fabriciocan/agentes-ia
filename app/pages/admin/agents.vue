@@ -285,18 +285,40 @@ async function handleDeleteAgent() {
             </UCard>
 
             <!-- WhatsApp Tab -->
-            <UCard v-if="activeTab === 'whatsapp'">
-              <template #header>
-                <div class="flex items-center gap-2">
-                  <UIcon
-                    name="i-lucide-smartphone"
-                    class="text-lg"
-                  />
-                  <span class="font-medium">WhatsApp Integration</span>
-                </div>
-              </template>
-              <AdminWhatsAppConnect :agent-id="selectedConfig.id as string" />
-            </UCard>
+            <div v-if="activeTab === 'whatsapp'" class="space-y-4">
+              <!-- API Não-oficial (EVO) -->
+              <UCard>
+                <template #header>
+                  <div class="flex items-center gap-2">
+                    <UIcon name="i-lucide-smartphone" class="text-lg" />
+                    <span class="font-medium">WhatsApp (API Não-oficial)</span>
+                    <UBadge label="EVO / Baileys" size="xs" variant="outline" color="neutral" />
+                  </div>
+                </template>
+                <AdminWhatsAppConnect :agent-id="selectedConfig.id as string" />
+              </UCard>
+
+              <!-- API Oficial (Meta) — vínculo rápido -->
+              <UCard>
+                <template #header>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <UIcon name="i-lucide-badge-check" class="text-lg text-green-600" />
+                      <span class="font-medium">WhatsApp Business (API Oficial)</span>
+                      <UBadge label="Meta" size="xs" variant="subtle" color="success" />
+                    </div>
+                    <NuxtLink to="/admin/whatsapp">
+                      <UButton size="xs" variant="ghost" icon="i-lucide-external-link">
+                        Gerenciar
+                      </UButton>
+                    </NuxtLink>
+                  </div>
+                </template>
+
+                <!-- Status da conexão Meta para este agente -->
+                <AdminMetaStatusBadge :agent-id="selectedConfig.id as string" />
+              </UCard>
+            </div>
 
             <!-- Widget Tab -->
             <UCard v-if="activeTab === 'widget'">

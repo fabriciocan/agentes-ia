@@ -20,7 +20,7 @@ async function onSubmit() {
     })
     await navigateTo('/admin')
   } catch {
-    errorMsg.value = 'Invalid email or password'
+    errorMsg.value = 'E-mail ou senha inválidos'
   } finally {
     loading.value = false
   }
@@ -28,145 +28,192 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div class="min-h-screen flex">
+  <div class="min-h-screen flex bg-gray-950">
     <!-- Left Panel - Branding -->
-    <div class="hidden lg:flex lg:w-1/2 bg-(--ui-primary) relative overflow-hidden items-center justify-center">
-      <!-- Background Pattern -->
-      <div class="absolute inset-0 opacity-10">
-        <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
-        <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-white rounded-full translate-x-1/3 translate-y-1/3" />
-        <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
-      </div>
+    <div class="hidden lg:flex lg:w-[55%] relative overflow-hidden items-center justify-center">
+      <!-- Dark gradient background -->
+      <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-950 to-black" />
 
-      <div class="relative z-10 text-center text-white px-12 max-w-lg">
-        <div class="flex justify-center mb-8">
-          <div class="p-4 bg-white/20 backdrop-blur rounded-2xl">
+      <!-- Subtle grid pattern -->
+      <div
+        class="absolute inset-0 opacity-[0.03]"
+        style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 40px 40px;"
+      />
+
+      <!-- Green glow orbs -->
+      <div class="absolute top-1/4 left-1/3 w-[500px] h-[500px] rounded-full bg-primary-500/10 blur-[120px] pointer-events-none" />
+      <div class="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] rounded-full bg-primary-400/8 blur-[100px] pointer-events-none" />
+
+      <!-- Content -->
+      <div class="relative z-10 px-16 max-w-xl">
+        <!-- Logo -->
+        <div class="flex items-center gap-3 mb-16">
+          <div class="w-10 h-10 rounded-xl bg-primary-500 flex items-center justify-center shadow-lg shadow-primary-500/30">
             <UIcon
               name="i-lucide-bot"
-              class="text-5xl text-white"
+              class="text-xl text-white"
             />
           </div>
+          <span class="text-white font-semibold text-lg tracking-tight">AgentesIA</span>
         </div>
-        <h2 class="text-3xl font-bold mb-4">
-          AI Agents Platform
-        </h2>
-        <p class="text-lg text-white/80">
-          Multi-tenant AI agent platform for conversational customer service. Manage agents, knowledge bases and integrations.
+
+        <!-- Headline -->
+        <h1 class="text-4xl font-bold text-white leading-tight mb-6">
+          Atendimento inteligente,<br>
+          <span class="text-primary-400">resultados reais</span>
+        </h1>
+        <p class="text-gray-400 text-lg leading-relaxed mb-14">
+          Plataforma de agentes de IA para WhatsApp que atende 24/7, qualifica leads e escala sua operação.
         </p>
 
-        <!-- Feature highlights -->
-        <div class="mt-10 space-y-4 text-left">
-          <div class="flex items-center gap-3 text-white/90">
-            <div class="p-2 bg-white/20 rounded-lg shrink-0">
-              <UIcon
-                name="i-lucide-message-square"
-                class="text-lg"
-              />
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-6 mb-14">
+          <div>
+            <div class="text-2xl font-bold text-white mb-1">
+              24/7
             </div>
-            <span class="text-sm">Multi-channel conversational AI</span>
+            <div class="text-xs text-gray-500 uppercase tracking-wider">
+              Disponibilidade
+            </div>
           </div>
-          <div class="flex items-center gap-3 text-white/90">
-            <div class="p-2 bg-white/20 rounded-lg shrink-0">
-              <UIcon
-                name="i-lucide-book-open"
-                class="text-lg"
-              />
+          <div>
+            <div class="text-2xl font-bold text-white mb-1">
+              -70%
             </div>
-            <span class="text-sm">RAG-powered knowledge base</span>
+            <div class="text-xs text-gray-500 uppercase tracking-wider">
+              Custo operacional
+            </div>
           </div>
-          <div class="flex items-center gap-3 text-white/90">
-            <div class="p-2 bg-white/20 rounded-lg shrink-0">
+          <div>
+            <div class="text-2xl font-bold text-white mb-1">
+              +40%
+            </div>
+            <div class="text-xs text-gray-500 uppercase tracking-wider">
+              Conversão
+            </div>
+          </div>
+        </div>
+
+        <!-- Features -->
+        <div class="space-y-3">
+          <div
+            v-for="feature in [
+              { icon: 'i-simple-icons-whatsapp', label: 'Integração nativa com WhatsApp Cloud API' },
+              { icon: 'i-lucide-brain', label: 'Base de conhecimento com RAG + Qdrant' },
+              { icon: 'i-lucide-building-2', label: 'Multi-empresa e multi-agente' }
+            ]"
+            :key="feature.label"
+            class="flex items-center gap-3"
+          >
+            <div class="w-8 h-8 rounded-lg bg-gray-800 border border-gray-700 flex items-center justify-center shrink-0">
               <UIcon
-                name="i-lucide-smartphone"
-                class="text-lg"
+                :name="feature.icon"
+                class="text-sm text-primary-400"
               />
             </div>
-            <span class="text-sm">WhatsApp &amp; Web Widget integration</span>
+            <span class="text-sm text-gray-400">{{ feature.label }}</span>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Right Panel - Login Form -->
-    <div class="flex-1 flex items-center justify-center bg-(--ui-bg) px-4 sm:px-8">
+    <div class="flex-1 flex items-center justify-center px-6 sm:px-12 relative">
+      <!-- Subtle border separator -->
+      <div class="absolute left-0 top-12 bottom-12 w-px bg-gradient-to-b from-transparent via-gray-800 to-transparent hidden lg:block" />
+
       <div class="w-full max-w-sm">
-        <!-- Mobile Logo -->
-        <div class="lg:hidden flex justify-center mb-8">
-          <div class="p-3 bg-(--ui-bg-accented) rounded-xl">
+        <!-- Mobile logo -->
+        <div class="lg:hidden flex items-center gap-2 justify-center mb-10">
+          <div class="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center">
             <UIcon
               name="i-lucide-bot"
-              class="text-4xl text-(--ui-primary)"
+              class="text-white text-base"
             />
           </div>
+          <span class="text-white font-semibold">AgentesIA</span>
         </div>
 
         <!-- Header -->
-        <div class="mb-8 text-center">
-          <h1 class="text-2xl font-bold text-(--ui-text-highlighted)">
-            Welcome back
-          </h1>
-          <p class="text-sm text-(--ui-text-muted) mt-2">
-            Sign in to your admin dashboard
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold text-white mb-1">
+            Bem-vindo de volta
+          </h2>
+          <p class="text-gray-500 text-sm">
+            Entre na sua conta para acessar o painel
           </p>
         </div>
 
         <!-- Form -->
-        <div class="space-y-5">
-          <UFormField
-            label="Email"
-            name="email"
-          >
-            <UInput
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">E-mail</label>
+            <input
               v-model="email"
               type="email"
-              placeholder="admin@company.com"
-              icon="i-lucide-mail"
-              size="lg"
-              class="w-full"
+              placeholder="seu@email.com"
+              class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white placeholder-gray-600 text-sm outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/50 transition-all"
               @keydown.enter="onSubmit"
-            />
-          </UFormField>
+            >
+          </div>
 
-          <UFormField
-            label="Password"
-            name="password"
-          >
-            <UInput
+          <div>
+            <label class="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">Senha</label>
+            <input
               v-model="password"
               type="password"
-              placeholder="Enter your password"
-              icon="i-lucide-lock"
-              size="lg"
-              class="w-full"
+              placeholder="••••••••"
+              class="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white placeholder-gray-600 text-sm outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/50 transition-all"
               @keydown.enter="onSubmit"
-            />
-          </UFormField>
+            >
+          </div>
 
-          <!-- Error message -->
+          <!-- Error -->
           <div
             v-if="errorMsg"
-            class="flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400"
+            class="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400"
           >
             <UIcon
               name="i-lucide-alert-circle"
-              class="text-lg shrink-0"
+              class="shrink-0 text-base"
             />
             <span class="text-sm">{{ errorMsg }}</span>
           </div>
 
-          <UButton
-            block
-            size="lg"
-            :loading="loading"
+          <!-- Submit -->
+          <button
+            :disabled="loading"
+            class="w-full py-3 rounded-xl bg-primary-500 hover:bg-primary-400 text-white font-semibold text-sm transition-all shadow-lg shadow-primary-500/20 hover:shadow-primary-500/30 disabled:opacity-60 disabled:cursor-not-allowed mt-2 flex items-center justify-center gap-2"
             @click="onSubmit"
           >
-            Sign In
-          </UButton>
+            <svg
+              v-if="loading"
+              class="animate-spin w-4 h-4"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              />
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+            {{ loading ? 'Entrando...' : 'Entrar' }}
+          </button>
         </div>
 
         <!-- Footer -->
-        <p class="text-center text-xs text-(--ui-text-dimmed) mt-8">
-          AI Agents Platform &middot; Secure Admin Access
+        <p class="text-center text-xs text-gray-700 mt-10">
+          AgentesIA · Acesso restrito a administradores
         </p>
       </div>
     </div>

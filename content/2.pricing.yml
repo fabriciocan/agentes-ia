@@ -1,0 +1,87 @@
+title: Planos para cada fase do seu negócio
+description: "Invista em atendimento inteligente e veja o retorno já nos primeiros 30 dias."
+seo:
+  title: Preços e Planos | Agentes IA para WhatsApp
+  description: "Planos a partir de R$297/mês. Escolha o plano ideal e escale conforme seu negócio cresce."
+navigation.icon: i-lucide-credit-card
+plans:
+  - title: Starter
+    description: "Ideal para pequenas empresas que querem automatizar o atendimento básico."
+    price:
+      month: "R$297"
+      year: "R$2.970"
+    button:
+      label: Contratar plano
+      color: neutral
+      variant: subtle
+    features:
+      - 1 Agente de IA ativo
+      - 500 conversas/mês
+      - 1 Número WhatsApp
+      - Base de conhecimento (50 MB)
+      - Painel de conversas
+      - Suporte via chat
+  - title: Professional
+    description: "Para empresas em crescimento que precisam de mais poder e controle."
+    price:
+      month: "R$697"
+      year: "R$6.970"
+    highlight: true
+    scale: true
+    button:
+      label: Contratar plano
+    features:
+      - 5 Agentes de IA ativos
+      - 2.000 conversas/mês
+      - 3 Números WhatsApp
+      - Base de conhecimento (500 MB)
+      - Analytics avançado
+      - Qualificação automática de leads
+      - 5 usuários admin
+      - Suporte prioritário
+  - title: Enterprise
+    description: "Solução completa para empresas e agências com múltiplos clientes."
+    price:
+      month: "R$1.497"
+      year: "R$14.970"
+    button:
+      label: Falar com Vendas
+      color: neutral
+      variant: subtle
+    features:
+      - Agentes ilimitados
+      - Conversas ilimitadas
+      - Números WhatsApp ilimitados
+      - Base de conhecimento ilimitada
+      - Multi-tenant (múltiplas empresas)
+      - API de integração
+      - Usuários ilimitados
+      - RBAC avançado
+      - SLA garantido
+      - Suporte dedicado 24/7
+      - Onboarding personalizado
+logos:
+  title: Integrações e tecnologias suportadas
+  icons:
+    - i-simple-icons-whatsapp
+    - i-simple-icons-openai
+    - i-simple-icons-meta
+    - i-simple-icons-postgresql
+    - i-simple-icons-redis
+    - i-simple-icons-docker
+faq:
+  title: Perguntas frequentes
+  description: "Tire suas dúvidas sobre a plataforma, planos e funcionamento dos agentes."
+  items:
+    - label: Como funciona a contratação?
+      content: "Após escolher o plano, você recebe acesso imediato à plataforma. Nossa equipe entra em contato para auxiliar na configuração inicial e garantir que tudo esteja funcionando desde o primeiro dia."
+    - label: Posso trocar de plano a qualquer momento?
+      content: "Sim, você pode fazer upgrade ou downgrade do seu plano a qualquer momento. No upgrade, você tem acesso imediato aos novos recursos. No downgrade, a mudança ocorre no próximo ciclo de cobrança."
+    - label: Qual a diferença entre WhatsApp Cloud API e Evolution API?
+      content: "A WhatsApp Cloud API é a integração oficial do Meta, recomendada para produção com maior estabilidade. A Evolution API é uma alternativa para cenários específicos. Ambas são suportadas em todos os planos."
+    - label: A base de conhecimento funciona com qualquer tipo de documento?
+      content: "Sim! Suportamos PDFs, Word (DOCX), Excel (XLSX), TXT e URLs de páginas web. O sistema processa e indexa automaticamente todo o conteúdo para o agente usar nas respostas."
+    - label: É possível o humano assumir uma conversa do agente?
+      content: "Absolutamente. Qualquer operador autorizado pode assumir uma conversa a qualquer momento, responder manualmente e depois devolver o controle para o agente. O histórico completo fica disponível."
+    - label: Vocês oferecem suporte à implementação?
+      content: "Todos os planos incluem documentação completa e suporte via chat. O plano Enterprise inclui onboarding personalizado com um especialista dedicado que acompanha desde a configuração inicial até os primeiros resultados."

@@ -85,6 +85,11 @@ export type dados_cliente = Prisma.dados_clienteModel
  */
 export type end_users = Prisma.end_usersModel
 /**
+ * Model meta_whatsapp_accounts
+ * 
+ */
+export type meta_whatsapp_accounts = Prisma.meta_whatsapp_accountsModel
+/**
  * Model knowledge_base
  * Embeddings are stored in Qdrant. The UUID here is used as the Qdrant point ID.
  * knowledge_file_id NULL = entrada standalone (texto/FAQ) visível na UI.

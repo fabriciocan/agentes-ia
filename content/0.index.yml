@@ -1,0 +1,135 @@
+title: "Transforme o WhatsApp na sua melhor [ferramenta de vendas]{class='text-primary'}"
+description: "Plataforma de agentes de IA para WhatsApp que atende clientes 24/7, qualifica leads automaticamente e escala o atendimento sem contratar mais pessoas."
+seo:
+  title: "Agentes IA para WhatsApp | Atendimento Inteligente"
+  description: "Automatize o atendimento no WhatsApp com agentes de IA. Atenda 24/7, qualifique leads, integre sua base de conhecimento e escale sem contratar."
+navigation: false
+hero:
+  links:
+    - label: Ver planos
+      icon: i-lucide-arrow-right
+      trailing: true
+      to: /pricing
+      size: xl
+    - label: Ver demonstração
+      icon: i-lucide-play
+      size: xl
+      color: neutral
+      variant: subtle
+      to: /blog
+sections:
+  - title: Agentes de IA que Entendem Seu Negócio
+    description: "Configure agentes personalizados com a personalidade e conhecimento da sua empresa. Eles respondem dúvidas, capturam dados de leads e encaminham para humanos quando necessário — tudo no WhatsApp."
+    id: features
+    orientation: horizontal
+    features:
+      - name: Configuração sem código
+        description: Defina a personalidade, tom e regras do seu agente em linguagem natural. Sem programação.
+        icon: i-lucide-settings-2
+      - name: Integração com WhatsApp nativa
+        description: Conecte via WhatsApp Cloud API ou Evolution API em poucos cliques com nosso fluxo guiado.
+        icon: i-simple-icons-whatsapp
+      - name: Multi-empresa e multi-agente
+        description: Gerencie múltiplas empresas e agentes em uma só plataforma com controle de acesso por papel.
+        icon: i-lucide-building-2
+  - title: Base de Conhecimento com IA Avançada
+    description: "Faça upload de PDFs, documentos Word, planilhas e páginas web. Nosso sistema RAG (Retrieval-Augmented Generation) garante que o agente sempre responda com base nas informações da sua empresa."
+    orientation: horizontal
+    reverse: true
+    features:
+      - name: RAG com Qdrant Vector DB
+        description: Busca semântica de alta precisão que encontra a resposta certa mesmo quando o cliente escreve de forma diferente.
+        icon: i-lucide-brain
+      - name: Suporte a múltiplos formatos
+        description: PDF, DOCX, XLSX, TXT, URLs e muito mais. O conteúdo é processado e indexado automaticamente.
+        icon: i-lucide-file-text
+      - name: Respostas sempre atualizadas
+        description: Atualize a base de conhecimento a qualquer momento. Os agentes refletem as mudanças instantaneamente.
+        icon: i-lucide-refresh-cw
+  - title: Analytics e Controle Total das Conversas
+    description: "Acompanhe cada conversa em tempo real, analise o desempenho dos agentes e tome decisões baseadas em dados para melhorar continuamente a experiência do cliente."
+    orientation: horizontal
+    features:
+      - name: Histórico completo de conversas
+        description: Acesse qualquer conversa, filtre por cliente, agente ou período. Nunca perca o contexto.
+        icon: i-lucide-message-square
+      - name: Dashboard de métricas
+        description: Taxa de resolução, tempo médio de resposta, volume de atendimentos e muito mais.
+        icon: i-lucide-bar-chart-2
+      - name: Intervenção humana
+        description: Assuma o controle de qualquer conversa a qualquer momento e retorne para o agente depois.
+        icon: i-lucide-user-check
+features:
+  title: Tudo que Você Precisa para Escalar o Atendimento
+  description: "Pare de perder clientes por falta de resposta rápida. Nossa plataforma cuida de tudo, do primeiro contato à conversão."
+  items:
+    - title: Atendimento 24/7
+      description: Seus agentes nunca dormem. Respondem imediatamente a qualquer hora, qualquer dia da semana.
+      icon: i-lucide-clock
+    - title: Qualificação Automática de Leads
+      description: O agente coleta nome, email, telefone e necessidade do lead antes de passar para o time comercial.
+      icon: i-lucide-target
+    - title: Base de Conhecimento RAG
+      description: Respostas baseadas nos seus documentos com precisão de busca semântica. Zero alucinações.
+      icon: i-lucide-book-open
+    - title: WhatsApp Nativo
+      description: Integração oficial com WhatsApp Cloud API e suporte a Evolution API para máxima confiabilidade.
+      icon: i-lucide-smartphone
+    - title: Controle de Acesso (RBAC)
+      description: Defina quem pode ver, editar e gerenciar cada agente e empresa. Segurança granular por papel.
+      icon: i-lucide-shield
+    - title: Multi-tenant Escalável
+      description: Ideal para agências que gerenciam múltiplos clientes ou empresas com múltiplas filiais.
+      icon: i-lucide-layers
+testimonials:
+  headline: Clientes que Confiam
+  title: Empresas Crescendo com Agentes de IA
+  description: "Veja como nossos clientes transformaram o atendimento e aumentaram as vendas com a plataforma."
+  items:
+    - quote: "Reduzimos 70% do volume de atendimento humano no WhatsApp. O agente resolve as dúvidas mais comuns em segundos e os clientes adoram a rapidez."
+      user:
+        name: Fernanda Oliveira
+        description: Diretora de Operações, Loja Bella Moda
+        avatar:
+          src: https://i.pravatar.cc/120?img=5
+    - quote: "Nossa taxa de conversão de leads aumentou 40% depois que o agente começou a qualificar automaticamente. O time comercial agora só fala com quem realmente quer comprar."
+      user:
+        name: Ricardo Mendes
+        description: CEO, Construtora Horizonte
+        avatar:
+          src: https://i.pravatar.cc/120?img=7
+    - quote: "A base de conhecimento é incrível. Carregamos todo o manual do nosso produto e o agente responde perguntas técnicas com precisão absurda."
+      user:
+        name: Camila Santos
+        description: Head de Produto, SoftTech Solutions
+        avatar:
+          src: https://i.pravatar.cc/120?img=9
+    - quote: "Como agência, gerencio 12 clientes em uma plataforma só. O controle multi-tenant é essencial para o nosso negócio escalar."
+      user:
+        name: Bruno Carvalho
+        description: Fundador, Agência Digital Up
+        avatar:
+          src: https://i.pravatar.cc/120?img=11
+    - quote: "Implantamos em menos de 1 dia. A integração com WhatsApp Cloud API foi simples e o suporte nos acompanhou em cada passo."
+      user:
+        name: Ana Paula Rodrigues
+        description: Gerente Comercial, Clínica Vida Plena
+        avatar:
+          src: https://i.pravatar.cc/120?img=1
+    - quote: "Os relatórios de conversa nos ajudam a entender o que os clientes mais perguntam e melhorar nossos produtos. É inteligência de negócio de verdade."
+      user:
+        name: Marcelo Costa
+        description: CMO, E-commerce MaxParts
+        avatar:
+          src: https://i.pravatar.cc/120?img=3
+cta:
+  title: Pronto para transformar seu WhatsApp em uma máquina de vendas?
+  description: "Configure seu primeiro agente em menos de 30 minutos e comece a atender clientes automaticamente."
+  links:
+    - label: Ver planos e preços
+      to: /pricing
+      trailingIcon: i-lucide-arrow-right
+    - label: Falar com especialista
+      to: /blog
+      variant: subtle
+      icon: i-lucide-message-circle
