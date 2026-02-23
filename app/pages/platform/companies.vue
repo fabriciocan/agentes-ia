@@ -99,10 +99,10 @@ async function createCompany() {
 
 const columns = [
   { key: 'name', label: 'Empresa', sortable: true },
-  { key: 'client.name', label: 'Cliente', sortable: true },
-  { key: 'stats.userCount', label: 'Usuários', sortable: true },
-  { key: 'stats.agentCount', label: 'Agentes', sortable: true },
-  { key: 'stats.conversationCount', label: 'Conversas', sortable: true },
+  { key: 'clientName', label: 'Cliente', sortable: true },
+  { key: 'userCount', label: 'Usuários', sortable: true },
+  { key: 'agentCount', label: 'Agentes', sortable: true },
+  { key: 'conversationCount', label: 'Conversas', sortable: true },
   { key: 'status', label: 'Status', sortable: true },
   { key: 'actions', label: 'Ações' }
 ] as const
@@ -218,7 +218,7 @@ const getStatusColor = (status: string): BadgeColor => {
           </div>
         </template>
 
-        <template #client.name-data="{ row }">
+        <template #clientName-data="{ row }">
           <div>
             <p class="font-medium text-gray-700 dark:text-gray-300">
               {{ asRow(row).client.name }}
@@ -229,19 +229,19 @@ const getStatusColor = (status: string): BadgeColor => {
           </div>
         </template>
 
-        <template #stats.userCount-data="{ row }">
+        <template #userCount-data="{ row }">
           <UBadge color="primary" variant="subtle">
             {{ asRow(row).stats.userCount }}
           </UBadge>
         </template>
 
-        <template #stats.agentCount-data="{ row }">
+        <template #agentCount-data="{ row }">
           <UBadge color="secondary" variant="subtle">
             {{ asRow(row).stats.agentCount }}
           </UBadge>
         </template>
 
-        <template #stats.conversationCount-data="{ row }">
+        <template #conversationCount-data="{ row }">
           <UBadge color="success" variant="subtle">
             {{ asRow(row).stats.conversationCount }}
           </UBadge>

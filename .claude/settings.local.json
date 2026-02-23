@@ -3,7 +3,8 @@
     "allow": [
       "Bash(dir:*)",
       "Bash(npm install:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git -C /root/agentes-ia remote:*)"
     ]
   }
 }
