@@ -12,15 +12,12 @@ interface CompanyRow {
   status: string
   createdAt: string
   updatedAt: string
-  client: { id: string; name: string; slug: string }
   stats: { userCount: number; agentCount: number; conversationCount: number }
 }
 
 const { data: companiesData, refresh } = await useFetch('/api/platform/companies')
-const { data: clientsData } = await useFetch('/api/platform/clients')
 
 const companies = computed(() => (companiesData.value?.companies || []) as CompanyRow[])
-const clients = computed(() => (clientsData.value?.clients || []) as { id: string; name: string; slug: string }[])
 const toast = useToast()
 
 // ─── Create company modal ───────────────────────────────────────────────────
@@ -30,7 +27,6 @@ const createForm = reactive({
   name: '',
   slug: '',
   logo_url: '',
-  client_id: '',
   admin_email: '',
   admin_name: ''
 })
@@ -43,7 +39,6 @@ function resetCreateForm() {
   createForm.name = ''
   createForm.slug = ''
   createForm.logo_url = ''
-  createForm.client_id = ''
   createForm.admin_email = ''
   createForm.admin_name = ''
 }
@@ -61,7 +56,7 @@ function copyPassword() {
 }
 
 async function createCompany() {
-  if (!createForm.name || !createForm.slug || !createForm.client_id || !createForm.admin_email) return
+  if (!createForm.name || !createForm.slug || !createForm.admin_email) return
   creating.value = true
   try {
     const result = await $fetch('/api/platform/companies', {
@@ -70,7 +65,6 @@ async function createCompany() {
         name: createForm.name,
         slug: createForm.slug,
         logo_url: createForm.logo_url || null,
-        client_id: createForm.client_id,
         admin_email: createForm.admin_email,
         admin_name: createForm.admin_name || undefined
       }
@@ -98,14 +92,13 @@ async function createCompany() {
 }
 
 const columns = [
-  { key: 'name', label: 'Empresa', sortable: true },
-  { key: 'clientName', label: 'Cliente', sortable: true },
-  { key: 'userCount', label: 'Usuários', sortable: true },
-  { key: 'agentCount', label: 'Agentes', sortable: true },
-  { key: 'conversationCount', label: 'Conversas', sortable: true },
-  { key: 'status', label: 'Status', sortable: true },
-  { key: 'actions', label: 'Ações' }
-] as const
+  { id: 'name', accessorKey: 'name', header: 'Empresa' },
+  { id: 'userCount', accessorKey: 'userCount', header: 'Usuários' },
+  { id: 'agentCount', accessorKey: 'agentCount', header: 'Agentes' },
+  { id: 'conversationCount', accessorKey: 'conversationCount', header: 'Conversas' },
+  { id: 'status', accessorKey: 'status', header: 'Status' },
+  { id: 'actions', header: 'Ações' }
+]
 
 type BadgeColor = 'error' | 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'neutral'
 
@@ -190,79 +183,68 @@ const getStatusColor = (status: string): BadgeColor => {
     <!-- Companies Table -->
     <UCard>
       <UTable
-        :columns="(columns as any)"
-        :rows="(companies as any[])"
+        :columns="columns"
+        :data="(companies as any[])"
         :loading="!companiesData"
       >
-        <template #name-data="{ row }">
+        <template #name-cell="{ row }">
           <div class="flex items-center gap-3">
             <UAvatar
-              v-if="asRow(row).logoUrl"
-              :src="asRow(row).logoUrl || undefined"
-              :alt="asRow(row).name"
+              v-if="asRow(row.original).logoUrl"
+              :src="asRow(row.original).logoUrl || undefined"
+              :alt="asRow(row.original).name"
               size="sm"
             />
             <UAvatar
               v-else
-              :alt="asRow(row).name"
+              :alt="asRow(row.original).name"
               size="sm"
             />
             <div>
               <p class="font-medium text-gray-900 dark:text-white">
-                {{ asRow(row).name }}
+                {{ asRow(row.original).name }}
               </p>
               <p class="text-sm text-gray-500">
-                {{ asRow(row).slug }}
+                {{ asRow(row.original).slug }}
               </p>
             </div>
           </div>
         </template>
 
-        <template #clientName-data="{ row }">
-          <div>
-            <p class="font-medium text-gray-700 dark:text-gray-300">
-              {{ asRow(row).client.name }}
-            </p>
-            <p class="text-xs text-gray-500">
-              {{ asRow(row).client.slug }}
-            </p>
-          </div>
-        </template>
-
-        <template #userCount-data="{ row }">
+        <template #userCount-cell="{ row }">
           <UBadge color="primary" variant="subtle">
-            {{ asRow(row).stats.userCount }}
+            {{ asRow(row.original).stats.userCount }}
           </UBadge>
         </template>
 
-        <template #agentCount-data="{ row }">
+        <template #agentCount-cell="{ row }">
           <UBadge color="secondary" variant="subtle">
-            {{ asRow(row).stats.agentCount }}
+            {{ asRow(row.original).stats.agentCount }}
           </UBadge>
         </template>
 
-        <template #conversationCount-data="{ row }">
+        <template #conversationCount-cell="{ row }">
           <UBadge color="success" variant="subtle">
-            {{ asRow(row).stats.conversationCount }}
+            {{ asRow(row.original).stats.conversationCount }}
           </UBadge>
         </template>
 
-        <template #status-data="{ row }">
+        <template #status-cell="{ row }">
           <UBadge
-            :color="getStatusColor(asRow(row).status)"
+            :color="getStatusColor(asRow(row.original).status)"
             variant="subtle"
           >
-            {{ asRow(row).status }}
+            {{ asRow(row.original).status }}
           </UBadge>
         </template>
 
-        <template #actions-data="{ row }">
+        <template #actions-cell="{ row }">
           <UButton
             icon="i-lucide-external-link"
             size="xs"
             color="neutral"
             variant="ghost"
-            :to="`/platform/companies/${asRow(row).id}`"
+            :to="`/platform/companies/${asRow(row.original).id}`"
           >
             Ver
           </UButton>
@@ -293,16 +275,6 @@ const getStatusColor = (status: string): BadgeColor => {
             <template #hint>
               Apenas letras minúsculas, números e hífens
             </template>
-          </UFormField>
-
-          <UFormField label="Cliente" required>
-            <USelect
-              v-model="createForm.client_id"
-              :options="clients.map(c => ({ label: c.name, value: c.id }))"
-              placeholder="Selecione o cliente"
-              size="lg"
-              class="w-full"
-            />
           </UFormField>
 
           <UFormField label="Logo URL (opcional)">
@@ -355,7 +327,7 @@ const getStatusColor = (status: string): BadgeColor => {
           <UButton
             color="primary"
             :loading="creating"
-            :disabled="!createForm.name || !createForm.slug || !createForm.client_id || !createForm.admin_email"
+            :disabled="!createForm.name || !createForm.slug || !createForm.admin_email"
             @click="createCompany"
           >
             Criar Empresa

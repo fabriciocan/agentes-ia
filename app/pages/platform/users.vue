@@ -29,18 +29,18 @@ const { data: companiesData } = await useFetch('/api/platform/companies')
 const companies = computed(() => (companiesData.value?.companies || []) as CompanyOption[])
 
 // Filters
-const selectedCompanyId = ref('')
+const selectedCompanyId = ref('all')
 const search = ref('')
 
 const companyOptions = computed(() => [
-  { label: 'Todas as empresas', value: '' },
+  { label: 'Todas as empresas', value: 'all' },
   ...companies.value.map(c => ({ label: c.name, value: c.id }))
 ])
 
 // Build URL with filters
 const usersUrl = computed(() => {
   const params = new URLSearchParams()
-  if (selectedCompanyId.value) params.set('company_id', selectedCompanyId.value)
+  if (selectedCompanyId.value && selectedCompanyId.value !== 'all') params.set('company_id', selectedCompanyId.value)
   if (search.value) params.set('search', search.value)
   const qs = params.toString()
   return qs ? `/api/platform/users?${qs}` : '/api/platform/users'
@@ -81,13 +81,13 @@ function formatDate(date: string | null) {
 
 // Columns for UTable
 const columns = [
-  { key: 'name', label: 'Usuário', sortable: true },
-  { key: 'company', label: 'Empresa', sortable: true },
-  { key: 'roles', label: 'Perfis' },
-  { key: 'status', label: 'Status', sortable: true },
-  { key: 'last_login_at', label: 'Último Login', sortable: true },
-  { key: 'actions', label: 'Ações' }
-] as const
+  { id: 'name', accessorKey: 'name', header: 'Usuário' },
+  { id: 'company', accessorKey: 'company', header: 'Empresa' },
+  { id: 'roles', accessorKey: 'roles', header: 'Perfis' },
+  { id: 'status', accessorKey: 'status', header: 'Status' },
+  { id: 'last_login_at', accessorKey: 'last_login_at', header: 'Último Login' },
+  { id: 'actions', header: 'Ações' }
+]
 
 function asRow(row: unknown): UserRow { return row as UserRow }
 
@@ -207,43 +207,43 @@ async function saveUserStatus() {
     <!-- Users Table -->
     <UCard>
       <UTable
-        :columns="(columns as any)"
-        :rows="(users as any[])"
+        :columns="columns"
+        :data="(users as any[])"
         :loading="pending"
       >
         <!-- Usuário column -->
-        <template #name-data="{ row }">
+        <template #name-cell="{ row }">
           <div class="flex items-center gap-3">
             <UAvatar
-              :alt="asRow(row).name || asRow(row).email"
-              :src="asRow(row).avatar_url || undefined"
+              :alt="asRow(row.original).name || asRow(row.original).email"
+              :src="asRow(row.original).avatar_url || undefined"
               size="sm"
             />
             <div>
               <p class="font-medium text-gray-900 dark:text-white">
-                {{ asRow(row).name || 'Sem nome' }}
+                {{ asRow(row.original).name || 'Sem nome' }}
               </p>
-              <p class="text-sm text-(--ui-text-muted)">{{ asRow(row).email }}</p>
+              <p class="text-sm text-muted">{{ asRow(row.original).email }}</p>
             </div>
           </div>
         </template>
 
         <!-- Empresa column -->
-        <template #company-data="{ row }">
-          <div v-if="asRow(row).company">
+        <template #company-cell="{ row }">
+          <div v-if="asRow(row.original).company">
             <p class="font-medium text-gray-700 dark:text-gray-300">
-              {{ asRow(row).company!.name }}
+              {{ asRow(row.original).company!.name }}
             </p>
-            <p class="text-xs text-(--ui-text-muted)">{{ asRow(row).company!.slug }}</p>
+            <p class="text-xs text-muted">{{ asRow(row.original).company!.slug }}</p>
           </div>
-          <span v-else class="text-(--ui-text-muted) text-sm italic">Sem empresa</span>
+          <span v-else class="text-muted text-sm italic">Sem empresa</span>
         </template>
 
         <!-- Perfis column -->
-        <template #roles-data="{ row }">
+        <template #roles-cell="{ row }">
           <div class="flex flex-wrap gap-1">
             <UBadge
-              v-for="role in asRow(row).roles.slice(0, 2)"
+              v-for="role in asRow(row.original).roles.slice(0, 2)"
               :key="role.id"
               color="primary"
               variant="subtle"
@@ -252,41 +252,41 @@ async function saveUserStatus() {
               {{ role.name }}
             </UBadge>
             <UBadge
-              v-if="asRow(row).roles.length > 2"
+              v-if="asRow(row.original).roles.length > 2"
               color="neutral"
               variant="subtle"
               size="xs"
             >
-              +{{ asRow(row).roles.length - 2 }}
+              +{{ asRow(row.original).roles.length - 2 }}
             </UBadge>
-            <span v-if="asRow(row).roles.length === 0" class="text-xs text-(--ui-text-muted)">
+            <span v-if="asRow(row.original).roles.length === 0" class="text-xs text-muted">
               Sem perfil
             </span>
           </div>
         </template>
 
         <!-- Status column -->
-        <template #status-data="{ row }">
-          <UBadge :color="getStatusColor(asRow(row).status)" variant="subtle">
-            {{ getStatusLabel(asRow(row).status) }}
+        <template #status-cell="{ row }">
+          <UBadge :color="getStatusColor(asRow(row.original).status)" variant="subtle">
+            {{ getStatusLabel(asRow(row.original).status) }}
           </UBadge>
         </template>
 
         <!-- Último Login column -->
-        <template #last_login_at-data="{ row }">
-          <span class="text-sm text-(--ui-text-muted)">
-            {{ formatDate(asRow(row).last_login_at) }}
+        <template #last_login_at-cell="{ row }">
+          <span class="text-sm text-muted">
+            {{ formatDate(asRow(row.original).last_login_at) }}
           </span>
         </template>
 
         <!-- Ações column -->
-        <template #actions-data="{ row }">
+        <template #actions-cell="{ row }">
           <UButton
             icon="i-lucide-pencil"
             size="xs"
             color="neutral"
             variant="ghost"
-            @click="openEditModal(asRow(row))"
+            @click="openEditModal(asRow(row.original))"
           >
             Editar
           </UButton>

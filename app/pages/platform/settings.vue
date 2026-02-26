@@ -74,7 +74,7 @@ definePageMeta({
                 Require two-factor authentication for all users
               </p>
             </div>
-            <UToggle disabled />
+            <USwitch disabled />
           </div>
 
           <div class="flex items-center justify-between">
@@ -86,7 +86,7 @@ definePageMeta({
                 Force password change every 90 days
               </p>
             </div>
-            <UToggle disabled />
+            <USwitch disabled />
           </div>
 
           <div class="flex items-center justify-between">
@@ -98,7 +98,7 @@ definePageMeta({
                 Auto logout after 30 minutes of inactivity
               </p>
             </div>
-            <UToggle disabled />
+            <USwitch disabled />
           </div>
         </div>
       </UCard>
@@ -139,7 +139,7 @@ definePageMeta({
                 Automatically suspend accounts with failed payments
               </p>
             </div>
-            <UToggle disabled />
+            <USwitch disabled />
           </div>
         </div>
       </UCard>
@@ -163,7 +163,7 @@ definePageMeta({
                 Send email notifications for important events
               </p>
             </div>
-            <UToggle disabled />
+            <USwitch disabled />
           </div>
 
           <div class="flex items-center justify-between">
@@ -175,7 +175,7 @@ definePageMeta({
                 Send alerts to Slack channel
               </p>
             </div>
-            <UToggle disabled />
+            <USwitch disabled />
           </div>
 
           <div class="flex items-center justify-between">
@@ -187,7 +187,7 @@ definePageMeta({
                 Receive daily platform summary email
               </p>
             </div>
-            <UToggle disabled />
+            <USwitch disabled />
           </div>
         </div>
       </UCard>

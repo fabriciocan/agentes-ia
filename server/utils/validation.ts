@@ -140,7 +140,6 @@ export const platformCompanyCreateSchema = z.object({
   name: z.string().min(1).max(255),
   slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/, 'Slug deve conter apenas letras minúsculas, números e hífens'),
   logo_url: z.string().url().nullable().optional(),
-  client_id: z.string().uuid(),
   admin_email: z.string().email(),
   admin_name: z.string().min(1).max(255).optional()
 })

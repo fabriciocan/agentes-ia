@@ -6,6 +6,9 @@ definePageMeta({
 
 const toast = useToast()
 const { can } = usePermissions()
+const { applyTheme, saveTheme, getThemeFromCompany, PRIMARY_COLORS, NEUTRAL_COLORS, COLOR_HEX } = useCompanyTheme()
+const appConfig = useAppConfig()
+const colorMode = useColorMode()
 
 const { data: companyData, refresh } = await useFetch('/api/admin/company')
 
@@ -15,6 +18,14 @@ const form = reactive({
   logo_url: ''
 })
 const saving = ref(false)
+const savingTheme = ref(false)
+
+// Theme form state
+const themeForm = reactive({
+  primaryColor: 'green',
+  neutralColor: 'slate',
+  colorMode: 'dark' as 'light' | 'dark'
+})
 
 // Populate form when data loads
 watch(companyData, (data) => {
@@ -23,6 +34,12 @@ watch(companyData, (data) => {
   form.name = (company.name as string) || ''
   form.slug = (company.slug as string) || ''
   form.logo_url = (company.logo_url as string) || ''
+
+  // Load theme from company settings
+  const theme = getThemeFromCompany(company)
+  themeForm.primaryColor = theme.primaryColor || (appConfig.ui.colors.primary as string) || 'green'
+  themeForm.neutralColor = theme.neutralColor || (appConfig.ui.colors.neutral as string) || 'slate'
+  themeForm.colorMode = theme.colorMode || (colorMode.preference as 'light' | 'dark') || 'dark'
 }, { immediate: true })
 
 const logoPreview = computed(() => form.logo_url || null)
@@ -52,7 +69,66 @@ async function saveSettings() {
   }
 }
 
+function previewTheme() {
+  applyTheme({
+    primaryColor: themeForm.primaryColor,
+    neutralColor: themeForm.neutralColor,
+    colorMode: themeForm.colorMode
+  })
+}
+
+async function saveThemeSettings() {
+  if (!can('company.update')) return
+  savingTheme.value = true
+  try {
+    // Apply locally first
+    applyTheme({
+      primaryColor: themeForm.primaryColor,
+      neutralColor: themeForm.neutralColor,
+      colorMode: themeForm.colorMode
+    })
+
+    // Fetch current settings to merge
+    const company = companyData.value as Record<string, unknown> | null
+    const currentSettings = (company?.settings as Record<string, unknown>) || {}
+
+    await $fetch('/api/admin/company/settings', {
+      method: 'PATCH',
+      body: {
+        settings: {
+          ...currentSettings,
+          theme: {
+            primaryColor: themeForm.primaryColor,
+            neutralColor: themeForm.neutralColor,
+            colorMode: themeForm.colorMode
+          }
+        }
+      }
+    })
+    toast.add({ title: 'Tema salvo', description: 'O tema será aplicado para todos da empresa', color: 'success' })
+    await refresh()
+  } catch (error: any) {
+    toast.add({
+      title: 'Erro ao salvar tema',
+      description: error.data?.message || 'Tente novamente',
+      color: 'error'
+    })
+  } finally {
+    savingTheme.value = false
+  }
+}
+
 const company = computed(() => companyData.value as Record<string, unknown> | null)
+
+// Color label map
+const colorLabels: Record<string, string> = {
+  red: 'Vermelho', orange: 'Laranja', amber: 'Âmbar', yellow: 'Amarelo',
+  lime: 'Lima', green: 'Verde', emerald: 'Esmeralda', teal: 'Teal',
+  cyan: 'Ciano', sky: 'Céu', blue: 'Azul', indigo: 'Índigo',
+  violet: 'Violeta', purple: 'Roxo', fuchsia: 'Fúcsia', pink: 'Rosa',
+  rose: 'Rosé', slate: 'Ardósia', gray: 'Cinza', zinc: 'Zinco',
+  neutral: 'Neutro', stone: 'Pedra'
+}
 </script>
 
 <template>
@@ -158,6 +234,131 @@ const company = computed(() => companyData.value as Record<string, unknown> | nu
       </div>
     </UCard>
 
+    <!-- Save Info Button -->
+    <div v-if="can('company.update')" class="flex justify-end mb-6">
+      <UButton
+        size="lg"
+        :loading="saving"
+        icon="i-lucide-save"
+        @click="saveSettings"
+      >
+        Salvar Informações
+      </UButton>
+    </div>
+
+    <!-- Theme Card -->
+    <UCard class="mb-6">
+      <template #header>
+        <div class="flex items-center gap-2">
+          <UIcon name="i-lucide-palette" class="text-lg" />
+          <h2 class="text-lg font-semibold">Tema da Empresa</h2>
+        </div>
+        <p class="text-sm text-(--ui-text-muted) mt-1">
+          O tema ficará vinculado a esta empresa. Ao fazer login com outra empresa, o tema correspondente será carregado automaticamente.
+        </p>
+      </template>
+
+      <div class="space-y-6">
+        <!-- Color Mode -->
+        <div>
+          <p class="text-sm font-medium mb-3">Modo de Exibição</p>
+          <div class="flex gap-3">
+            <button
+              v-for="mode in (['light', 'dark'] as const)"
+              :key="mode"
+              class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all text-sm font-medium"
+              :class="themeForm.colorMode === mode
+                ? 'border-(--ui-primary) bg-(--ui-primary)/10 text-(--ui-primary)'
+                : 'border-(--ui-border) hover:border-(--ui-primary)/50'"
+              :disabled="!can('company.update')"
+              @click="themeForm.colorMode = mode; previewTheme()"
+            >
+              <UIcon :name="mode === 'dark' ? 'i-lucide-moon' : 'i-lucide-sun'" />
+              {{ mode === 'dark' ? 'Dark Mode' : 'Light Mode' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Primary Color -->
+        <div>
+          <p class="text-sm font-medium mb-3">
+            Cor Principal
+            <span class="ml-2 text-(--ui-text-muted) font-normal">— {{ colorLabels[themeForm.primaryColor] || themeForm.primaryColor }}</span>
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <button
+              v-for="color in PRIMARY_COLORS"
+              :key="color"
+              class="w-7 h-7 rounded-full transition-all flex items-center justify-center"
+              :class="themeForm.primaryColor === color
+                ? 'ring-2 ring-offset-2 ring-white/70 scale-110'
+                : 'hover:scale-110 opacity-75 hover:opacity-100'"
+              :style="{ backgroundColor: COLOR_HEX[color] }"
+              :title="colorLabels[color] || color"
+              :disabled="!can('company.update')"
+              @click="themeForm.primaryColor = color; previewTheme()"
+            >
+              <UIcon
+                v-if="themeForm.primaryColor === color"
+                name="i-lucide-check"
+                class="text-white text-xs drop-shadow"
+              />
+            </button>
+          </div>
+        </div>
+
+        <!-- Neutral Color -->
+        <div>
+          <p class="text-sm font-medium mb-3">
+            Cor Neutra
+            <span class="ml-2 text-(--ui-text-muted) font-normal">— {{ colorLabels[themeForm.neutralColor] || themeForm.neutralColor }}</span>
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <button
+              v-for="color in NEUTRAL_COLORS"
+              :key="color"
+              class="w-7 h-7 rounded-full transition-all flex items-center justify-center"
+              :class="themeForm.neutralColor === color
+                ? 'ring-2 ring-offset-2 ring-white/70 scale-110'
+                : 'hover:scale-110 opacity-75 hover:opacity-100'"
+              :style="{ backgroundColor: COLOR_HEX[color] }"
+              :title="colorLabels[color] || color"
+              :disabled="!can('company.update')"
+              @click="themeForm.neutralColor = color; previewTheme()"
+            >
+              <UIcon
+                v-if="themeForm.neutralColor === color"
+                name="i-lucide-check"
+                class="text-white text-xs drop-shadow"
+              />
+            </button>
+          </div>
+        </div>
+
+        <!-- Preview note -->
+        <UAlert
+          color="info"
+          variant="soft"
+          icon="i-lucide-info"
+          title="Preview em tempo real"
+          description="As cores são aplicadas imediatamente para prévia. Clique em 'Salvar Tema' para persistir para todos os usuários desta empresa."
+        />
+      </div>
+
+      <template v-if="can('company.update')" #footer>
+        <div class="flex justify-end">
+          <UButton
+            size="lg"
+            :loading="savingTheme"
+            icon="i-lucide-palette"
+            @click="saveThemeSettings"
+          >
+            Salvar Tema
+          </UButton>
+        </div>
+      </template>
+    </UCard>
+
     <!-- Stats Card (read-only) -->
     <UCard v-if="company" class="mb-6">
       <template #header>
@@ -188,17 +389,5 @@ const company = computed(() => companyData.value as Record<string, unknown> | nu
         </div>
       </div>
     </UCard>
-
-    <!-- Save Button -->
-    <div v-if="can('company.update')" class="flex justify-end">
-      <UButton
-        size="lg"
-        :loading="saving"
-        icon="i-lucide-save"
-        @click="saveSettings"
-      >
-        Salvar Configurações
-      </UButton>
-    </div>
   </div>
 </template>
