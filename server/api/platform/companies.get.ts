@@ -29,9 +29,6 @@ export default defineEventHandler(async (event) => {
       status: string | null
       created_at: string
       updated_at: string
-      client_id: string
-      client_name: string
-      client_slug: string
       user_count: string
       agent_count: string
       conversation_count: string
@@ -44,19 +41,15 @@ export default defineEventHandler(async (event) => {
         co.status,
         co.created_at,
         co.updated_at,
-        cl.id as client_id,
-        cl.name as client_name,
-        cl.slug as client_slug,
         COUNT(DISTINCT u.id) as user_count,
         COUNT(DISTINCT ac.id) as agent_count,
         COUNT(DISTINCT conv.id) as conversation_count
       FROM companies co
-      JOIN clients cl ON cl.id = co.client_id
       LEFT JOIN users u ON u.company_id = co.id AND u.deleted_at IS NULL
       LEFT JOIN agent_configs ac ON ac.company_id = co.id
       LEFT JOIN conversations conv ON conv.company_id = co.id
       WHERE co.deleted_at IS NULL
-      GROUP BY co.id, cl.id, cl.name, cl.slug
+      GROUP BY co.id
       ORDER BY co.created_at DESC
     `
 
@@ -71,11 +64,6 @@ export default defineEventHandler(async (event) => {
         status: row.status,
         createdAt: row.created_at,
         updatedAt: row.updated_at,
-        client: {
-          id: row.client_id,
-          name: row.client_name,
-          slug: row.client_slug
-        },
         stats: {
           userCount: parseInt(String(row.user_count)),
           agentCount: parseInt(String(row.agent_count)),

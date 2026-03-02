@@ -65,6 +65,12 @@ export default defineNuxtConfig({
     }
   },
 
+  vite: {
+    resolve: {
+      dedupe: ['reka-ui', 'vue']
+    }
+  },
+
   compatibilityDate: '2025-01-15',
 
   eslint: {

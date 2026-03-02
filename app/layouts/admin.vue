@@ -3,6 +3,7 @@ const { isSidebarCollapsed } = useDashboard()
 const { data: session } = await useFetch('/api/auth/session')
 const { can } = usePermissions()
 const route = useRoute()
+const { applyTheme, getThemeFromCompany } = useCompanyTheme()
 
 // Check if user is platform admin
 const isPlatformAdmin = computed(() => {
@@ -10,7 +11,7 @@ const isPlatformAdmin = computed(() => {
          session.value?.user?.email?.includes('@platform.')
 })
 
-// Fetch company data for logo and name (only for non-platform admins)
+// Fetch company data for logo, name and theme (only for non-platform admins)
 const { data: companyData } = useFetch('/api/admin/company', {
   server: false,
   immediate: true,
@@ -18,6 +19,15 @@ const { data: companyData } = useFetch('/api/admin/company', {
 })
 const companyLogoUrl = computed(() => (companyData.value as Record<string, unknown> | null)?.logo_url as string | null ?? null)
 const companyName = computed(() => (companyData.value as Record<string, unknown> | null)?.name as string | null ?? null)
+
+// Apply company theme whenever company data loads
+watch(companyData, (data) => {
+  if (!data) return
+  const theme = getThemeFromCompany(data as Record<string, unknown>)
+  if (Object.keys(theme).length > 0) {
+    applyTheme(theme)
+  }
+}, { immediate: true })
 
 // Navigation for regular admins (Usuários hidden if no users.read permission)
 const adminNavigation = computed(() => [

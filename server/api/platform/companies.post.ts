@@ -33,7 +33,16 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const { name, slug, logo_url, client_id, admin_email, admin_name } = parsed.data
+  const { name, slug, logo_url, admin_email, admin_name } = parsed.data
+
+  // Fetch the platform client to use as the parent for all companies
+  const platformClient = await prisma.clients.findUnique({ where: { slug: 'platform' } })
+  if (!platformClient) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Client platform não encontrado. Execute o seed do banco de dados.'
+    })
+  }
 
   // Fetch the company-admin system role
   const companyAdminRole = await prisma.roles.findFirst({
@@ -47,8 +56,8 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Create the company
-    const company = await createCompany(client_id, {
+    // Create the company linked to the platform client
+    const company = await createCompany(platformClient.id, {
       name,
       slug,
       logo_url: logo_url || undefined
@@ -105,7 +114,7 @@ export default defineEventHandler(async (event) => {
 
     if (error && typeof error === 'object' && 'statusCode' in error) throw error
 
-    logger.error({ error, name, slug, client_id }, 'Failed to create company')
+    logger.error({ error, name, slug }, 'Failed to create company')
     throw createError({ statusCode: 500, statusMessage: 'Falha ao criar empresa' })
   }
 })
