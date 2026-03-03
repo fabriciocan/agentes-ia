@@ -375,6 +375,7 @@ export type agent_configsWhereInput = {
   conversations?: Prisma.ConversationsListRelationFilter
   knowledge_base?: Prisma.Knowledge_baseListRelationFilter
   knowledge_files?: Prisma.Knowledge_filesListRelationFilter
+  kanban_boards?: Prisma.XOR<Prisma.Kanban_boardsNullableScalarRelationFilter, Prisma.kanban_boardsWhereInput> | null
 }
 
 export type agent_configsOrderByWithRelationInput = {
@@ -409,6 +410,7 @@ export type agent_configsOrderByWithRelationInput = {
   conversations?: Prisma.conversationsOrderByRelationAggregateInput
   knowledge_base?: Prisma.knowledge_baseOrderByRelationAggregateInput
   knowledge_files?: Prisma.knowledge_filesOrderByRelationAggregateInput
+  kanban_boards?: Prisma.kanban_boardsOrderByWithRelationInput
 }
 
 export type agent_configsWhereUniqueInput = Prisma.AtLeast<{
@@ -446,6 +448,7 @@ export type agent_configsWhereUniqueInput = Prisma.AtLeast<{
   conversations?: Prisma.ConversationsListRelationFilter
   knowledge_base?: Prisma.Knowledge_baseListRelationFilter
   knowledge_files?: Prisma.Knowledge_filesListRelationFilter
+  kanban_boards?: Prisma.XOR<Prisma.Kanban_boardsNullableScalarRelationFilter, Prisma.kanban_boardsWhereInput> | null
 }, "id">
 
 export type agent_configsOrderByWithAggregationInput = {
@@ -539,6 +542,7 @@ export type agent_configsCreateInput = {
   conversations?: Prisma.conversationsCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsUncheckedCreateInput = {
@@ -570,6 +574,7 @@ export type agent_configsUncheckedCreateInput = {
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesUncheckedCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsUpdateInput = {
@@ -601,6 +606,7 @@ export type agent_configsUpdateInput = {
   conversations?: Prisma.conversationsUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsUncheckedUpdateInput = {
@@ -632,6 +638,7 @@ export type agent_configsUncheckedUpdateInput = {
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUncheckedUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsCreateManyInput = {
@@ -1008,6 +1015,20 @@ export type agent_configsUpdateOneRequiredWithoutKnowledge_filesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.agent_configsUpdateToOneWithWhereWithoutKnowledge_filesInput, Prisma.agent_configsUpdateWithoutKnowledge_filesInput>, Prisma.agent_configsUncheckedUpdateWithoutKnowledge_filesInput>
 }
 
+export type agent_configsCreateNestedOneWithoutKanban_boardsInput = {
+  create?: Prisma.XOR<Prisma.agent_configsCreateWithoutKanban_boardsInput, Prisma.agent_configsUncheckedCreateWithoutKanban_boardsInput>
+  connectOrCreate?: Prisma.agent_configsCreateOrConnectWithoutKanban_boardsInput
+  connect?: Prisma.agent_configsWhereUniqueInput
+}
+
+export type agent_configsUpdateOneRequiredWithoutKanban_boardsNestedInput = {
+  create?: Prisma.XOR<Prisma.agent_configsCreateWithoutKanban_boardsInput, Prisma.agent_configsUncheckedCreateWithoutKanban_boardsInput>
+  connectOrCreate?: Prisma.agent_configsCreateOrConnectWithoutKanban_boardsInput
+  upsert?: Prisma.agent_configsUpsertWithoutKanban_boardsInput
+  connect?: Prisma.agent_configsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.agent_configsUpdateToOneWithWhereWithoutKanban_boardsInput, Prisma.agent_configsUpdateWithoutKanban_boardsInput>, Prisma.agent_configsUncheckedUpdateWithoutKanban_boardsInput>
+}
+
 export type agent_configsCreateNestedOneWithoutChatsInput = {
   create?: Prisma.XOR<Prisma.agent_configsCreateWithoutChatsInput, Prisma.agent_configsUncheckedCreateWithoutChatsInput>
   connectOrCreate?: Prisma.agent_configsCreateOrConnectWithoutChatsInput
@@ -1050,6 +1071,7 @@ export type agent_configsCreateWithoutClientsInput = {
   conversations?: Prisma.conversationsCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsUncheckedCreateWithoutClientsInput = {
@@ -1080,6 +1102,7 @@ export type agent_configsUncheckedCreateWithoutClientsInput = {
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesUncheckedCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsCreateOrConnectWithoutClientsInput = {
@@ -1166,6 +1189,7 @@ export type agent_configsCreateWithoutCompaniesInput = {
   conversations?: Prisma.conversationsCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsUncheckedCreateWithoutCompaniesInput = {
@@ -1196,6 +1220,7 @@ export type agent_configsUncheckedCreateWithoutCompaniesInput = {
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesUncheckedCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsCreateOrConnectWithoutCompaniesInput = {
@@ -1252,6 +1277,7 @@ export type agent_configsCreateWithoutConversationsInput = {
   chats?: Prisma.chatsCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsUncheckedCreateWithoutConversationsInput = {
@@ -1282,6 +1308,7 @@ export type agent_configsUncheckedCreateWithoutConversationsInput = {
   chats?: Prisma.chatsUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesUncheckedCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsCreateOrConnectWithoutConversationsInput = {
@@ -1328,6 +1355,7 @@ export type agent_configsUpdateWithoutConversationsInput = {
   chats?: Prisma.chatsUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsUncheckedUpdateWithoutConversationsInput = {
@@ -1358,6 +1386,7 @@ export type agent_configsUncheckedUpdateWithoutConversationsInput = {
   chats?: Prisma.chatsUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUncheckedUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsCreateWithoutMeta_whatsapp_accountsInput = {
@@ -1388,6 +1417,7 @@ export type agent_configsCreateWithoutMeta_whatsapp_accountsInput = {
   conversations?: Prisma.conversationsCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsUncheckedCreateWithoutMeta_whatsapp_accountsInput = {
@@ -1418,6 +1448,7 @@ export type agent_configsUncheckedCreateWithoutMeta_whatsapp_accountsInput = {
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesUncheckedCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsCreateOrConnectWithoutMeta_whatsapp_accountsInput = {
@@ -1474,6 +1505,7 @@ export type agent_configsCreateWithoutKnowledge_baseInput = {
   chats?: Prisma.chatsCreateNestedManyWithoutAgent_configsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsUncheckedCreateWithoutKnowledge_baseInput = {
@@ -1504,6 +1536,7 @@ export type agent_configsUncheckedCreateWithoutKnowledge_baseInput = {
   chats?: Prisma.chatsUncheckedCreateNestedManyWithoutAgent_configsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesUncheckedCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsCreateOrConnectWithoutKnowledge_baseInput = {
@@ -1550,6 +1583,7 @@ export type agent_configsUpdateWithoutKnowledge_baseInput = {
   chats?: Prisma.chatsUpdateManyWithoutAgent_configsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsUncheckedUpdateWithoutKnowledge_baseInput = {
@@ -1580,6 +1614,7 @@ export type agent_configsUncheckedUpdateWithoutKnowledge_baseInput = {
   chats?: Prisma.chatsUncheckedUpdateManyWithoutAgent_configsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUncheckedUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsCreateWithoutKnowledge_filesInput = {
@@ -1610,6 +1645,7 @@ export type agent_configsCreateWithoutKnowledge_filesInput = {
   chats?: Prisma.chatsCreateNestedManyWithoutAgent_configsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsUncheckedCreateWithoutKnowledge_filesInput = {
@@ -1640,6 +1676,7 @@ export type agent_configsUncheckedCreateWithoutKnowledge_filesInput = {
   chats?: Prisma.chatsUncheckedCreateNestedManyWithoutAgent_configsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseUncheckedCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsCreateOrConnectWithoutKnowledge_filesInput = {
@@ -1686,6 +1723,7 @@ export type agent_configsUpdateWithoutKnowledge_filesInput = {
   chats?: Prisma.chatsUpdateManyWithoutAgent_configsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsUncheckedUpdateWithoutKnowledge_filesInput = {
@@ -1716,6 +1754,147 @@ export type agent_configsUncheckedUpdateWithoutKnowledge_filesInput = {
   chats?: Prisma.chatsUncheckedUpdateManyWithoutAgent_configsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUncheckedUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateOneWithoutAgent_configsNestedInput
+}
+
+export type agent_configsCreateWithoutKanban_boardsInput = {
+  id?: string
+  name?: string
+  system_prompt?: string
+  personality?: string
+  tone?: string
+  language?: string
+  model?: string
+  temperature?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  max_tokens?: number
+  is_active?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  whatsapp_instance_name?: string | null
+  whatsapp_instance_status?: string
+  whatsapp_number?: string | null
+  whatsapp_provider?: string | null
+  meta_phone_number_id?: string | null
+  meta_access_token?: string | null
+  meta_waba_id?: string | null
+  widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: string | null
+  clients: Prisma.clientsCreateNestedOneWithoutAgent_configsInput
+  companies?: Prisma.companiesCreateNestedOneWithoutAgent_configsInput
+  meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsCreateNestedOneWithoutAgent_configsInput
+  chats?: Prisma.chatsCreateNestedManyWithoutAgent_configsInput
+  conversations?: Prisma.conversationsCreateNestedManyWithoutAgent_configsInput
+  knowledge_base?: Prisma.knowledge_baseCreateNestedManyWithoutAgent_configsInput
+  knowledge_files?: Prisma.knowledge_filesCreateNestedManyWithoutAgent_configsInput
+}
+
+export type agent_configsUncheckedCreateWithoutKanban_boardsInput = {
+  id?: string
+  client_id: string
+  name?: string
+  system_prompt?: string
+  personality?: string
+  tone?: string
+  language?: string
+  model?: string
+  temperature?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  max_tokens?: number
+  is_active?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  whatsapp_instance_name?: string | null
+  whatsapp_instance_status?: string
+  whatsapp_number?: string | null
+  whatsapp_provider?: string | null
+  meta_phone_number_id?: string | null
+  meta_access_token?: string | null
+  meta_waba_id?: string | null
+  meta_whatsapp_account_id?: string | null
+  widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  company_id?: string | null
+  qdrant_collection?: string | null
+  chats?: Prisma.chatsUncheckedCreateNestedManyWithoutAgent_configsInput
+  conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutAgent_configsInput
+  knowledge_base?: Prisma.knowledge_baseUncheckedCreateNestedManyWithoutAgent_configsInput
+  knowledge_files?: Prisma.knowledge_filesUncheckedCreateNestedManyWithoutAgent_configsInput
+}
+
+export type agent_configsCreateOrConnectWithoutKanban_boardsInput = {
+  where: Prisma.agent_configsWhereUniqueInput
+  create: Prisma.XOR<Prisma.agent_configsCreateWithoutKanban_boardsInput, Prisma.agent_configsUncheckedCreateWithoutKanban_boardsInput>
+}
+
+export type agent_configsUpsertWithoutKanban_boardsInput = {
+  update: Prisma.XOR<Prisma.agent_configsUpdateWithoutKanban_boardsInput, Prisma.agent_configsUncheckedUpdateWithoutKanban_boardsInput>
+  create: Prisma.XOR<Prisma.agent_configsCreateWithoutKanban_boardsInput, Prisma.agent_configsUncheckedCreateWithoutKanban_boardsInput>
+  where?: Prisma.agent_configsWhereInput
+}
+
+export type agent_configsUpdateToOneWithWhereWithoutKanban_boardsInput = {
+  where?: Prisma.agent_configsWhereInput
+  data: Prisma.XOR<Prisma.agent_configsUpdateWithoutKanban_boardsInput, Prisma.agent_configsUncheckedUpdateWithoutKanban_boardsInput>
+}
+
+export type agent_configsUpdateWithoutKanban_boardsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  system_prompt?: Prisma.StringFieldUpdateOperationsInput | string
+  personality?: Prisma.StringFieldUpdateOperationsInput | string
+  tone?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  model?: Prisma.StringFieldUpdateOperationsInput | string
+  temperature?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  max_tokens?: Prisma.IntFieldUpdateOperationsInput | number
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsapp_instance_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp_instance_status?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp_provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_phone_number_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_access_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_waba_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clients?: Prisma.clientsUpdateOneRequiredWithoutAgent_configsNestedInput
+  companies?: Prisma.companiesUpdateOneWithoutAgent_configsNestedInput
+  meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUpdateOneWithoutAgent_configsNestedInput
+  chats?: Prisma.chatsUpdateManyWithoutAgent_configsNestedInput
+  conversations?: Prisma.conversationsUpdateManyWithoutAgent_configsNestedInput
+  knowledge_base?: Prisma.knowledge_baseUpdateManyWithoutAgent_configsNestedInput
+  knowledge_files?: Prisma.knowledge_filesUpdateManyWithoutAgent_configsNestedInput
+}
+
+export type agent_configsUncheckedUpdateWithoutKanban_boardsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  client_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  system_prompt?: Prisma.StringFieldUpdateOperationsInput | string
+  personality?: Prisma.StringFieldUpdateOperationsInput | string
+  tone?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  model?: Prisma.StringFieldUpdateOperationsInput | string
+  temperature?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  max_tokens?: Prisma.IntFieldUpdateOperationsInput | number
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  whatsapp_instance_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp_instance_status?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp_provider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_phone_number_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_access_token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_waba_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta_whatsapp_account_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  widget_config?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qdrant_collection?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chats?: Prisma.chatsUncheckedUpdateManyWithoutAgent_configsNestedInput
+  conversations?: Prisma.conversationsUncheckedUpdateManyWithoutAgent_configsNestedInput
+  knowledge_base?: Prisma.knowledge_baseUncheckedUpdateManyWithoutAgent_configsNestedInput
+  knowledge_files?: Prisma.knowledge_filesUncheckedUpdateManyWithoutAgent_configsNestedInput
 }
 
 export type agent_configsCreateWithoutChatsInput = {
@@ -1746,6 +1925,7 @@ export type agent_configsCreateWithoutChatsInput = {
   conversations?: Prisma.conversationsCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsUncheckedCreateWithoutChatsInput = {
@@ -1776,6 +1956,7 @@ export type agent_configsUncheckedCreateWithoutChatsInput = {
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_base?: Prisma.knowledge_baseUncheckedCreateNestedManyWithoutAgent_configsInput
   knowledge_files?: Prisma.knowledge_filesUncheckedCreateNestedManyWithoutAgent_configsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedOneWithoutAgent_configsInput
 }
 
 export type agent_configsCreateOrConnectWithoutChatsInput = {
@@ -1822,6 +2003,7 @@ export type agent_configsUpdateWithoutChatsInput = {
   conversations?: Prisma.conversationsUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsUncheckedUpdateWithoutChatsInput = {
@@ -1852,6 +2034,7 @@ export type agent_configsUncheckedUpdateWithoutChatsInput = {
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUncheckedUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsCreateManyClientsInput = {
@@ -1908,6 +2091,7 @@ export type agent_configsUpdateWithoutClientsInput = {
   conversations?: Prisma.conversationsUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsUncheckedUpdateWithoutClientsInput = {
@@ -1938,6 +2122,7 @@ export type agent_configsUncheckedUpdateWithoutClientsInput = {
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUncheckedUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsUncheckedUpdateManyWithoutClientsInput = {
@@ -2020,6 +2205,7 @@ export type agent_configsUpdateWithoutCompaniesInput = {
   conversations?: Prisma.conversationsUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsUncheckedUpdateWithoutCompaniesInput = {
@@ -2050,6 +2236,7 @@ export type agent_configsUncheckedUpdateWithoutCompaniesInput = {
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUncheckedUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsUncheckedUpdateManyWithoutCompaniesInput = {
@@ -2132,6 +2319,7 @@ export type agent_configsUpdateWithoutMeta_whatsapp_accountsInput = {
   conversations?: Prisma.conversationsUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsUncheckedUpdateWithoutMeta_whatsapp_accountsInput = {
@@ -2162,6 +2350,7 @@ export type agent_configsUncheckedUpdateWithoutMeta_whatsapp_accountsInput = {
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_base?: Prisma.knowledge_baseUncheckedUpdateManyWithoutAgent_configsNestedInput
   knowledge_files?: Prisma.knowledge_filesUncheckedUpdateManyWithoutAgent_configsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateOneWithoutAgent_configsNestedInput
 }
 
 export type agent_configsUncheckedUpdateManyWithoutMeta_whatsapp_accountsInput = {
@@ -2280,6 +2469,7 @@ export type agent_configsSelect<ExtArgs extends runtime.Types.Extensions.Interna
   conversations?: boolean | Prisma.agent_configs$conversationsArgs<ExtArgs>
   knowledge_base?: boolean | Prisma.agent_configs$knowledge_baseArgs<ExtArgs>
   knowledge_files?: boolean | Prisma.agent_configs$knowledge_filesArgs<ExtArgs>
+  kanban_boards?: boolean | Prisma.agent_configs$kanban_boardsArgs<ExtArgs>
   _count?: boolean | Prisma.Agent_configsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["agent_configs"]>
 
@@ -2379,6 +2569,7 @@ export type agent_configsInclude<ExtArgs extends runtime.Types.Extensions.Intern
   conversations?: boolean | Prisma.agent_configs$conversationsArgs<ExtArgs>
   knowledge_base?: boolean | Prisma.agent_configs$knowledge_baseArgs<ExtArgs>
   knowledge_files?: boolean | Prisma.agent_configs$knowledge_filesArgs<ExtArgs>
+  kanban_boards?: boolean | Prisma.agent_configs$kanban_boardsArgs<ExtArgs>
   _count?: boolean | Prisma.Agent_configsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type agent_configsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2402,6 +2593,7 @@ export type $agent_configsPayload<ExtArgs extends runtime.Types.Extensions.Inter
     conversations: Prisma.$conversationsPayload<ExtArgs>[]
     knowledge_base: Prisma.$knowledge_basePayload<ExtArgs>[]
     knowledge_files: Prisma.$knowledge_filesPayload<ExtArgs>[]
+    kanban_boards: Prisma.$kanban_boardsPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2829,6 +3021,7 @@ export interface Prisma__agent_configsClient<T, Null = never, ExtArgs extends ru
   conversations<T extends Prisma.agent_configs$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.agent_configs$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$conversationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   knowledge_base<T extends Prisma.agent_configs$knowledge_baseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.agent_configs$knowledge_baseArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$knowledge_basePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   knowledge_files<T extends Prisma.agent_configs$knowledge_filesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.agent_configs$knowledge_filesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$knowledge_filesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  kanban_boards<T extends Prisma.agent_configs$kanban_boardsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.agent_configs$kanban_boardsArgs<ExtArgs>>): Prisma.Prisma__kanban_boardsClient<runtime.Types.Result.GetResult<Prisma.$kanban_boardsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3409,6 +3602,25 @@ export type agent_configs$knowledge_filesArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   distinct?: Prisma.Knowledge_filesScalarFieldEnum | Prisma.Knowledge_filesScalarFieldEnum[]
+}
+
+/**
+ * agent_configs.kanban_boards
+ */
+export type agent_configs$kanban_boardsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the kanban_boards
+   */
+  select?: Prisma.kanban_boardsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the kanban_boards
+   */
+  omit?: Prisma.kanban_boardsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.kanban_boardsInclude<ExtArgs> | null
+  where?: Prisma.kanban_boardsWhereInput
 }
 
 /**

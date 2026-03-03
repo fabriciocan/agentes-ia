@@ -35,6 +35,7 @@ const adminNavigation = computed(() => [
   { label: 'Agentes', icon: 'i-lucide-bot', to: '/admin/agents' },
   { label: 'WhatsApp', icon: 'i-lucide-message-circle', to: '/admin/whatsapp' },
   { label: 'Conversas', icon: 'i-lucide-message-square', to: '/admin/conversations' },
+  ...(can('kanban.read') ? [{ label: 'Kanban', icon: 'i-lucide-kanban', to: '/admin/kanban' }] : []),
   ...(can('users.read') ? [{ label: 'Usuários', icon: 'i-lucide-users', to: '/admin/users' }] : []),
   ...(can('company.update') ? [{ label: 'Configurações', icon: 'i-lucide-settings-2', to: '/admin/settings' }] : [])
 ])

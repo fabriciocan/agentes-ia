@@ -407,6 +407,10 @@ export const ModelName = {
   usage_logs: 'usage_logs',
   user_roles: 'user_roles',
   users: 'users',
+  kanban_boards: 'kanban_boards',
+  kanban_columns: 'kanban_columns',
+  kanban_cards: 'kanban_cards',
+  kanban_card_moves: 'kanban_card_moves',
   chats: 'chats'
 } as const
 
@@ -423,7 +427,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "admin_users" | "agent_configs" | "audit_logs" | "chat_messages" | "clients" | "companies" | "conversations" | "dados_cliente" | "end_users" | "meta_whatsapp_accounts" | "knowledge_base" | "knowledge_files" | "messages" | "migrations" | "n8n_chat_histories" | "permissions" | "role_permissions" | "roles" | "subscription_plans" | "subscriptions" | "usage_logs" | "user_roles" | "users" | "chats"
+    modelProps: "admin_users" | "agent_configs" | "audit_logs" | "chat_messages" | "clients" | "companies" | "conversations" | "dados_cliente" | "end_users" | "meta_whatsapp_accounts" | "knowledge_base" | "knowledge_files" | "messages" | "migrations" | "n8n_chat_histories" | "permissions" | "role_permissions" | "roles" | "subscription_plans" | "subscriptions" | "usage_logs" | "user_roles" | "users" | "kanban_boards" | "kanban_columns" | "kanban_cards" | "kanban_card_moves" | "chats"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2129,6 +2133,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    kanban_boards: {
+      payload: Prisma.$kanban_boardsPayload<ExtArgs>
+      fields: Prisma.kanban_boardsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.kanban_boardsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_boardsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.kanban_boardsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_boardsPayload>
+        }
+        findFirst: {
+          args: Prisma.kanban_boardsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_boardsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.kanban_boardsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_boardsPayload>
+        }
+        findMany: {
+          args: Prisma.kanban_boardsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_boardsPayload>[]
+        }
+        create: {
+          args: Prisma.kanban_boardsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_boardsPayload>
+        }
+        createMany: {
+          args: Prisma.kanban_boardsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.kanban_boardsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_boardsPayload>[]
+        }
+        delete: {
+          args: Prisma.kanban_boardsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_boardsPayload>
+        }
+        update: {
+          args: Prisma.kanban_boardsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_boardsPayload>
+        }
+        deleteMany: {
+          args: Prisma.kanban_boardsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.kanban_boardsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.kanban_boardsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_boardsPayload>[]
+        }
+        upsert: {
+          args: Prisma.kanban_boardsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_boardsPayload>
+        }
+        aggregate: {
+          args: Prisma.Kanban_boardsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKanban_boards>
+        }
+        groupBy: {
+          args: Prisma.kanban_boardsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Kanban_boardsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.kanban_boardsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Kanban_boardsCountAggregateOutputType> | number
+        }
+      }
+    }
+    kanban_columns: {
+      payload: Prisma.$kanban_columnsPayload<ExtArgs>
+      fields: Prisma.kanban_columnsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.kanban_columnsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_columnsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.kanban_columnsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_columnsPayload>
+        }
+        findFirst: {
+          args: Prisma.kanban_columnsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_columnsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.kanban_columnsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_columnsPayload>
+        }
+        findMany: {
+          args: Prisma.kanban_columnsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_columnsPayload>[]
+        }
+        create: {
+          args: Prisma.kanban_columnsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_columnsPayload>
+        }
+        createMany: {
+          args: Prisma.kanban_columnsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.kanban_columnsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_columnsPayload>[]
+        }
+        delete: {
+          args: Prisma.kanban_columnsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_columnsPayload>
+        }
+        update: {
+          args: Prisma.kanban_columnsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_columnsPayload>
+        }
+        deleteMany: {
+          args: Prisma.kanban_columnsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.kanban_columnsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.kanban_columnsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_columnsPayload>[]
+        }
+        upsert: {
+          args: Prisma.kanban_columnsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_columnsPayload>
+        }
+        aggregate: {
+          args: Prisma.Kanban_columnsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKanban_columns>
+        }
+        groupBy: {
+          args: Prisma.kanban_columnsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Kanban_columnsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.kanban_columnsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Kanban_columnsCountAggregateOutputType> | number
+        }
+      }
+    }
+    kanban_cards: {
+      payload: Prisma.$kanban_cardsPayload<ExtArgs>
+      fields: Prisma.kanban_cardsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.kanban_cardsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_cardsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.kanban_cardsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_cardsPayload>
+        }
+        findFirst: {
+          args: Prisma.kanban_cardsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_cardsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.kanban_cardsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_cardsPayload>
+        }
+        findMany: {
+          args: Prisma.kanban_cardsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_cardsPayload>[]
+        }
+        create: {
+          args: Prisma.kanban_cardsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_cardsPayload>
+        }
+        createMany: {
+          args: Prisma.kanban_cardsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.kanban_cardsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_cardsPayload>[]
+        }
+        delete: {
+          args: Prisma.kanban_cardsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_cardsPayload>
+        }
+        update: {
+          args: Prisma.kanban_cardsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_cardsPayload>
+        }
+        deleteMany: {
+          args: Prisma.kanban_cardsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.kanban_cardsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.kanban_cardsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_cardsPayload>[]
+        }
+        upsert: {
+          args: Prisma.kanban_cardsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_cardsPayload>
+        }
+        aggregate: {
+          args: Prisma.Kanban_cardsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKanban_cards>
+        }
+        groupBy: {
+          args: Prisma.kanban_cardsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Kanban_cardsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.kanban_cardsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Kanban_cardsCountAggregateOutputType> | number
+        }
+      }
+    }
+    kanban_card_moves: {
+      payload: Prisma.$kanban_card_movesPayload<ExtArgs>
+      fields: Prisma.kanban_card_movesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.kanban_card_movesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_card_movesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.kanban_card_movesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_card_movesPayload>
+        }
+        findFirst: {
+          args: Prisma.kanban_card_movesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_card_movesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.kanban_card_movesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_card_movesPayload>
+        }
+        findMany: {
+          args: Prisma.kanban_card_movesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_card_movesPayload>[]
+        }
+        create: {
+          args: Prisma.kanban_card_movesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_card_movesPayload>
+        }
+        createMany: {
+          args: Prisma.kanban_card_movesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.kanban_card_movesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_card_movesPayload>[]
+        }
+        delete: {
+          args: Prisma.kanban_card_movesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_card_movesPayload>
+        }
+        update: {
+          args: Prisma.kanban_card_movesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_card_movesPayload>
+        }
+        deleteMany: {
+          args: Prisma.kanban_card_movesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.kanban_card_movesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.kanban_card_movesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_card_movesPayload>[]
+        }
+        upsert: {
+          args: Prisma.kanban_card_movesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$kanban_card_movesPayload>
+        }
+        aggregate: {
+          args: Prisma.Kanban_card_movesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKanban_card_moves>
+        }
+        groupBy: {
+          args: Prisma.kanban_card_movesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Kanban_card_movesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.kanban_card_movesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Kanban_card_movesCountAggregateOutputType> | number
+        }
+      }
+    }
     chats: {
       payload: Prisma.$chatsPayload<ExtArgs>
       fields: Prisma.chatsFieldRefs
@@ -2607,6 +2907,69 @@ export const UsersScalarFieldEnum = {
 export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
 
 
+export const Kanban_boardsScalarFieldEnum = {
+  id: 'id',
+  client_id: 'client_id',
+  company_id: 'company_id',
+  agent_config_id: 'agent_config_id',
+  name: 'name',
+  entry_column_id: 'entry_column_id',
+  description: 'description',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Kanban_boardsScalarFieldEnum = (typeof Kanban_boardsScalarFieldEnum)[keyof typeof Kanban_boardsScalarFieldEnum]
+
+
+export const Kanban_columnsScalarFieldEnum = {
+  id: 'id',
+  board_id: 'board_id',
+  name: 'name',
+  color: 'color',
+  position: 'position',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Kanban_columnsScalarFieldEnum = (typeof Kanban_columnsScalarFieldEnum)[keyof typeof Kanban_columnsScalarFieldEnum]
+
+
+export const Kanban_cardsScalarFieldEnum = {
+  id: 'id',
+  board_id: 'board_id',
+  column_id: 'column_id',
+  end_user_id: 'end_user_id',
+  conversation_id: 'conversation_id',
+  title: 'title',
+  client_name: 'client_name',
+  client_phone: 'client_phone',
+  client_email: 'client_email',
+  notes: 'notes',
+  tags: 'tags',
+  position: 'position',
+  source: 'source',
+  entered_at: 'entered_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Kanban_cardsScalarFieldEnum = (typeof Kanban_cardsScalarFieldEnum)[keyof typeof Kanban_cardsScalarFieldEnum]
+
+
+export const Kanban_card_movesScalarFieldEnum = {
+  id: 'id',
+  card_id: 'card_id',
+  from_column_id: 'from_column_id',
+  to_column_id: 'to_column_id',
+  moved_by: 'moved_by',
+  moved_at: 'moved_at'
+} as const
+
+export type Kanban_card_movesScalarFieldEnum = (typeof Kanban_card_movesScalarFieldEnum)[keyof typeof Kanban_card_movesScalarFieldEnum]
+
+
 export const ChatsScalarFieldEnum = {
   id: 'id',
   created_at: 'created_at',
@@ -2895,6 +3258,10 @@ export type GlobalOmitConfig = {
   usage_logs?: Prisma.usage_logsOmit
   user_roles?: Prisma.user_rolesOmit
   users?: Prisma.usersOmit
+  kanban_boards?: Prisma.kanban_boardsOmit
+  kanban_columns?: Prisma.kanban_columnsOmit
+  kanban_cards?: Prisma.kanban_cardsOmit
+  kanban_card_moves?: Prisma.kanban_card_movesOmit
   chats?: Prisma.chatsOmit
 }
 

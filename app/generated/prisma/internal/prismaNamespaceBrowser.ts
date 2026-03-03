@@ -74,6 +74,10 @@ export const ModelName = {
   usage_logs: 'usage_logs',
   user_roles: 'user_roles',
   users: 'users',
+  kanban_boards: 'kanban_boards',
+  kanban_columns: 'kanban_columns',
+  kanban_cards: 'kanban_cards',
+  kanban_card_moves: 'kanban_card_moves',
   chats: 'chats'
 } as const
 
@@ -456,6 +460,69 @@ export const UsersScalarFieldEnum = {
 } as const
 
 export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
+
+
+export const Kanban_boardsScalarFieldEnum = {
+  id: 'id',
+  client_id: 'client_id',
+  company_id: 'company_id',
+  agent_config_id: 'agent_config_id',
+  name: 'name',
+  entry_column_id: 'entry_column_id',
+  description: 'description',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Kanban_boardsScalarFieldEnum = (typeof Kanban_boardsScalarFieldEnum)[keyof typeof Kanban_boardsScalarFieldEnum]
+
+
+export const Kanban_columnsScalarFieldEnum = {
+  id: 'id',
+  board_id: 'board_id',
+  name: 'name',
+  color: 'color',
+  position: 'position',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Kanban_columnsScalarFieldEnum = (typeof Kanban_columnsScalarFieldEnum)[keyof typeof Kanban_columnsScalarFieldEnum]
+
+
+export const Kanban_cardsScalarFieldEnum = {
+  id: 'id',
+  board_id: 'board_id',
+  column_id: 'column_id',
+  end_user_id: 'end_user_id',
+  conversation_id: 'conversation_id',
+  title: 'title',
+  client_name: 'client_name',
+  client_phone: 'client_phone',
+  client_email: 'client_email',
+  notes: 'notes',
+  tags: 'tags',
+  position: 'position',
+  source: 'source',
+  entered_at: 'entered_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Kanban_cardsScalarFieldEnum = (typeof Kanban_cardsScalarFieldEnum)[keyof typeof Kanban_cardsScalarFieldEnum]
+
+
+export const Kanban_card_movesScalarFieldEnum = {
+  id: 'id',
+  card_id: 'card_id',
+  from_column_id: 'from_column_id',
+  to_column_id: 'to_column_id',
+  moved_by: 'moved_by',
+  moved_at: 'moved_at'
+} as const
+
+export type Kanban_card_movesScalarFieldEnum = (typeof Kanban_card_movesScalarFieldEnum)[keyof typeof Kanban_card_movesScalarFieldEnum]
 
 
 export const ChatsScalarFieldEnum = {

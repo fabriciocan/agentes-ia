@@ -216,6 +216,7 @@ export type end_usersWhereInput = {
   updated_at?: Prisma.DateTimeFilter<"end_users"> | Date | string
   conversations?: Prisma.ConversationsListRelationFilter
   clients?: Prisma.XOR<Prisma.ClientsScalarRelationFilter, Prisma.clientsWhereInput>
+  kanban_cards?: Prisma.Kanban_cardsListRelationFilter
 }
 
 export type end_usersOrderByWithRelationInput = {
@@ -230,6 +231,7 @@ export type end_usersOrderByWithRelationInput = {
   updated_at?: Prisma.SortOrder
   conversations?: Prisma.conversationsOrderByRelationAggregateInput
   clients?: Prisma.clientsOrderByWithRelationInput
+  kanban_cards?: Prisma.kanban_cardsOrderByRelationAggregateInput
 }
 
 export type end_usersWhereUniqueInput = Prisma.AtLeast<{
@@ -248,6 +250,7 @@ export type end_usersWhereUniqueInput = Prisma.AtLeast<{
   updated_at?: Prisma.DateTimeFilter<"end_users"> | Date | string
   conversations?: Prisma.ConversationsListRelationFilter
   clients?: Prisma.XOR<Prisma.ClientsScalarRelationFilter, Prisma.clientsWhereInput>
+  kanban_cards?: Prisma.Kanban_cardsListRelationFilter
 }, "id" | "client_id_external_id">
 
 export type end_usersOrderByWithAggregationInput = {
@@ -291,6 +294,7 @@ export type end_usersCreateInput = {
   updated_at?: Date | string
   conversations?: Prisma.conversationsCreateNestedManyWithoutEnd_usersInput
   clients: Prisma.clientsCreateNestedOneWithoutEnd_usersInput
+  kanban_cards?: Prisma.kanban_cardsCreateNestedManyWithoutEnd_userInput
 }
 
 export type end_usersUncheckedCreateInput = {
@@ -304,6 +308,7 @@ export type end_usersUncheckedCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutEnd_usersInput
+  kanban_cards?: Prisma.kanban_cardsUncheckedCreateNestedManyWithoutEnd_userInput
 }
 
 export type end_usersUpdateInput = {
@@ -317,6 +322,7 @@ export type end_usersUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   conversations?: Prisma.conversationsUpdateManyWithoutEnd_usersNestedInput
   clients?: Prisma.clientsUpdateOneRequiredWithoutEnd_usersNestedInput
+  kanban_cards?: Prisma.kanban_cardsUpdateManyWithoutEnd_userNestedInput
 }
 
 export type end_usersUncheckedUpdateInput = {
@@ -330,6 +336,7 @@ export type end_usersUncheckedUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutEnd_usersNestedInput
+  kanban_cards?: Prisma.kanban_cardsUncheckedUpdateManyWithoutEnd_userNestedInput
 }
 
 export type end_usersCreateManyInput = {
@@ -423,6 +430,11 @@ export type end_usersMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
+export type End_usersNullableScalarRelationFilter = {
+  is?: Prisma.end_usersWhereInput | null
+  isNot?: Prisma.end_usersWhereInput | null
+}
+
 export type end_usersCreateNestedManyWithoutClientsInput = {
   create?: Prisma.XOR<Prisma.end_usersCreateWithoutClientsInput, Prisma.end_usersUncheckedCreateWithoutClientsInput> | Prisma.end_usersCreateWithoutClientsInput[] | Prisma.end_usersUncheckedCreateWithoutClientsInput[]
   connectOrCreate?: Prisma.end_usersCreateOrConnectWithoutClientsInput | Prisma.end_usersCreateOrConnectWithoutClientsInput[]
@@ -479,6 +491,22 @@ export type end_usersUpdateOneRequiredWithoutConversationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.end_usersUpdateToOneWithWhereWithoutConversationsInput, Prisma.end_usersUpdateWithoutConversationsInput>, Prisma.end_usersUncheckedUpdateWithoutConversationsInput>
 }
 
+export type end_usersCreateNestedOneWithoutKanban_cardsInput = {
+  create?: Prisma.XOR<Prisma.end_usersCreateWithoutKanban_cardsInput, Prisma.end_usersUncheckedCreateWithoutKanban_cardsInput>
+  connectOrCreate?: Prisma.end_usersCreateOrConnectWithoutKanban_cardsInput
+  connect?: Prisma.end_usersWhereUniqueInput
+}
+
+export type end_usersUpdateOneWithoutKanban_cardsNestedInput = {
+  create?: Prisma.XOR<Prisma.end_usersCreateWithoutKanban_cardsInput, Prisma.end_usersUncheckedCreateWithoutKanban_cardsInput>
+  connectOrCreate?: Prisma.end_usersCreateOrConnectWithoutKanban_cardsInput
+  upsert?: Prisma.end_usersUpsertWithoutKanban_cardsInput
+  disconnect?: Prisma.end_usersWhereInput | boolean
+  delete?: Prisma.end_usersWhereInput | boolean
+  connect?: Prisma.end_usersWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.end_usersUpdateToOneWithWhereWithoutKanban_cardsInput, Prisma.end_usersUpdateWithoutKanban_cardsInput>, Prisma.end_usersUncheckedUpdateWithoutKanban_cardsInput>
+}
+
 export type end_usersCreateWithoutClientsInput = {
   id?: string
   external_id: string
@@ -489,6 +517,7 @@ export type end_usersCreateWithoutClientsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   conversations?: Prisma.conversationsCreateNestedManyWithoutEnd_usersInput
+  kanban_cards?: Prisma.kanban_cardsCreateNestedManyWithoutEnd_userInput
 }
 
 export type end_usersUncheckedCreateWithoutClientsInput = {
@@ -501,6 +530,7 @@ export type end_usersUncheckedCreateWithoutClientsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutEnd_usersInput
+  kanban_cards?: Prisma.kanban_cardsUncheckedCreateNestedManyWithoutEnd_userInput
 }
 
 export type end_usersCreateOrConnectWithoutClientsInput = {
@@ -554,6 +584,7 @@ export type end_usersCreateWithoutConversationsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   clients: Prisma.clientsCreateNestedOneWithoutEnd_usersInput
+  kanban_cards?: Prisma.kanban_cardsCreateNestedManyWithoutEnd_userInput
 }
 
 export type end_usersUncheckedCreateWithoutConversationsInput = {
@@ -566,6 +597,7 @@ export type end_usersUncheckedCreateWithoutConversationsInput = {
   channel?: string
   created_at?: Date | string
   updated_at?: Date | string
+  kanban_cards?: Prisma.kanban_cardsUncheckedCreateNestedManyWithoutEnd_userInput
 }
 
 export type end_usersCreateOrConnectWithoutConversationsInput = {
@@ -594,6 +626,7 @@ export type end_usersUpdateWithoutConversationsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clients?: Prisma.clientsUpdateOneRequiredWithoutEnd_usersNestedInput
+  kanban_cards?: Prisma.kanban_cardsUpdateManyWithoutEnd_userNestedInput
 }
 
 export type end_usersUncheckedUpdateWithoutConversationsInput = {
@@ -606,6 +639,75 @@ export type end_usersUncheckedUpdateWithoutConversationsInput = {
   channel?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  kanban_cards?: Prisma.kanban_cardsUncheckedUpdateManyWithoutEnd_userNestedInput
+}
+
+export type end_usersCreateWithoutKanban_cardsInput = {
+  id?: string
+  external_id: string
+  name?: string | null
+  phone?: string | null
+  email?: string | null
+  channel?: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  conversations?: Prisma.conversationsCreateNestedManyWithoutEnd_usersInput
+  clients: Prisma.clientsCreateNestedOneWithoutEnd_usersInput
+}
+
+export type end_usersUncheckedCreateWithoutKanban_cardsInput = {
+  id?: string
+  client_id: string
+  external_id: string
+  name?: string | null
+  phone?: string | null
+  email?: string | null
+  channel?: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutEnd_usersInput
+}
+
+export type end_usersCreateOrConnectWithoutKanban_cardsInput = {
+  where: Prisma.end_usersWhereUniqueInput
+  create: Prisma.XOR<Prisma.end_usersCreateWithoutKanban_cardsInput, Prisma.end_usersUncheckedCreateWithoutKanban_cardsInput>
+}
+
+export type end_usersUpsertWithoutKanban_cardsInput = {
+  update: Prisma.XOR<Prisma.end_usersUpdateWithoutKanban_cardsInput, Prisma.end_usersUncheckedUpdateWithoutKanban_cardsInput>
+  create: Prisma.XOR<Prisma.end_usersCreateWithoutKanban_cardsInput, Prisma.end_usersUncheckedCreateWithoutKanban_cardsInput>
+  where?: Prisma.end_usersWhereInput
+}
+
+export type end_usersUpdateToOneWithWhereWithoutKanban_cardsInput = {
+  where?: Prisma.end_usersWhereInput
+  data: Prisma.XOR<Prisma.end_usersUpdateWithoutKanban_cardsInput, Prisma.end_usersUncheckedUpdateWithoutKanban_cardsInput>
+}
+
+export type end_usersUpdateWithoutKanban_cardsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  external_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  channel?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  conversations?: Prisma.conversationsUpdateManyWithoutEnd_usersNestedInput
+  clients?: Prisma.clientsUpdateOneRequiredWithoutEnd_usersNestedInput
+}
+
+export type end_usersUncheckedUpdateWithoutKanban_cardsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  client_id?: Prisma.StringFieldUpdateOperationsInput | string
+  external_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  channel?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  conversations?: Prisma.conversationsUncheckedUpdateManyWithoutEnd_usersNestedInput
 }
 
 export type end_usersCreateManyClientsInput = {
@@ -629,6 +731,7 @@ export type end_usersUpdateWithoutClientsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   conversations?: Prisma.conversationsUpdateManyWithoutEnd_usersNestedInput
+  kanban_cards?: Prisma.kanban_cardsUpdateManyWithoutEnd_userNestedInput
 }
 
 export type end_usersUncheckedUpdateWithoutClientsInput = {
@@ -641,6 +744,7 @@ export type end_usersUncheckedUpdateWithoutClientsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutEnd_usersNestedInput
+  kanban_cards?: Prisma.kanban_cardsUncheckedUpdateManyWithoutEnd_userNestedInput
 }
 
 export type end_usersUncheckedUpdateManyWithoutClientsInput = {
@@ -661,10 +765,12 @@ export type end_usersUncheckedUpdateManyWithoutClientsInput = {
 
 export type End_usersCountOutputType = {
   conversations: number
+  kanban_cards: number
 }
 
 export type End_usersCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   conversations?: boolean | End_usersCountOutputTypeCountConversationsArgs
+  kanban_cards?: boolean | End_usersCountOutputTypeCountKanban_cardsArgs
 }
 
 /**
@@ -684,6 +790,13 @@ export type End_usersCountOutputTypeCountConversationsArgs<ExtArgs extends runti
   where?: Prisma.conversationsWhereInput
 }
 
+/**
+ * End_usersCountOutputType without action
+ */
+export type End_usersCountOutputTypeCountKanban_cardsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.kanban_cardsWhereInput
+}
+
 
 export type end_usersSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -697,6 +810,7 @@ export type end_usersSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   updated_at?: boolean
   conversations?: boolean | Prisma.end_users$conversationsArgs<ExtArgs>
   clients?: boolean | Prisma.clientsDefaultArgs<ExtArgs>
+  kanban_cards?: boolean | Prisma.end_users$kanban_cardsArgs<ExtArgs>
   _count?: boolean | Prisma.End_usersCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["end_users"]>
 
@@ -742,6 +856,7 @@ export type end_usersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 export type end_usersInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   conversations?: boolean | Prisma.end_users$conversationsArgs<ExtArgs>
   clients?: boolean | Prisma.clientsDefaultArgs<ExtArgs>
+  kanban_cards?: boolean | Prisma.end_users$kanban_cardsArgs<ExtArgs>
   _count?: boolean | Prisma.End_usersCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type end_usersIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -756,6 +871,7 @@ export type $end_usersPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   objects: {
     conversations: Prisma.$conversationsPayload<ExtArgs>[]
     clients: Prisma.$clientsPayload<ExtArgs>
+    kanban_cards: Prisma.$kanban_cardsPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1163,6 +1279,7 @@ export interface Prisma__end_usersClient<T, Null = never, ExtArgs extends runtim
   readonly [Symbol.toStringTag]: "PrismaPromise"
   conversations<T extends Prisma.end_users$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.end_users$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$conversationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   clients<T extends Prisma.clientsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clientsDefaultArgs<ExtArgs>>): Prisma.Prisma__clientsClient<runtime.Types.Result.GetResult<Prisma.$clientsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  kanban_cards<T extends Prisma.end_users$kanban_cardsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.end_users$kanban_cardsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$kanban_cardsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1618,6 +1735,30 @@ export type end_users$conversationsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.ConversationsScalarFieldEnum | Prisma.ConversationsScalarFieldEnum[]
+}
+
+/**
+ * end_users.kanban_cards
+ */
+export type end_users$kanban_cardsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the kanban_cards
+   */
+  select?: Prisma.kanban_cardsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the kanban_cards
+   */
+  omit?: Prisma.kanban_cardsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.kanban_cardsInclude<ExtArgs> | null
+  where?: Prisma.kanban_cardsWhereInput
+  orderBy?: Prisma.kanban_cardsOrderByWithRelationInput | Prisma.kanban_cardsOrderByWithRelationInput[]
+  cursor?: Prisma.kanban_cardsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Kanban_cardsScalarFieldEnum | Prisma.Kanban_cardsScalarFieldEnum[]
 }
 
 /**

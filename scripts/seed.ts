@@ -72,6 +72,10 @@ const PERMISSIONS = [
   { slug: 'platform.view_all_users',     name: 'View All Users',     resource: 'platform', action: 'read' },
   { slug: 'platform.system_settings',    name: 'System Settings',    resource: 'platform', action: 'manage' },
   { slug: 'platform.analytics',          name: 'Platform Analytics', resource: 'platform', action: 'read' },
+  { slug: 'kanban.read',   name: 'View Kanban',   resource: 'kanban', action: 'read' },
+  { slug: 'kanban.create', name: 'Create Kanban', resource: 'kanban', action: 'create' },
+  { slug: 'kanban.update', name: 'Update Kanban', resource: 'kanban', action: 'update' },
+  { slug: 'kanban.delete', name: 'Delete Kanban', resource: 'kanban', action: 'delete' },
 ]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -114,7 +118,7 @@ async function seedPermissionsAndRoles() {
     platform_admin: () => true,
     admin:          () => true,
     'company-admin': (p) => p.resource !== 'platform',
-    agent_manager:  (p) => p.resource === 'agents' || p.resource === 'knowledge' || (p.resource !== 'users' && p.action === 'read'),
+    agent_manager:  (p) => p.resource === 'agents' || p.resource === 'knowledge' || p.resource === 'kanban' || (p.resource !== 'users' && p.action === 'read'),
     viewer:         (p) => p.action === 'read' && p.resource !== 'users',
   }
 

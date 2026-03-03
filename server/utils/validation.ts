@@ -151,6 +151,80 @@ export const userCreateSchema = z.object({
   role_ids: z.array(z.string().uuid()).min(1, 'Pelo menos um perfil é obrigatório')
 })
 
+// ============================================================================
+// Kanban Schemas
+// ============================================================================
+
+export const kanbanBoardCreateSchema = z.object({
+  name: z.string().min(1).max(255).optional().default('Kanban'),
+  description: z.string().max(2000).optional()
+})
+
+export const kanbanBoardUpdateSchema = z.object({
+  name: z.string().min(1).max(255).optional(),
+  description: z.string().max(2000).nullable().optional(),
+  entry_column_id: z.string().uuid().nullable().optional()
+})
+
+export const kanbanColumnCreateSchema = z.object({
+  name: z.string().min(1).max(255),
+  color: z.string().max(20).optional().default('#6366f1')
+})
+
+export const kanbanColumnUpdateSchema = z.object({
+  name: z.string().min(1).max(255).optional(),
+  color: z.string().max(20).optional()
+})
+
+export const kanbanColumnsReorderSchema = z.object({
+  column_ids: z.array(z.string().uuid()).min(1)
+})
+
+export const kanbanCardCreateSchema = z.object({
+  column_id: z.string().uuid(),
+  title: z.string().min(1).max(255),
+  client_name: z.string().max(255).optional(),
+  client_phone: z.string().max(50).optional(),
+  client_email: z.string().email().optional().or(z.literal('')),
+  notes: z.string().max(5000).optional(),
+  tags: z.array(z.string().max(50)).optional().default([]),
+  end_user_id: z.string().uuid().optional(),
+  conversation_id: z.string().uuid().optional()
+})
+
+export const kanbanCardUpdateSchema = z.object({
+  title: z.string().min(1).max(255).optional(),
+  client_name: z.string().max(255).nullable().optional(),
+  client_phone: z.string().max(50).nullable().optional(),
+  client_email: z.string().email().nullable().optional().or(z.literal('')),
+  notes: z.string().max(5000).nullable().optional(),
+  tags: z.array(z.string().max(50)).optional()
+})
+
+export const kanbanCardMoveSchema = z.object({
+  column_id: z.string().uuid()
+})
+
+export const kanbanCardsFilterSchema = z.object({
+  column_id: z.string().uuid().optional(),
+  date_from: z.coerce.date().optional(),
+  date_to: z.coerce.date().optional(),
+  search: z.string().max(255).optional(),
+  source: z.enum(['manual', 'n8n', 'webhook']).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(50)
+})
+
+export const kanbanWebhookSchema = z.object({
+  agent_id: z.string().uuid(),
+  client_name: z.string().min(1).max(255),
+  client_phone: z.string().max(50).optional(),
+  client_email: z.string().email().optional().or(z.literal('')),
+  conversation_id: z.string().uuid().optional(),
+  notes: z.string().max(5000).optional(),
+  tags: z.array(z.string().max(50)).optional().default([])
+})
+
 // Audit logs schemas
 export const auditLogsQuerySchema = z.object({
   user_id: z.string().uuid().optional(),
