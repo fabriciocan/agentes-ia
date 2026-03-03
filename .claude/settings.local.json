@@ -4,7 +4,10 @@
       "Bash(dir:*)",
       "Bash(npm install:*)",
       "Bash(cat:*)",
-      "Bash(git -C /root/agentes-ia remote:*)"
+      "Bash(git -C /root/agentes-ia remote:*)",
+      "Bash(npx prisma db push)",
+      "Bash(npx prisma generate)",
+      "Bash(node -e \":*)"
     ]
   }
 }

@@ -157,6 +157,26 @@ export type user_roles = Prisma.user_rolesModel
  */
 export type users = Prisma.usersModel
 /**
+ * Model kanban_boards
+ * 
+ */
+export type kanban_boards = Prisma.kanban_boardsModel
+/**
+ * Model kanban_columns
+ * 
+ */
+export type kanban_columns = Prisma.kanban_columnsModel
+/**
+ * Model kanban_cards
+ * 
+ */
+export type kanban_cards = Prisma.kanban_cardsModel
+/**
+ * Model kanban_card_moves
+ * 
+ */
+export type kanban_card_moves = Prisma.kanban_card_movesModel
+/**
  * Model chats
  * 
  */

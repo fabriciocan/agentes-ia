@@ -222,6 +222,7 @@ export type companiesWhereInput = {
   audit_logs?: Prisma.Audit_logsListRelationFilter
   clients?: Prisma.XOR<Prisma.ClientsScalarRelationFilter, Prisma.clientsWhereInput>
   conversations?: Prisma.ConversationsListRelationFilter
+  kanban_boards?: Prisma.Kanban_boardsListRelationFilter
   roles?: Prisma.RolesListRelationFilter
   subscriptions?: Prisma.XOR<Prisma.SubscriptionsNullableScalarRelationFilter, Prisma.subscriptionsWhereInput> | null
   usage_logs?: Prisma.Usage_logsListRelationFilter
@@ -243,6 +244,7 @@ export type companiesOrderByWithRelationInput = {
   audit_logs?: Prisma.audit_logsOrderByRelationAggregateInput
   clients?: Prisma.clientsOrderByWithRelationInput
   conversations?: Prisma.conversationsOrderByRelationAggregateInput
+  kanban_boards?: Prisma.kanban_boardsOrderByRelationAggregateInput
   roles?: Prisma.rolesOrderByRelationAggregateInput
   subscriptions?: Prisma.subscriptionsOrderByWithRelationInput
   usage_logs?: Prisma.usage_logsOrderByRelationAggregateInput
@@ -268,6 +270,7 @@ export type companiesWhereUniqueInput = Prisma.AtLeast<{
   audit_logs?: Prisma.Audit_logsListRelationFilter
   clients?: Prisma.XOR<Prisma.ClientsScalarRelationFilter, Prisma.clientsWhereInput>
   conversations?: Prisma.ConversationsListRelationFilter
+  kanban_boards?: Prisma.Kanban_boardsListRelationFilter
   roles?: Prisma.RolesListRelationFilter
   subscriptions?: Prisma.XOR<Prisma.SubscriptionsNullableScalarRelationFilter, Prisma.subscriptionsWhereInput> | null
   usage_logs?: Prisma.Usage_logsListRelationFilter
@@ -320,6 +323,7 @@ export type companiesCreateInput = {
   audit_logs?: Prisma.audit_logsCreateNestedManyWithoutCompaniesInput
   clients: Prisma.clientsCreateNestedOneWithoutCompaniesInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsCreateNestedManyWithoutCompaniesInput
@@ -340,6 +344,7 @@ export type companiesUncheckedCreateInput = {
   agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutCompaniesInput
   audit_logs?: Prisma.audit_logsUncheckedCreateNestedManyWithoutCompaniesInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesUncheckedCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsUncheckedCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsUncheckedCreateNestedManyWithoutCompaniesInput
@@ -360,6 +365,7 @@ export type companiesUpdateInput = {
   audit_logs?: Prisma.audit_logsUpdateManyWithoutCompaniesNestedInput
   clients?: Prisma.clientsUpdateOneRequiredWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUpdateManyWithoutCompaniesNestedInput
@@ -380,6 +386,7 @@ export type companiesUncheckedUpdateInput = {
   agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutCompaniesNestedInput
   audit_logs?: Prisma.audit_logsUncheckedUpdateManyWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUncheckedUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUncheckedUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUncheckedUpdateManyWithoutCompaniesNestedInput
@@ -632,6 +639,20 @@ export type companiesUpdateOneRequiredWithoutUsersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.companiesUpdateToOneWithWhereWithoutUsersInput, Prisma.companiesUpdateWithoutUsersInput>, Prisma.companiesUncheckedUpdateWithoutUsersInput>
 }
 
+export type companiesCreateNestedOneWithoutKanban_boardsInput = {
+  create?: Prisma.XOR<Prisma.companiesCreateWithoutKanban_boardsInput, Prisma.companiesUncheckedCreateWithoutKanban_boardsInput>
+  connectOrCreate?: Prisma.companiesCreateOrConnectWithoutKanban_boardsInput
+  connect?: Prisma.companiesWhereUniqueInput
+}
+
+export type companiesUpdateOneRequiredWithoutKanban_boardsNestedInput = {
+  create?: Prisma.XOR<Prisma.companiesCreateWithoutKanban_boardsInput, Prisma.companiesUncheckedCreateWithoutKanban_boardsInput>
+  connectOrCreate?: Prisma.companiesCreateOrConnectWithoutKanban_boardsInput
+  upsert?: Prisma.companiesUpsertWithoutKanban_boardsInput
+  connect?: Prisma.companiesWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.companiesUpdateToOneWithWhereWithoutKanban_boardsInput, Prisma.companiesUpdateWithoutKanban_boardsInput>, Prisma.companiesUncheckedUpdateWithoutKanban_boardsInput>
+}
+
 export type companiesCreateWithoutAgent_configsInput = {
   id?: string
   name: string
@@ -645,6 +666,7 @@ export type companiesCreateWithoutAgent_configsInput = {
   audit_logs?: Prisma.audit_logsCreateNestedManyWithoutCompaniesInput
   clients: Prisma.clientsCreateNestedOneWithoutCompaniesInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsCreateNestedManyWithoutCompaniesInput
@@ -664,6 +686,7 @@ export type companiesUncheckedCreateWithoutAgent_configsInput = {
   updated_at?: Date | string | null
   audit_logs?: Prisma.audit_logsUncheckedCreateNestedManyWithoutCompaniesInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesUncheckedCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsUncheckedCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsUncheckedCreateNestedManyWithoutCompaniesInput
@@ -699,6 +722,7 @@ export type companiesUpdateWithoutAgent_configsInput = {
   audit_logs?: Prisma.audit_logsUpdateManyWithoutCompaniesNestedInput
   clients?: Prisma.clientsUpdateOneRequiredWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUpdateManyWithoutCompaniesNestedInput
@@ -718,6 +742,7 @@ export type companiesUncheckedUpdateWithoutAgent_configsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   audit_logs?: Prisma.audit_logsUncheckedUpdateManyWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUncheckedUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUncheckedUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUncheckedUpdateManyWithoutCompaniesNestedInput
@@ -737,6 +762,7 @@ export type companiesCreateWithoutAudit_logsInput = {
   agent_configs?: Prisma.agent_configsCreateNestedManyWithoutCompaniesInput
   clients: Prisma.clientsCreateNestedOneWithoutCompaniesInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsCreateNestedManyWithoutCompaniesInput
@@ -756,6 +782,7 @@ export type companiesUncheckedCreateWithoutAudit_logsInput = {
   updated_at?: Date | string | null
   agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutCompaniesInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesUncheckedCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsUncheckedCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsUncheckedCreateNestedManyWithoutCompaniesInput
@@ -791,6 +818,7 @@ export type companiesUpdateWithoutAudit_logsInput = {
   agent_configs?: Prisma.agent_configsUpdateManyWithoutCompaniesNestedInput
   clients?: Prisma.clientsUpdateOneRequiredWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUpdateManyWithoutCompaniesNestedInput
@@ -810,6 +838,7 @@ export type companiesUncheckedUpdateWithoutAudit_logsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUncheckedUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUncheckedUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUncheckedUpdateManyWithoutCompaniesNestedInput
@@ -829,6 +858,7 @@ export type companiesCreateWithoutClientsInput = {
   agent_configs?: Prisma.agent_configsCreateNestedManyWithoutCompaniesInput
   audit_logs?: Prisma.audit_logsCreateNestedManyWithoutCompaniesInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsCreateNestedManyWithoutCompaniesInput
@@ -848,6 +878,7 @@ export type companiesUncheckedCreateWithoutClientsInput = {
   agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutCompaniesInput
   audit_logs?: Prisma.audit_logsUncheckedCreateNestedManyWithoutCompaniesInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesUncheckedCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsUncheckedCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsUncheckedCreateNestedManyWithoutCompaniesInput
@@ -909,6 +940,7 @@ export type companiesCreateWithoutConversationsInput = {
   agent_configs?: Prisma.agent_configsCreateNestedManyWithoutCompaniesInput
   audit_logs?: Prisma.audit_logsCreateNestedManyWithoutCompaniesInput
   clients: Prisma.clientsCreateNestedOneWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsCreateNestedManyWithoutCompaniesInput
@@ -928,6 +960,7 @@ export type companiesUncheckedCreateWithoutConversationsInput = {
   updated_at?: Date | string | null
   agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutCompaniesInput
   audit_logs?: Prisma.audit_logsUncheckedCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesUncheckedCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsUncheckedCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsUncheckedCreateNestedManyWithoutCompaniesInput
@@ -963,6 +996,7 @@ export type companiesUpdateWithoutConversationsInput = {
   agent_configs?: Prisma.agent_configsUpdateManyWithoutCompaniesNestedInput
   audit_logs?: Prisma.audit_logsUpdateManyWithoutCompaniesNestedInput
   clients?: Prisma.clientsUpdateOneRequiredWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUpdateManyWithoutCompaniesNestedInput
@@ -982,6 +1016,7 @@ export type companiesUncheckedUpdateWithoutConversationsInput = {
   updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutCompaniesNestedInput
   audit_logs?: Prisma.audit_logsUncheckedUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUncheckedUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUncheckedUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUncheckedUpdateManyWithoutCompaniesNestedInput
@@ -1002,6 +1037,7 @@ export type companiesCreateWithoutRolesInput = {
   audit_logs?: Prisma.audit_logsCreateNestedManyWithoutCompaniesInput
   clients: Prisma.clientsCreateNestedOneWithoutCompaniesInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsCreateNestedManyWithoutCompaniesInput
   users?: Prisma.usersCreateNestedManyWithoutCompaniesInput
@@ -1021,6 +1057,7 @@ export type companiesUncheckedCreateWithoutRolesInput = {
   agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutCompaniesInput
   audit_logs?: Prisma.audit_logsUncheckedCreateNestedManyWithoutCompaniesInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsUncheckedCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsUncheckedCreateNestedManyWithoutCompaniesInput
   users?: Prisma.usersUncheckedCreateNestedManyWithoutCompaniesInput
@@ -1056,6 +1093,7 @@ export type companiesUpdateWithoutRolesInput = {
   audit_logs?: Prisma.audit_logsUpdateManyWithoutCompaniesNestedInput
   clients?: Prisma.clientsUpdateOneRequiredWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUpdateManyWithoutCompaniesNestedInput
   users?: Prisma.usersUpdateManyWithoutCompaniesNestedInput
@@ -1075,6 +1113,7 @@ export type companiesUncheckedUpdateWithoutRolesInput = {
   agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutCompaniesNestedInput
   audit_logs?: Prisma.audit_logsUncheckedUpdateManyWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUncheckedUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUncheckedUpdateManyWithoutCompaniesNestedInput
   users?: Prisma.usersUncheckedUpdateManyWithoutCompaniesNestedInput
@@ -1094,6 +1133,7 @@ export type companiesCreateWithoutSubscriptionsInput = {
   audit_logs?: Prisma.audit_logsCreateNestedManyWithoutCompaniesInput
   clients: Prisma.clientsCreateNestedOneWithoutCompaniesInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesCreateNestedManyWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsCreateNestedManyWithoutCompaniesInput
   users?: Prisma.usersCreateNestedManyWithoutCompaniesInput
@@ -1113,6 +1153,7 @@ export type companiesUncheckedCreateWithoutSubscriptionsInput = {
   agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutCompaniesInput
   audit_logs?: Prisma.audit_logsUncheckedCreateNestedManyWithoutCompaniesInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesUncheckedCreateNestedManyWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsUncheckedCreateNestedManyWithoutCompaniesInput
   users?: Prisma.usersUncheckedCreateNestedManyWithoutCompaniesInput
@@ -1148,6 +1189,7 @@ export type companiesUpdateWithoutSubscriptionsInput = {
   audit_logs?: Prisma.audit_logsUpdateManyWithoutCompaniesNestedInput
   clients?: Prisma.clientsUpdateOneRequiredWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUpdateManyWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUpdateManyWithoutCompaniesNestedInput
   users?: Prisma.usersUpdateManyWithoutCompaniesNestedInput
@@ -1167,6 +1209,7 @@ export type companiesUncheckedUpdateWithoutSubscriptionsInput = {
   agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutCompaniesNestedInput
   audit_logs?: Prisma.audit_logsUncheckedUpdateManyWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUncheckedUpdateManyWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUncheckedUpdateManyWithoutCompaniesNestedInput
   users?: Prisma.usersUncheckedUpdateManyWithoutCompaniesNestedInput
@@ -1186,6 +1229,7 @@ export type companiesCreateWithoutUsage_logsInput = {
   audit_logs?: Prisma.audit_logsCreateNestedManyWithoutCompaniesInput
   clients: Prisma.clientsCreateNestedOneWithoutCompaniesInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsCreateNestedOneWithoutCompaniesInput
   users?: Prisma.usersCreateNestedManyWithoutCompaniesInput
@@ -1205,6 +1249,7 @@ export type companiesUncheckedCreateWithoutUsage_logsInput = {
   agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutCompaniesInput
   audit_logs?: Prisma.audit_logsUncheckedCreateNestedManyWithoutCompaniesInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesUncheckedCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsUncheckedCreateNestedOneWithoutCompaniesInput
   users?: Prisma.usersUncheckedCreateNestedManyWithoutCompaniesInput
@@ -1240,6 +1285,7 @@ export type companiesUpdateWithoutUsage_logsInput = {
   audit_logs?: Prisma.audit_logsUpdateManyWithoutCompaniesNestedInput
   clients?: Prisma.clientsUpdateOneRequiredWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUpdateOneWithoutCompaniesNestedInput
   users?: Prisma.usersUpdateManyWithoutCompaniesNestedInput
@@ -1259,6 +1305,7 @@ export type companiesUncheckedUpdateWithoutUsage_logsInput = {
   agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutCompaniesNestedInput
   audit_logs?: Prisma.audit_logsUncheckedUpdateManyWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUncheckedUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUncheckedUpdateOneWithoutCompaniesNestedInput
   users?: Prisma.usersUncheckedUpdateManyWithoutCompaniesNestedInput
@@ -1278,6 +1325,7 @@ export type companiesCreateWithoutUsersInput = {
   audit_logs?: Prisma.audit_logsCreateNestedManyWithoutCompaniesInput
   clients: Prisma.clientsCreateNestedOneWithoutCompaniesInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsCreateNestedManyWithoutCompaniesInput
@@ -1297,6 +1345,7 @@ export type companiesUncheckedCreateWithoutUsersInput = {
   agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutCompaniesInput
   audit_logs?: Prisma.audit_logsUncheckedCreateNestedManyWithoutCompaniesInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutCompaniesInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutCompaniesInput
   roles?: Prisma.rolesUncheckedCreateNestedManyWithoutCompaniesInput
   subscriptions?: Prisma.subscriptionsUncheckedCreateNestedOneWithoutCompaniesInput
   usage_logs?: Prisma.usage_logsUncheckedCreateNestedManyWithoutCompaniesInput
@@ -1332,6 +1381,7 @@ export type companiesUpdateWithoutUsersInput = {
   audit_logs?: Prisma.audit_logsUpdateManyWithoutCompaniesNestedInput
   clients?: Prisma.clientsUpdateOneRequiredWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUpdateManyWithoutCompaniesNestedInput
@@ -1351,9 +1401,106 @@ export type companiesUncheckedUpdateWithoutUsersInput = {
   agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutCompaniesNestedInput
   audit_logs?: Prisma.audit_logsUncheckedUpdateManyWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUncheckedUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUncheckedUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUncheckedUpdateManyWithoutCompaniesNestedInput
+}
+
+export type companiesCreateWithoutKanban_boardsInput = {
+  id?: string
+  name: string
+  slug: string
+  logo_url?: string | null
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string | null
+  deleted_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  agent_configs?: Prisma.agent_configsCreateNestedManyWithoutCompaniesInput
+  audit_logs?: Prisma.audit_logsCreateNestedManyWithoutCompaniesInput
+  clients: Prisma.clientsCreateNestedOneWithoutCompaniesInput
+  conversations?: Prisma.conversationsCreateNestedManyWithoutCompaniesInput
+  roles?: Prisma.rolesCreateNestedManyWithoutCompaniesInput
+  subscriptions?: Prisma.subscriptionsCreateNestedOneWithoutCompaniesInput
+  usage_logs?: Prisma.usage_logsCreateNestedManyWithoutCompaniesInput
+  users?: Prisma.usersCreateNestedManyWithoutCompaniesInput
+}
+
+export type companiesUncheckedCreateWithoutKanban_boardsInput = {
+  id?: string
+  client_id: string
+  name: string
+  slug: string
+  logo_url?: string | null
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: string | null
+  deleted_at?: Date | string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutCompaniesInput
+  audit_logs?: Prisma.audit_logsUncheckedCreateNestedManyWithoutCompaniesInput
+  conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutCompaniesInput
+  roles?: Prisma.rolesUncheckedCreateNestedManyWithoutCompaniesInput
+  subscriptions?: Prisma.subscriptionsUncheckedCreateNestedOneWithoutCompaniesInput
+  usage_logs?: Prisma.usage_logsUncheckedCreateNestedManyWithoutCompaniesInput
+  users?: Prisma.usersUncheckedCreateNestedManyWithoutCompaniesInput
+}
+
+export type companiesCreateOrConnectWithoutKanban_boardsInput = {
+  where: Prisma.companiesWhereUniqueInput
+  create: Prisma.XOR<Prisma.companiesCreateWithoutKanban_boardsInput, Prisma.companiesUncheckedCreateWithoutKanban_boardsInput>
+}
+
+export type companiesUpsertWithoutKanban_boardsInput = {
+  update: Prisma.XOR<Prisma.companiesUpdateWithoutKanban_boardsInput, Prisma.companiesUncheckedUpdateWithoutKanban_boardsInput>
+  create: Prisma.XOR<Prisma.companiesCreateWithoutKanban_boardsInput, Prisma.companiesUncheckedCreateWithoutKanban_boardsInput>
+  where?: Prisma.companiesWhereInput
+}
+
+export type companiesUpdateToOneWithWhereWithoutKanban_boardsInput = {
+  where?: Prisma.companiesWhereInput
+  data: Prisma.XOR<Prisma.companiesUpdateWithoutKanban_boardsInput, Prisma.companiesUncheckedUpdateWithoutKanban_boardsInput>
+}
+
+export type companiesUpdateWithoutKanban_boardsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  logo_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agent_configs?: Prisma.agent_configsUpdateManyWithoutCompaniesNestedInput
+  audit_logs?: Prisma.audit_logsUpdateManyWithoutCompaniesNestedInput
+  clients?: Prisma.clientsUpdateOneRequiredWithoutCompaniesNestedInput
+  conversations?: Prisma.conversationsUpdateManyWithoutCompaniesNestedInput
+  roles?: Prisma.rolesUpdateManyWithoutCompaniesNestedInput
+  subscriptions?: Prisma.subscriptionsUpdateOneWithoutCompaniesNestedInput
+  usage_logs?: Prisma.usage_logsUpdateManyWithoutCompaniesNestedInput
+  users?: Prisma.usersUpdateManyWithoutCompaniesNestedInput
+}
+
+export type companiesUncheckedUpdateWithoutKanban_boardsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  client_id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  logo_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  settings?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deleted_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutCompaniesNestedInput
+  audit_logs?: Prisma.audit_logsUncheckedUpdateManyWithoutCompaniesNestedInput
+  conversations?: Prisma.conversationsUncheckedUpdateManyWithoutCompaniesNestedInput
+  roles?: Prisma.rolesUncheckedUpdateManyWithoutCompaniesNestedInput
+  subscriptions?: Prisma.subscriptionsUncheckedUpdateOneWithoutCompaniesNestedInput
+  usage_logs?: Prisma.usage_logsUncheckedUpdateManyWithoutCompaniesNestedInput
+  users?: Prisma.usersUncheckedUpdateManyWithoutCompaniesNestedInput
 }
 
 export type companiesCreateManyClientsInput = {
@@ -1381,6 +1528,7 @@ export type companiesUpdateWithoutClientsInput = {
   agent_configs?: Prisma.agent_configsUpdateManyWithoutCompaniesNestedInput
   audit_logs?: Prisma.audit_logsUpdateManyWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUpdateManyWithoutCompaniesNestedInput
@@ -1400,6 +1548,7 @@ export type companiesUncheckedUpdateWithoutClientsInput = {
   agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutCompaniesNestedInput
   audit_logs?: Prisma.audit_logsUncheckedUpdateManyWithoutCompaniesNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutCompaniesNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutCompaniesNestedInput
   roles?: Prisma.rolesUncheckedUpdateManyWithoutCompaniesNestedInput
   subscriptions?: Prisma.subscriptionsUncheckedUpdateOneWithoutCompaniesNestedInput
   usage_logs?: Prisma.usage_logsUncheckedUpdateManyWithoutCompaniesNestedInput
@@ -1427,6 +1576,7 @@ export type CompaniesCountOutputType = {
   agent_configs: number
   audit_logs: number
   conversations: number
+  kanban_boards: number
   roles: number
   usage_logs: number
   users: number
@@ -1436,6 +1586,7 @@ export type CompaniesCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   agent_configs?: boolean | CompaniesCountOutputTypeCountAgent_configsArgs
   audit_logs?: boolean | CompaniesCountOutputTypeCountAudit_logsArgs
   conversations?: boolean | CompaniesCountOutputTypeCountConversationsArgs
+  kanban_boards?: boolean | CompaniesCountOutputTypeCountKanban_boardsArgs
   roles?: boolean | CompaniesCountOutputTypeCountRolesArgs
   usage_logs?: boolean | CompaniesCountOutputTypeCountUsage_logsArgs
   users?: boolean | CompaniesCountOutputTypeCountUsersArgs
@@ -1475,6 +1626,13 @@ export type CompaniesCountOutputTypeCountConversationsArgs<ExtArgs extends runti
 /**
  * CompaniesCountOutputType without action
  */
+export type CompaniesCountOutputTypeCountKanban_boardsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.kanban_boardsWhereInput
+}
+
+/**
+ * CompaniesCountOutputType without action
+ */
 export type CompaniesCountOutputTypeCountRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.rolesWhereInput
 }
@@ -1509,6 +1667,7 @@ export type companiesSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   audit_logs?: boolean | Prisma.companies$audit_logsArgs<ExtArgs>
   clients?: boolean | Prisma.clientsDefaultArgs<ExtArgs>
   conversations?: boolean | Prisma.companies$conversationsArgs<ExtArgs>
+  kanban_boards?: boolean | Prisma.companies$kanban_boardsArgs<ExtArgs>
   roles?: boolean | Prisma.companies$rolesArgs<ExtArgs>
   subscriptions?: boolean | Prisma.companies$subscriptionsArgs<ExtArgs>
   usage_logs?: boolean | Prisma.companies$usage_logsArgs<ExtArgs>
@@ -1563,6 +1722,7 @@ export type companiesInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   audit_logs?: boolean | Prisma.companies$audit_logsArgs<ExtArgs>
   clients?: boolean | Prisma.clientsDefaultArgs<ExtArgs>
   conversations?: boolean | Prisma.companies$conversationsArgs<ExtArgs>
+  kanban_boards?: boolean | Prisma.companies$kanban_boardsArgs<ExtArgs>
   roles?: boolean | Prisma.companies$rolesArgs<ExtArgs>
   subscriptions?: boolean | Prisma.companies$subscriptionsArgs<ExtArgs>
   usage_logs?: boolean | Prisma.companies$usage_logsArgs<ExtArgs>
@@ -1583,6 +1743,7 @@ export type $companiesPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     audit_logs: Prisma.$audit_logsPayload<ExtArgs>[]
     clients: Prisma.$clientsPayload<ExtArgs>
     conversations: Prisma.$conversationsPayload<ExtArgs>[]
+    kanban_boards: Prisma.$kanban_boardsPayload<ExtArgs>[]
     roles: Prisma.$rolesPayload<ExtArgs>[]
     subscriptions: Prisma.$subscriptionsPayload<ExtArgs> | null
     usage_logs: Prisma.$usage_logsPayload<ExtArgs>[]
@@ -1997,6 +2158,7 @@ export interface Prisma__companiesClient<T, Null = never, ExtArgs extends runtim
   audit_logs<T extends Prisma.companies$audit_logsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.companies$audit_logsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$audit_logsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   clients<T extends Prisma.clientsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clientsDefaultArgs<ExtArgs>>): Prisma.Prisma__clientsClient<runtime.Types.Result.GetResult<Prisma.$clientsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   conversations<T extends Prisma.companies$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.companies$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$conversationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  kanban_boards<T extends Prisma.companies$kanban_boardsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.companies$kanban_boardsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$kanban_boardsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   roles<T extends Prisma.companies$rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.companies$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$rolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   subscriptions<T extends Prisma.companies$subscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.companies$subscriptionsArgs<ExtArgs>>): Prisma.Prisma__subscriptionsClient<runtime.Types.Result.GetResult<Prisma.$subscriptionsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   usage_logs<T extends Prisma.companies$usage_logsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.companies$usage_logsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$usage_logsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2505,6 +2667,30 @@ export type companies$conversationsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.ConversationsScalarFieldEnum | Prisma.ConversationsScalarFieldEnum[]
+}
+
+/**
+ * companies.kanban_boards
+ */
+export type companies$kanban_boardsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the kanban_boards
+   */
+  select?: Prisma.kanban_boardsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the kanban_boards
+   */
+  omit?: Prisma.kanban_boardsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.kanban_boardsInclude<ExtArgs> | null
+  where?: Prisma.kanban_boardsWhereInput
+  orderBy?: Prisma.kanban_boardsOrderByWithRelationInput | Prisma.kanban_boardsOrderByWithRelationInput[]
+  cursor?: Prisma.kanban_boardsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Kanban_boardsScalarFieldEnum | Prisma.Kanban_boardsScalarFieldEnum[]
 }
 
 /**

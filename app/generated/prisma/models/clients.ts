@@ -196,6 +196,7 @@ export type clientsWhereInput = {
   companies?: Prisma.CompaniesListRelationFilter
   conversations?: Prisma.ConversationsListRelationFilter
   end_users?: Prisma.End_usersListRelationFilter
+  kanban_boards?: Prisma.Kanban_boardsListRelationFilter
   meta_whatsapp_accounts?: Prisma.Meta_whatsapp_accountsListRelationFilter
 }
 
@@ -212,6 +213,7 @@ export type clientsOrderByWithRelationInput = {
   companies?: Prisma.companiesOrderByRelationAggregateInput
   conversations?: Prisma.conversationsOrderByRelationAggregateInput
   end_users?: Prisma.end_usersOrderByRelationAggregateInput
+  kanban_boards?: Prisma.kanban_boardsOrderByRelationAggregateInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsOrderByRelationAggregateInput
 }
 
@@ -231,6 +233,7 @@ export type clientsWhereUniqueInput = Prisma.AtLeast<{
   companies?: Prisma.CompaniesListRelationFilter
   conversations?: Prisma.ConversationsListRelationFilter
   end_users?: Prisma.End_usersListRelationFilter
+  kanban_boards?: Prisma.Kanban_boardsListRelationFilter
   meta_whatsapp_accounts?: Prisma.Meta_whatsapp_accountsListRelationFilter
 }, "id" | "slug" | "api_key">
 
@@ -271,6 +274,7 @@ export type clientsCreateInput = {
   companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsCreateNestedManyWithoutClientsInput
 }
 
@@ -287,6 +291,7 @@ export type clientsUncheckedCreateInput = {
   companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedCreateNestedManyWithoutClientsInput
 }
 
@@ -303,6 +308,7 @@ export type clientsUpdateInput = {
   companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUpdateManyWithoutClientsNestedInput
 }
 
@@ -319,6 +325,7 @@ export type clientsUncheckedUpdateInput = {
   companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedUpdateManyWithoutClientsNestedInput
 }
 
@@ -465,6 +472,20 @@ export type clientsUpdateOneRequiredWithoutMeta_whatsapp_accountsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.clientsUpdateToOneWithWhereWithoutMeta_whatsapp_accountsInput, Prisma.clientsUpdateWithoutMeta_whatsapp_accountsInput>, Prisma.clientsUncheckedUpdateWithoutMeta_whatsapp_accountsInput>
 }
 
+export type clientsCreateNestedOneWithoutKanban_boardsInput = {
+  create?: Prisma.XOR<Prisma.clientsCreateWithoutKanban_boardsInput, Prisma.clientsUncheckedCreateWithoutKanban_boardsInput>
+  connectOrCreate?: Prisma.clientsCreateOrConnectWithoutKanban_boardsInput
+  connect?: Prisma.clientsWhereUniqueInput
+}
+
+export type clientsUpdateOneRequiredWithoutKanban_boardsNestedInput = {
+  create?: Prisma.XOR<Prisma.clientsCreateWithoutKanban_boardsInput, Prisma.clientsUncheckedCreateWithoutKanban_boardsInput>
+  connectOrCreate?: Prisma.clientsCreateOrConnectWithoutKanban_boardsInput
+  upsert?: Prisma.clientsUpsertWithoutKanban_boardsInput
+  connect?: Prisma.clientsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.clientsUpdateToOneWithWhereWithoutKanban_boardsInput, Prisma.clientsUpdateWithoutKanban_boardsInput>, Prisma.clientsUncheckedUpdateWithoutKanban_boardsInput>
+}
+
 export type clientsCreateNestedOneWithoutChatsInput = {
   create?: Prisma.XOR<Prisma.clientsCreateWithoutChatsInput, Prisma.clientsUncheckedCreateWithoutChatsInput>
   connectOrCreate?: Prisma.clientsCreateOrConnectWithoutChatsInput
@@ -491,6 +512,7 @@ export type clientsCreateWithoutAdmin_usersInput = {
   companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsCreateNestedManyWithoutClientsInput
 }
 
@@ -506,6 +528,7 @@ export type clientsUncheckedCreateWithoutAdmin_usersInput = {
   companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedCreateNestedManyWithoutClientsInput
 }
 
@@ -537,6 +560,7 @@ export type clientsUpdateWithoutAdmin_usersInput = {
   companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUpdateManyWithoutClientsNestedInput
 }
 
@@ -552,6 +576,7 @@ export type clientsUncheckedUpdateWithoutAdmin_usersInput = {
   companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedUpdateManyWithoutClientsNestedInput
 }
 
@@ -567,6 +592,7 @@ export type clientsCreateWithoutAgent_configsInput = {
   companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsCreateNestedManyWithoutClientsInput
 }
 
@@ -582,6 +608,7 @@ export type clientsUncheckedCreateWithoutAgent_configsInput = {
   companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedCreateNestedManyWithoutClientsInput
 }
 
@@ -613,6 +640,7 @@ export type clientsUpdateWithoutAgent_configsInput = {
   companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUpdateManyWithoutClientsNestedInput
 }
 
@@ -628,6 +656,7 @@ export type clientsUncheckedUpdateWithoutAgent_configsInput = {
   companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedUpdateManyWithoutClientsNestedInput
 }
 
@@ -643,6 +672,7 @@ export type clientsCreateWithoutCompaniesInput = {
   chats?: Prisma.chatsCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsCreateNestedManyWithoutClientsInput
 }
 
@@ -658,6 +688,7 @@ export type clientsUncheckedCreateWithoutCompaniesInput = {
   chats?: Prisma.chatsUncheckedCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedCreateNestedManyWithoutClientsInput
 }
 
@@ -689,6 +720,7 @@ export type clientsUpdateWithoutCompaniesInput = {
   chats?: Prisma.chatsUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUpdateManyWithoutClientsNestedInput
 }
 
@@ -704,6 +736,7 @@ export type clientsUncheckedUpdateWithoutCompaniesInput = {
   chats?: Prisma.chatsUncheckedUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedUpdateManyWithoutClientsNestedInput
 }
 
@@ -719,6 +752,7 @@ export type clientsCreateWithoutConversationsInput = {
   chats?: Prisma.chatsCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsCreateNestedManyWithoutClientsInput
 }
 
@@ -734,6 +768,7 @@ export type clientsUncheckedCreateWithoutConversationsInput = {
   chats?: Prisma.chatsUncheckedCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedCreateNestedManyWithoutClientsInput
 }
 
@@ -765,6 +800,7 @@ export type clientsUpdateWithoutConversationsInput = {
   chats?: Prisma.chatsUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUpdateManyWithoutClientsNestedInput
 }
 
@@ -780,6 +816,7 @@ export type clientsUncheckedUpdateWithoutConversationsInput = {
   chats?: Prisma.chatsUncheckedUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedUpdateManyWithoutClientsNestedInput
 }
 
@@ -795,6 +832,7 @@ export type clientsCreateWithoutEnd_usersInput = {
   chats?: Prisma.chatsCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsCreateNestedManyWithoutClientsInput
 }
 
@@ -810,6 +848,7 @@ export type clientsUncheckedCreateWithoutEnd_usersInput = {
   chats?: Prisma.chatsUncheckedCreateNestedManyWithoutClientsInput
   companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedCreateNestedManyWithoutClientsInput
 }
 
@@ -841,6 +880,7 @@ export type clientsUpdateWithoutEnd_usersInput = {
   chats?: Prisma.chatsUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUpdateManyWithoutClientsNestedInput
 }
 
@@ -856,6 +896,7 @@ export type clientsUncheckedUpdateWithoutEnd_usersInput = {
   chats?: Prisma.chatsUncheckedUpdateManyWithoutClientsNestedInput
   companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedUpdateManyWithoutClientsNestedInput
 }
 
@@ -872,6 +913,7 @@ export type clientsCreateWithoutMeta_whatsapp_accountsInput = {
   companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutClientsInput
 }
 
 export type clientsUncheckedCreateWithoutMeta_whatsapp_accountsInput = {
@@ -887,6 +929,7 @@ export type clientsUncheckedCreateWithoutMeta_whatsapp_accountsInput = {
   companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutClientsInput
 }
 
 export type clientsCreateOrConnectWithoutMeta_whatsapp_accountsInput = {
@@ -918,6 +961,7 @@ export type clientsUpdateWithoutMeta_whatsapp_accountsInput = {
   companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutClientsNestedInput
 }
 
 export type clientsUncheckedUpdateWithoutMeta_whatsapp_accountsInput = {
@@ -933,6 +977,87 @@ export type clientsUncheckedUpdateWithoutMeta_whatsapp_accountsInput = {
   companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutClientsNestedInput
+}
+
+export type clientsCreateWithoutKanban_boardsInput = {
+  id?: string
+  name: string
+  slug: string
+  api_key: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  admin_users?: Prisma.admin_usersCreateNestedManyWithoutClientsInput
+  agent_configs?: Prisma.agent_configsCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsCreateNestedManyWithoutClientsInput
+  companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
+  conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
+  end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
+  meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsCreateNestedManyWithoutClientsInput
+}
+
+export type clientsUncheckedCreateWithoutKanban_boardsInput = {
+  id?: string
+  name: string
+  slug: string
+  api_key: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  admin_users?: Prisma.admin_usersUncheckedCreateNestedManyWithoutClientsInput
+  agent_configs?: Prisma.agent_configsUncheckedCreateNestedManyWithoutClientsInput
+  chats?: Prisma.chatsUncheckedCreateNestedManyWithoutClientsInput
+  companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
+  conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
+  end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
+  meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedCreateNestedManyWithoutClientsInput
+}
+
+export type clientsCreateOrConnectWithoutKanban_boardsInput = {
+  where: Prisma.clientsWhereUniqueInput
+  create: Prisma.XOR<Prisma.clientsCreateWithoutKanban_boardsInput, Prisma.clientsUncheckedCreateWithoutKanban_boardsInput>
+}
+
+export type clientsUpsertWithoutKanban_boardsInput = {
+  update: Prisma.XOR<Prisma.clientsUpdateWithoutKanban_boardsInput, Prisma.clientsUncheckedUpdateWithoutKanban_boardsInput>
+  create: Prisma.XOR<Prisma.clientsCreateWithoutKanban_boardsInput, Prisma.clientsUncheckedCreateWithoutKanban_boardsInput>
+  where?: Prisma.clientsWhereInput
+}
+
+export type clientsUpdateToOneWithWhereWithoutKanban_boardsInput = {
+  where?: Prisma.clientsWhereInput
+  data: Prisma.XOR<Prisma.clientsUpdateWithoutKanban_boardsInput, Prisma.clientsUncheckedUpdateWithoutKanban_boardsInput>
+}
+
+export type clientsUpdateWithoutKanban_boardsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  api_key?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  admin_users?: Prisma.admin_usersUpdateManyWithoutClientsNestedInput
+  agent_configs?: Prisma.agent_configsUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUpdateManyWithoutClientsNestedInput
+  companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
+  conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
+  end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
+  meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUpdateManyWithoutClientsNestedInput
+}
+
+export type clientsUncheckedUpdateWithoutKanban_boardsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  api_key?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  admin_users?: Prisma.admin_usersUncheckedUpdateManyWithoutClientsNestedInput
+  agent_configs?: Prisma.agent_configsUncheckedUpdateManyWithoutClientsNestedInput
+  chats?: Prisma.chatsUncheckedUpdateManyWithoutClientsNestedInput
+  companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
+  conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
+  end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
+  meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedUpdateManyWithoutClientsNestedInput
 }
 
 export type clientsCreateWithoutChatsInput = {
@@ -947,6 +1072,7 @@ export type clientsCreateWithoutChatsInput = {
   companies?: Prisma.companiesCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsCreateNestedManyWithoutClientsInput
 }
 
@@ -962,6 +1088,7 @@ export type clientsUncheckedCreateWithoutChatsInput = {
   companies?: Prisma.companiesUncheckedCreateNestedManyWithoutClientsInput
   conversations?: Prisma.conversationsUncheckedCreateNestedManyWithoutClientsInput
   end_users?: Prisma.end_usersUncheckedCreateNestedManyWithoutClientsInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedCreateNestedManyWithoutClientsInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedCreateNestedManyWithoutClientsInput
 }
 
@@ -993,6 +1120,7 @@ export type clientsUpdateWithoutChatsInput = {
   companies?: Prisma.companiesUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUpdateManyWithoutClientsNestedInput
 }
 
@@ -1008,6 +1136,7 @@ export type clientsUncheckedUpdateWithoutChatsInput = {
   companies?: Prisma.companiesUncheckedUpdateManyWithoutClientsNestedInput
   conversations?: Prisma.conversationsUncheckedUpdateManyWithoutClientsNestedInput
   end_users?: Prisma.end_usersUncheckedUpdateManyWithoutClientsNestedInput
+  kanban_boards?: Prisma.kanban_boardsUncheckedUpdateManyWithoutClientsNestedInput
   meta_whatsapp_accounts?: Prisma.meta_whatsapp_accountsUncheckedUpdateManyWithoutClientsNestedInput
 }
 
@@ -1023,6 +1152,7 @@ export type ClientsCountOutputType = {
   companies: number
   conversations: number
   end_users: number
+  kanban_boards: number
   meta_whatsapp_accounts: number
 }
 
@@ -1033,6 +1163,7 @@ export type ClientsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   companies?: boolean | ClientsCountOutputTypeCountCompaniesArgs
   conversations?: boolean | ClientsCountOutputTypeCountConversationsArgs
   end_users?: boolean | ClientsCountOutputTypeCountEnd_usersArgs
+  kanban_boards?: boolean | ClientsCountOutputTypeCountKanban_boardsArgs
   meta_whatsapp_accounts?: boolean | ClientsCountOutputTypeCountMeta_whatsapp_accountsArgs
 }
 
@@ -1091,6 +1222,13 @@ export type ClientsCountOutputTypeCountEnd_usersArgs<ExtArgs extends runtime.Typ
 /**
  * ClientsCountOutputType without action
  */
+export type ClientsCountOutputTypeCountKanban_boardsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.kanban_boardsWhereInput
+}
+
+/**
+ * ClientsCountOutputType without action
+ */
 export type ClientsCountOutputTypeCountMeta_whatsapp_accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.meta_whatsapp_accountsWhereInput
 }
@@ -1109,6 +1247,7 @@ export type clientsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   companies?: boolean | Prisma.clients$companiesArgs<ExtArgs>
   conversations?: boolean | Prisma.clients$conversationsArgs<ExtArgs>
   end_users?: boolean | Prisma.clients$end_usersArgs<ExtArgs>
+  kanban_boards?: boolean | Prisma.clients$kanban_boardsArgs<ExtArgs>
   meta_whatsapp_accounts?: boolean | Prisma.clients$meta_whatsapp_accountsArgs<ExtArgs>
   _count?: boolean | Prisma.ClientsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["clients"]>
@@ -1148,6 +1287,7 @@ export type clientsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   companies?: boolean | Prisma.clients$companiesArgs<ExtArgs>
   conversations?: boolean | Prisma.clients$conversationsArgs<ExtArgs>
   end_users?: boolean | Prisma.clients$end_usersArgs<ExtArgs>
+  kanban_boards?: boolean | Prisma.clients$kanban_boardsArgs<ExtArgs>
   meta_whatsapp_accounts?: boolean | Prisma.clients$meta_whatsapp_accountsArgs<ExtArgs>
   _count?: boolean | Prisma.ClientsCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1163,6 +1303,7 @@ export type $clientsPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     companies: Prisma.$companiesPayload<ExtArgs>[]
     conversations: Prisma.$conversationsPayload<ExtArgs>[]
     end_users: Prisma.$end_usersPayload<ExtArgs>[]
+    kanban_boards: Prisma.$kanban_boardsPayload<ExtArgs>[]
     meta_whatsapp_accounts: Prisma.$meta_whatsapp_accountsPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1572,6 +1713,7 @@ export interface Prisma__clientsClient<T, Null = never, ExtArgs extends runtime.
   companies<T extends Prisma.clients$companiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clients$companiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$companiesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversations<T extends Prisma.clients$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clients$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$conversationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   end_users<T extends Prisma.clients$end_usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clients$end_usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$end_usersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  kanban_boards<T extends Prisma.clients$kanban_boardsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clients$kanban_boardsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$kanban_boardsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   meta_whatsapp_accounts<T extends Prisma.clients$meta_whatsapp_accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.clients$meta_whatsapp_accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$meta_whatsapp_accountsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2137,6 +2279,30 @@ export type clients$end_usersArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.End_usersScalarFieldEnum | Prisma.End_usersScalarFieldEnum[]
+}
+
+/**
+ * clients.kanban_boards
+ */
+export type clients$kanban_boardsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the kanban_boards
+   */
+  select?: Prisma.kanban_boardsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the kanban_boards
+   */
+  omit?: Prisma.kanban_boardsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.kanban_boardsInclude<ExtArgs> | null
+  where?: Prisma.kanban_boardsWhereInput
+  orderBy?: Prisma.kanban_boardsOrderByWithRelationInput | Prisma.kanban_boardsOrderByWithRelationInput[]
+  cursor?: Prisma.kanban_boardsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Kanban_boardsScalarFieldEnum | Prisma.Kanban_boardsScalarFieldEnum[]
 }
 
 /**

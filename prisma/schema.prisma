@@ -54,6 +54,7 @@ model agent_configs {
   conversations               conversations[]
   knowledge_base              knowledge_base[]
   knowledge_files             knowledge_files[]
+  kanban_boards               kanban_boards?
 
   @@index([client_id, is_active], map: "idx_agent_configs_client_active", where: raw("(is_active = true)"))
   @@index([client_id], map: "idx_agent_configs_client_id")
@@ -118,6 +119,7 @@ model clients {
   companies                companies[]
   conversations            conversations[]
   end_users                end_users[]
+  kanban_boards            kanban_boards[]
   meta_whatsapp_accounts   meta_whatsapp_accounts[]
 
   @@index([api_key], map: "idx_clients_api_key")
@@ -140,6 +142,7 @@ model companies {
   audit_logs    audit_logs[]
   clients       clients         @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   conversations conversations[]
+  kanban_boards kanban_boards[]
   roles         roles[]
   subscriptions subscriptions?
   usage_logs    usage_logs[]
@@ -161,11 +164,12 @@ model conversations {
   created_at      DateTime      @default(now()) @db.Timestamptz(6)
   updated_at      DateTime      @default(now()) @db.Timestamptz(6)
   company_id      String?       @db.Uuid
-  agent_configs   agent_configs @relation(fields: [agent_config_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  clients         clients       @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  companies       companies?    @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  end_users       end_users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  agent_configs   agent_configs  @relation(fields: [agent_config_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  clients         clients        @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  companies       companies?     @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  end_users       end_users      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   messages        messages[]
+  kanban_cards    kanban_cards[]
 
   @@index([agent_config_id], map: "idx_conversations_agent_config_id")
   @@index([client_id], map: "idx_conversations_client_id")
@@ -202,6 +206,8 @@ model end_users {
   updated_at    DateTime        @default(now()) @db.Timestamptz(6)
   conversations conversations[]
   clients       clients         @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "users_client_id_fkey")
+
+  kanban_cards  kanban_cards[]
 
   @@unique([client_id, external_id], map: "users_client_id_external_id_key")
   @@index([client_id], map: "idx_users_client_id")
@@ -472,6 +478,90 @@ model users {
   @@index([invitation_token], map: "idx_users_invitation_token", where: raw("(invitation_token IS NOT NULL)"))
   @@index([last_login_at(sort: Desc)], map: "idx_users_last_login_at")
   @@index([status], map: "idx_users_status", where: raw("(deleted_at IS NULL)"))
+}
+
+model kanban_boards {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  client_id        String    @db.Uuid
+  company_id       String    @db.Uuid
+  agent_config_id  String    @unique @db.Uuid
+  name             String    @default("Kanban") @db.VarChar(255)
+  /// UUID da coluna de entrada padrão — validado via código, sem FK Prisma
+  entry_column_id  String?   @db.Uuid
+  description      String?   @db.Text
+  is_active        Boolean   @default(true)
+  created_at       DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime  @default(now()) @db.Timestamptz(6)
+
+  clients          clients          @relation(fields: [client_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  companies        companies        @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  agent_configs    agent_configs    @relation(fields: [agent_config_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  columns          kanban_columns[]
+  cards            kanban_cards[]
+
+  @@index([company_id])
+  @@index([client_id])
+  @@index([agent_config_id])
+}
+
+model kanban_columns {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  board_id    String   @db.Uuid
+  name        String   @db.VarChar(255)
+  color       String   @default("#6366f1") @db.VarChar(20)
+  position    Int      @default(0)
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  board  kanban_boards  @relation(fields: [board_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  cards  kanban_cards[]
+
+  @@index([board_id])
+  @@index([board_id, position])
+}
+
+model kanban_cards {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  board_id        String    @db.Uuid
+  column_id       String    @db.Uuid
+  end_user_id     String?   @db.Uuid
+  conversation_id String?   @db.Uuid
+  title           String    @db.VarChar(255)
+  client_name     String?   @db.VarChar(255)
+  client_phone    String?   @db.VarChar(50)
+  client_email    String?   @db.VarChar(255)
+  notes           String?   @db.Text
+  tags            String[]  @default([])
+  position        Int       @default(0)
+  source          String    @default("manual") @db.VarChar(50)
+  entered_at      DateTime  @default(now()) @db.Timestamptz(6)
+  created_at      DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime  @default(now()) @db.Timestamptz(6)
+
+  board           kanban_boards  @relation(fields: [board_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  column          kanban_columns @relation(fields: [column_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  end_user        end_users?     @relation(fields: [end_user_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  conversation    conversations? @relation(fields: [conversation_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  moves           kanban_card_moves[]
+
+  @@index([board_id])
+  @@index([column_id])
+  @@index([end_user_id])
+  @@index([created_at])
+}
+
+model kanban_card_moves {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  card_id        String   @db.Uuid
+  from_column_id String?  @db.Uuid
+  to_column_id   String   @db.Uuid
+  moved_by       String?  @db.Uuid
+  moved_at       DateTime @default(now()) @db.Timestamptz(6)
+
+  card           kanban_cards @relation(fields: [card_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([card_id])
+  @@index([moved_at])
 }
 
 model chats {
